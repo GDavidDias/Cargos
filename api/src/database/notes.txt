@@ -1,0 +1,135 @@
+CREATE DATABASE dbcargos;
+
+USE dbcargos;
+
+CREATE TABLE inscriptos_mov(id_inscriptos_mov INT(11) NOT NULL AUTO_INCREMENT, cargo_actual VARCHAR(50) DEFAULT NULL, cargo_solicitado VARCHAR(50) DEFAULT NULL, dni VARCHAR(50) DEFAULT NULL, apellido VARCHAR(250) DEFAULT NULL, nombre VARCHAR(250) DEFAULT NULL, observacion VARCHAR(250) DEFAULT NULL, total VARCHAR(50) DEFAULT NULL, orden INT(11) DEFAULT NULL, nro_escuela VARCHAR(250) DEFAULT NULL,  legajo INT(11) DEFAULT NULL, id_especialidad INT(7) DEFAULT NULL, id_tipo_inscripto INT(7) DEFAULT NULL,  PRIMARY KEY(id_inscriptos_mov));
+
+CREATE TABLE especialidad(id_especialidad INT(11) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(250) DEFAULT NULL, abreviatura VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_especialidad));
+
+CREATE TABLE tipo_inscripto(id_tipo_inscripto INT(2) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_tipo_inscripto));
+
+CREATE TABLE asignacion_mov(id_asignacion_mov INT(11) NOT NULL AUTO_INCREMENT, id_vacante_mov INT(11) DEFAULT NULL, id_inscriptos_mov INT(11) DEFAULT NULL, datetime_asignacion DATETIME DEFAULT NULL, id_estado_asignacion INT(2) DEFAULT NULL, PRIMARY KEY(id_asignacion_mov));
+
+CREATE TABLE estado_asignacion(id_estado_asignacion INT(2) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_estado_asignacion));
+
+CREATE TABLE vacantes_mov(id_vacante_mov INT(11) NOT NULL AUTO_INCREMENT, id_listado_vac_mov INT(7) DEFAULT NULL, orden INT(7) DEFAULT NULL, establecimiento VARCHAR(255) DEFAULT NULL, obs_establecimiento VARCHAR(250) DEFAULT NULL, region VARCHAR(250) DEFAULT NULL, departamento VARCHAR(250) DEFAULT NULL, localidad VARCHAR(250) DEFAULT NULL, cargo VARCHAR(250) DEFAULT NULL, turno VARCHAR(50) DEFAULT NULL, modalidad VARCHAR(250) DEFAULT NULL, cupof VARCHAR(50) DEFAULT NULL, id_especialidad INT(11) DEFAULT NULL, datetime_creacion DATETIME DEFAULT NULL, obs_desactiva VARCHAR(250) DEFAULT NULL, zona INT(7) DEFAULT NULL, PRIMARY KEY(id_vacante_mov));
+
+CREATE TABLE nivel(id_nivel INT(7) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_nivel));
+
+CREATE TABLE listado_vacantes_mov(id_listado_vac_mov INT(7) NOT NULL AUTO_INCREMENT, año VARCHAR(50) DEFAULT NULL, id_nivel INT(7) DEFAULT NULL, resolucion VARCHAR(250) DEFAULT NULL, descripcion VARCHAR(250) DEFAULT NULL, PRIMARY KEY(id_listado_vac_mov));
+
+
+--INSERT INTO TABLA especialidad
+
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(1,'MAESTRO DE GRADO','M.G.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(2,'MAESTRO DE GRADO OTRO CARGO','M.G. O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(3,'MAESTRA DE JARDÍN','M.J.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(4,'MAESTRA DE JARDÍN OTRO CARGO','M.J. O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(5,'MAESTRO DE GRADO DIFERENCIAL','M.G. DIF');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(6,'MAESTRO DE GRADO DIFERENCIAL OTRO CARGO','M.G. DIF O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(7,'ACTIVIIDADES PRACTICAS','A.P.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(8,'ACTIVIDADES PRÁCTICAS OTRO CARGO','A.P. OC');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(9,'EDUCACIÓN PLÁSTICA','E.P.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(10,'EDUCACIÓN PLÁSTICA  OTRO CARGO','E.P. O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(11,'EDUCACIÓN FÍSICA','E.F.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(12,'EDUCACIÓN FÍSICA OTRO CARGO','E.F. O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(13,'EDUCACIÓN MUSICAL CON TITULO DOCENTE','E.M.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(14,'EDUCACIÓN MUSICAL TITULO OTRO CARGO','E.M. O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(15,'EDUCACIÓN MUSICAL INSTITUTO PRIVADO','E.M. INST. PRIVADO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(16,'EDUCACIÓN MUSICAL INSTITUTO PRIVADO OTRO CARGO','E.M. INST. PRIVADO O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(17,'EDUCACION MUSICAL ESTUDIANTE AVANZADO','E.M. E/AVANZADO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(18,'EDUCACIÓN MUSICAL EST. AVANZADO O/C','E.M. E/AVANZADO O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(19,'INSTRUMENTISTA (CONSERV. PROV. MUSICA)','INSTRUMENTISTA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(20,'INSTRUMENTISTA OTRO CARGO','INSTRUMENTISTA O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(21,'INSTRUMENTISTA LA QUIACA OTRO CARGO','INSTR.L.QCA. OC');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(22,'TÉCNICAS AGROPECUARIAS','T.A.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(23,'TÉCNICAS AGROPECUARIAS OTRO CARGO','T.A. O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(24,'TALLER RURAL','T.R.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(25,'TALLER RURAL OTRO CARGO','T.R. O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(26,'INGLÉS TÍTULO DOCENTE','INGLES');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(27,'INGLÉS TÍTULO DOCENTE OTRO CARGO','INGLES O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(28,'INGLÉS TÍTULO PRIVADO','INGLES PRIVADO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(29,'INGLÉS TITULO PRIVADO OTRO CARGO','INGLES TIT/PRIV O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(30,'INGLES ESTUDIANTES AVANZADOS','INGLES E/AVANZADO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(31,'INGLÉS ESTUDIANTES AVANZADOS CON OTRO CARGO','INGLES E/AVANZADO O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(32,'FRANCES TÍTULO DOCENTE','FRANCES');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(33,'FRANCES TÍTULO PRIVADO','FRANCES T/P');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(34,'ESTUDIANTE AVANZADO DE FRANCÉS','FRANCES E/AVANZADO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(35,'PORTUGUES TÍTULO DOCENTE','PORTUGUES');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(36,'PORTUGUES ESTUDIANTE AVANZADO','PORTUGUES E/AVANZADO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(37,'ATENCIÓN AL CLIENTE EN GASTRONOMÍA','A. C. GAST.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(38,'ARMADO Y CONFIGURACIÓN DE P.C.','A.C. P.C.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(39,'ARTES DECORATIVAS','A.D.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(40,'ARTES DECORATIVAS OTRO CARGO','A.D. OC');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(41,'ADMINISTRACIÓN EMPRESAS','ADMINISTRACION EMPRESAS');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(42,'ARTESANÍA','ARTESANIA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(43,'ARTESANíA OTRO CARGO','ARTESANIA O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(44,'CORTE Y CONFECCIÓN','C.C.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(45,'CORTE Y CONFECCIÓN OTRO CARGO','C.C. O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(46,'CARPINTERÍA CON TÍTULO','CARPINTERIA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(47,'CARPINTERIA OTRO CARGO CON TITULO','CARPINTERIA O/C CON TITULO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(48,'CARPINTERIA OTRO CARGO SIN TITULO','CARPINTERIA O/C SIN TITULO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(49,'CERÁMICA','CERAMICA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(50,'CERÁMICA OTRO CARGO','CERAMICA O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(51,'COCINA','COCINA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(52,'COCINA OTRO CARGO','COCINA  O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(53,'COCINA Y REPOSTERÍA','COCINA Y REPOSTERIA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(54,'COMUNICACIÓN','COMUNICACIóN');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(55,'CONTABILIDAD','CONTABILIDAD');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(56,'DANZAS FOLCLÓRICAS','DANZAS FOLKLORICAS');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(57,'ECONOMÍA','ECONOMIA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(58,'ELECTRICIDAD DE RADIO Y T.V CON OTRO CARGO','ELEC. R. Y TV. O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(59,'ELECTRICIDAD CON TÍTULO','ELECTRICIDAD C/TITULO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(60,'ELECTRICIDAD DEL AUTOMOTOR','ELECTRICIDAD DEL AUTOMOTOR');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(61,'ELECTRICIDAD DOMICILIARIA','ELECTRICIDAD DOMICILIARIA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(62,'ELECTRICIDAD DOMICILIARIA OTRO CARGO','ELECTRICIDAD DOMICILIARIA O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(63,'ELECTRICIDAD SIN TÍTULO','ELECTRICIDAD S/TITULO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(64,'ELECTRóNICA RADIO Y TV','ELECTRON  R.Y TV');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(65,'EXPRESIóN CORPORAL','EXPRESION CORPORAL');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(66,'EXPRESION CORPORAL CON OTRO CARGO','EXPRESION CORPORAL OC');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(67,'FILIGRANA','FILIGRANA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(68,'HERRERÍA ARTÍSTICA','HERRERIA ARTISTICA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(69,'INFORMÁTICA CON POST TITULO DE EDUCACIÓN','INFORM. C/POS PRIMARIO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(70,'INFORMÁTICA','INFORMATICA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(71,'INFORMÁTICA OTRO CARGO','INFORMATICA O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(72,'INFORMÁTICA ANALISTA SISTEMA E INGENIEROS','INFORMATICA S/TITULO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(73,'INSTALACIÓN PLOMERÍA','INST. PLOMERO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(74,'INSTALACIÓN GASISTA','INSTAL. GASISTA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(75,'LENGUA','LENGUA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(76,'LENGUA OTRO CARGO','LENGUA O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(77,'MANUALIDADES FEMENINAS','M.F.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(78,'MANUALIDADES FEMENINAS OTRO CARGO','M.F. O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(79,'MARKETING','MARKETING');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(80,'MARKETING CON TÍTULO','MARKETING C/TITULO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(81,'MATEMÁTICA','MATEMATICA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(82,'MATEMÁTICA FINANCIERA','MAT. FIN');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(83,'MATEMÁTICA FINANCIERA OTRO CARGO','MAT. FIN. O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(84,'COSMOGRAFÍA','MATEMATICA COSMOGRAFIA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(85,'MATEMÁTICA E INFORMÁTICA','MATEMATICA E INFORMATICA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(86,'MECANICA DEL AUTOMOTOR','MECANICA DEL AUTOMOTOR');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(87,'PELUQUERÍA','PELUQUERIA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(88,'PELUQUERÍA OTRO CARGO','PELUQUERIA O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(89,'PLOMERIA E INSTALACIONES SANITARIAS','PLOM. E INST.SANITARIAS');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(90,'RÉGIMEN LEGAL','REG. LEGAL');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(91,'TALLER DE CUERO Y METAL ESC. PROFESIONALES','TALLER CUERO Y METAL');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(92,'TEATRO','TEATRO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(93,'TEATRO CON OTRO CARGO','TEATRO O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(94,'TECNOLOGÍA','TECNOLOGIA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(95,'TECNOLOGÍA OTRO CARGO','TECNOLOGIA O/C.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(96,'TEJIDO','TEJIDO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(97,'TEJIDO OTRO CARGO','TEJIDO O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(98,'TEJIDO A MANO','TEJIDO A MANO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(99,'TELAR','TELAR');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(100,'TRADUCTORADO','TRADUCTORADO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(101,'SECRETARIA DOCENTE','S.D.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(102,'DIRECTORES','DIR.');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(103,'SECRETARIA DOCENTE ESCUELAS PROFESIONALES','S.D. PROF');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(104,'PANADERIA','PANADERIA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(105,'TÉCNICO EN DISEÑO Y PRODUCCIÓN INDUMENTARIA','DISEÑO Y PRODUCCION IND');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(106,'CUADRO INGLES PARA LA QUIACA','INGLES EU');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(107,'DANZAS FOLCLORICOS OTRO CARGO','D.F. O/C');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(108,'RECHAZADO','RECHAZADO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(109,'DOCENTE NO INSCRIPTO','NO INSCRIPTO');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(110,'MIMBRERIA','MIMBRERIA');
+INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(111,'TECNICA LENGUA DE SEÑAS','TECNICA LENGUA DE SEÑAS');
+
