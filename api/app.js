@@ -6,6 +6,7 @@ const cors = require('cors');
 // const titulosRoutes = require('./src/routes/titulos.routes.js');
 //const userRoutes = require('./src/routes/user.routes.js');
 const especialidadRoutes = require('./src/routes/especialidad.routes.js');
+const vacantesRoutes = require('./src/routes/vacantes.routes.js');
 
 const app = express();
 
@@ -17,7 +18,8 @@ app.use(express.json());
 app.use(cors());
 
 //rutas
-app.use('/api',especialidadRoutes);
+app.use('/api', especialidadRoutes);
+app.use('/api', vacantesRoutes);
 //app.use('/api',userRoutes);
 //app.use('/api',documentosRoutes);
 //app.use('/api',movimientosRoutes);
