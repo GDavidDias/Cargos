@@ -14,7 +14,7 @@ module.exports = async(req,res)=>{
     try{
         const [result] = await pool.query(`UPDATE listado_vacantes_mov SET año='${año}', id_nivel=${id_nivel}, resolucion='${resolucion}', descripcion='${descripcion}' 
             WHERE id_listado_vac_mov = ${idListadoVacMov} `);
-        
+
         console.log('que trae result editListadoVacMov: ', result);
 
         res.status(200).json({

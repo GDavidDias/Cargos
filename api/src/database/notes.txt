@@ -8,7 +8,7 @@ CREATE TABLE especialidad(id_especialidad INT(11) NOT NULL AUTO_INCREMENT, descr
 
 CREATE TABLE tipo_inscripto(id_tipo_inscripto INT(2) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_tipo_inscripto));
 
-CREATE TABLE asignacion_mov(id_asignacion_mov INT(11) NOT NULL AUTO_INCREMENT, id_vacante_mov INT(11) DEFAULT NULL, id_inscriptos_mov INT(11) DEFAULT NULL, datetime_asignacion DATETIME DEFAULT NULL, id_estado_asignacion INT(2) DEFAULT NULL, PRIMARY KEY(id_asignacion_mov));
+CREATE TABLE asignacion_mov(id_asignacion_mov INT(11) NOT NULL AUTO_INCREMENT, id_vacante_mov INT(11) DEFAULT NULL, id_inscripto_mov INT(11) DEFAULT NULL, datetime_asignacion DATETIME DEFAULT NULL, id_estado_asignacion INT(2) DEFAULT NULL, PRIMARY KEY(id_asignacion_mov));
 
 CREATE TABLE estado_asignacion(id_estado_asignacion INT(2) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_estado_asignacion));
 
