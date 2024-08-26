@@ -7,7 +7,8 @@ const dbSettingsLocal = {
     user:process.env.LOCALUSERDB,
     password: process.env.LOCALPASSWORDDB,
     port: process.env.LOCALPORT,
-    database: process.env.LOCALDATABASE
+    database: process.env.LOCALDATABASE,
+    timezone: 'Z'  //PARA TRABAJAR EN UTC SIN CONVERSIONES DE ZONA HORARIA
 };
 
 const dbSettingsRemoto = {
@@ -15,7 +16,7 @@ const dbSettingsRemoto = {
     user:process.env.REMOTOUSERDB,
     password: process.env.REMOTOPASSWORDDB,
     database: process.env.REMOTODATABASE,
-    timezone: 'local'
+    timezone: 'Z'
 }
 
 const pool = mysql.createPool(dbSettingsLocal);

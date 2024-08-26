@@ -7,6 +7,7 @@ const cors = require('cors');
 //const userRoutes = require('./src/routes/user.routes.js');
 const especialidadRoutes = require('./src/routes/especialidad.routes.js');
 const vacantesRoutes = require('./src/routes/vacantes.routes.js');
+const listadoVacMovRoutes = require('./src/routes/listados.routes.js');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(cors());
 //rutas
 app.use('/api', especialidadRoutes);
 app.use('/api', vacantesRoutes);
+app.use('/api', listadoVacMovRoutes);
 //app.use('/api',userRoutes);
 //app.use('/api',documentosRoutes);
 //app.use('/api',movimientosRoutes);

@@ -1,10 +1,14 @@
 const pool = require('../../database/connection.js');
 
 module.exports = async(req,res)=>{
-    //TRAE TODOS LAS ESPECIALIDADES DE TABLA ESPECIALIDAD
+    //TRAE TODAS LAS VACANTES DE MOVIMIENTOS SEGUN EL NIVEL INDICADO EN EL LISTADO_VAC_MOV
+    const{idListadoVacMov} = req.body;
+    console.log('que trae idListadoVacMov: ', idListadoVacMov);
+
     try{
         const [result] = await pool.query(`SELECT id_vacante_mov, id_listado_vac_mov, orden, establecimiento, obs_establecimiento, region, departamento, localidad, cargo, turno, modalidad, cupof, id_especialidad, datetime_creacion, obs_desactiva, zona
-            FROM vacantes_mov`);
+            FROM vacantes_mov
+            WHERE id_listado_vac_mov=${idListadoVacMov}`);
 
         console.log('que trae result getAllVacantesMov: ', result);
 

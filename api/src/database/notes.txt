@@ -2,7 +2,7 @@ CREATE DATABASE dbcargos;
 
 USE dbcargos;
 
-CREATE TABLE inscriptos_mov(id_inscriptos_mov INT(11) NOT NULL AUTO_INCREMENT, cargo_actual VARCHAR(50) DEFAULT NULL, cargo_solicitado VARCHAR(50) DEFAULT NULL, dni VARCHAR(50) DEFAULT NULL, apellido VARCHAR(250) DEFAULT NULL, nombre VARCHAR(250) DEFAULT NULL, observacion VARCHAR(250) DEFAULT NULL, total VARCHAR(50) DEFAULT NULL, orden INT(11) DEFAULT NULL, nro_escuela VARCHAR(250) DEFAULT NULL,  legajo INT(11) DEFAULT NULL, id_especialidad INT(7) DEFAULT NULL, id_tipo_inscripto INT(7) DEFAULT NULL,  PRIMARY KEY(id_inscriptos_mov));
+CREATE TABLE inscriptos_mov(id_inscriptos_mov INT(11) NOT NULL AUTO_INCREMENT, cargo_actual VARCHAR(50) DEFAULT NULL, cargo_solicitado VARCHAR(50) DEFAULT NULL, dni VARCHAR(50) DEFAULT NULL, apellido VARCHAR(250) DEFAULT NULL, nombre VARCHAR(250) DEFAULT NULL, observacion VARCHAR(250) DEFAULT NULL, total VARCHAR(50) DEFAULT NULL, orden INT(11) DEFAULT NULL, nro_escuela VARCHAR(250) DEFAULT NULL,  legajo INT(11) DEFAULT NULL, id_especialidad INT(7) DEFAULT NULL, id_tipo_inscripto INT(7) DEFAULT NULL, id_nivel INT(7) DEFAULT NULL,  PRIMARY KEY(id_inscriptos_mov));
 
 CREATE TABLE especialidad(id_especialidad INT(11) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(250) DEFAULT NULL, abreviatura VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_especialidad));
 
@@ -12,11 +12,89 @@ CREATE TABLE asignacion_mov(id_asignacion_mov INT(11) NOT NULL AUTO_INCREMENT, i
 
 CREATE TABLE estado_asignacion(id_estado_asignacion INT(2) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_estado_asignacion));
 
-CREATE TABLE vacantes_mov(id_vacante_mov INT(11) NOT NULL AUTO_INCREMENT, id_listado_vac_mov INT(7) DEFAULT NULL, orden INT(7) DEFAULT NULL, establecimiento VARCHAR(255) DEFAULT NULL, obs_establecimiento VARCHAR(250) DEFAULT NULL, region VARCHAR(250) DEFAULT NULL, departamento VARCHAR(250) DEFAULT NULL, localidad VARCHAR(250) DEFAULT NULL, cargo VARCHAR(250) DEFAULT NULL, turno VARCHAR(50) DEFAULT NULL, modalidad VARCHAR(250) DEFAULT NULL, cupof VARCHAR(50) DEFAULT NULL, id_especialidad INT(11) DEFAULT NULL, datetime_creacion DATETIME DEFAULT NULL, obs_desactiva VARCHAR(250) DEFAULT NULL, zona INT(7) DEFAULT NULL, PRIMARY KEY(id_vacante_mov));
+CREATE TABLE vacantes_mov(id_vacante_mov INT(11) NOT NULL AUTO_INCREMENT, id_listado_vac_mov INT(7) DEFAULT NULL, orden INT(7) DEFAULT NULL, establecimiento VARCHAR(255) DEFAULT NULL, obs_establecimiento VARCHAR(250) DEFAULT NULL, region VARCHAR(250) DEFAULT NULL, departamento VARCHAR(250) DEFAULT NULL, localidad VARCHAR(250) DEFAULT NULL, cargo VARCHAR(250) DEFAULT NULL, turno VARCHAR(50) DEFAULT NULL, modalidad VARCHAR(250) DEFAULT NULL, cupof VARCHAR(50) DEFAULT NULL, id_especialidad INT(11) DEFAULT NULL, datetime_creacion DATETIME DEFAULT NULL, obs_desactiva VARCHAR(250) DEFAULT NULL, zona VARCHAR(7) DEFAULT NULL, PRIMARY KEY(id_vacante_mov));
 
 CREATE TABLE nivel(id_nivel INT(7) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_nivel));
 
 CREATE TABLE listado_vacantes_mov(id_listado_vac_mov INT(7) NOT NULL AUTO_INCREMENT, año VARCHAR(50) DEFAULT NULL, id_nivel INT(7) DEFAULT NULL, resolucion VARCHAR(250) DEFAULT NULL, descripcion VARCHAR(250) DEFAULT NULL, PRIMARY KEY(id_listado_vac_mov));
+
+-----------------------------------------
+--PARA INSERT listado_vacantes_mov
+INSERT INTO listado_vacantes_mov(año, id_nivel, resolucion, descripcion) VALUES(2024, 2, '', 'Listado Nivel Primario - Carga Masiva');
+INSERT INTO listado_vacantes_mov(año, id_nivel, resolucion, descripcion) VALUES(2024, 1, '', 'Listado Nivel Inicial - Carga Masiva');
+
+--------------------------------------
+--PARA INSERT VACANTES MOVIMIENTOS
+
++---------------------+--------------+------+-----+---------+----------------+
+| Field               | Type         | Null | Key | Default | Extra          |
++---------------------+--------------+------+-----+---------+----------------+
+| id_vacante_mov      | int          | NO   | PRI | NULL    | auto_increment |
+| id_listado_vac_mov  | int          | YES  |     | NULL    |                |
+| orden               | int          | YES  |     | NULL    |                |
+| establecimiento     | varchar(255) | YES  |     | NULL    |                |
+| obs_establecimiento | varchar(250) | YES  |     | NULL    |                |
+| region              | varchar(250) | YES  |     | NULL    |                |
+| departamento        | varchar(250) | YES  |     | NULL    |                |
+| localidad           | varchar(250) | YES  |     | NULL    |                |
+| cargo               | varchar(250) | YES  |     | NULL    |                |
+| turno               | varchar(50)  | YES  |     | NULL    |                |
+| modalidad           | varchar(250) | YES  |     | NULL    |                |
+| cupof               | varchar(50)  | YES  |     | NULL    |                |
+| id_especialidad     | int          | YES  |     | NULL    |                |
+| datetime_creacion   | datetime     | YES  |     | NULL    |                |
+| obs_desactiva       | varchar(250) | YES  |     | NULL    |                |
+| zona                | varchar(7)   | YES  |     | NULL    |                |
++---------------------+--------------+------+-----+---------+----------------+
+
+--Insert tabla vacantes_mov
+INSERT INTO vacantes_mov(id_listado_vac_mov,orden,establecimiento,obs_establecimiento,region,departamento,localidad,cargo,turno,modalidad,cupof,id_especialidad,datetime_creacion,obs_desactiva,zona) VALUES();
+
+INSERT INTO vacantes_mov(id_listado_vac_mov, orden, establecimiento, obs_establecimiento, region, departamento, localidad, cargo, turno, modalidad, cupof, id_especialidad, datetime_creacion, zona) VALUES(1,1,'25','','I','YAVI','YAVI','M.G.','MAÑANA','J.S.','141802',1,'2024-08-25 12:00:00','');
+
+
+-----------------------------------------
+-- PARA INSERT INSCRIPTOS MOVIMIENTOS
+
++-------------------+--------------+------+-----+---------+----------------+
+| Field             | Type         | Null | Key | Default | Extra          |
++-------------------+--------------+------+-----+---------+----------------+
+| id_inscriptos_mov | int          | NO   | PRI | NULL    | auto_increment |
+| cargo_actual      | varchar(50)  | YES  |     | NULL    |                |
+| cargo_solicitado  | varchar(50)  | YES  |     | NULL    |                |
+| dni               | varchar(50)  | YES  |     | NULL    |                |
+| apellido          | varchar(250) | YES  |     | NULL    |                |
+| nombre            | varchar(250) | YES  |     | NULL    |                |
+| observacion       | varchar(250) | YES  |     | NULL    |                |
+| total             | varchar(50)  | YES  |     | NULL    |                |
+| orden             | int          | YES  |     | NULL    |                |
+| nro_escuela       | varchar(250) | YES  |     | NULL    |                |
+| legajo            | int          | YES  |     | NULL    |                |
+| id_especialidad   | int          | YES  |     | NULL    |                |
+| id_tipo_inscripto | int          | YES  |     | NULL    |                |
+| id_nivel          | int          | YES  |     | NULL    |                |
++-------------------+--------------+------+-----+---------+----------------+
+
+-- Insert tabla inscriptos_mov
+INSERT INTO inscriptos_mov(cargo_actual, cargo_solicitado, dni, apellido, nombre, observacion, total, orden, nro_escuela, legajo, id_especialidad, id_tipo_inscripto, id_nivel) VALUES();
+
+INSERT INTO inscriptos_mov(cargo_actual, cargo_solicitado, dni, apellido, nombre, observacion, total, orden, nro_escuela, legajo, id_especialidad, id_tipo_inscripto, id_nivel) VALUES('M.G','S.D','18430504','DIAZ','LIDIA ARMINDA','DISPONIBILIDAD','46',1,'339',9812,1,1,2);
+
+
+-------------------------------------------------------------
+--INSERT tabla estado_asignacion
+INSERT INTO estado_asignacion(id_estado_asignacion, descripcion) VALUES(1,'Aceptada');
+INSERT INTO estado_asignacion(id_estado_asignacion, descripcion) VALUES(2,'Rechazada');
+INSERT INTO estado_asignacion(id_estado_asignacion, descripcion) VALUES(3,'Pendiente');
+
+--Insert tabla nivel
+INSERT INTO nivel(id_nivel, descripcion) VALUES(1,'Inicial');
+INSERT INTO nivel(id_nivel, descripcion) VALUES(2,'Primario');
+
+--Insert tabla tipo_inscripto
+INSERT INTO tipo_inscripto(id_tipo_inscripto, descripcion) VALUES(1,'Disponible');
+INSERT INTO tipo_inscripto(id_tipo_inscripto, descripcion) VALUES(2,'Traslado');
+INSERT INTO tipo_inscripto(id_tipo_inscripto, descripcion) VALUES(3,'Cambio Funcion');
 
 
 --INSERT INTO TABLA especialidad
