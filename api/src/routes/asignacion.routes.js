@@ -2,6 +2,7 @@ const {Router} = require('express');
 
 const{
     createAsignacionMov,
+    editAsignacionMov
 } = require('../controllers/asignacionMov.controllers');
 
 const router = Router();
@@ -10,6 +11,6 @@ const router = Router();
 router.post('/createasignacionmov', createAsignacionMov);
 
 //Modificar una asignacion
-
+router.put('/editasignacionmov/:idAsignacionMov', editAsignacionMov);
 
 module.exports = router;

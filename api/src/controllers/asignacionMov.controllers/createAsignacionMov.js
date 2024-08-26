@@ -20,7 +20,7 @@ module.exports = async(req, res)=>{
         console.log(result);
 
         res.status(200).json({
-            message:'Inscripto Modificado',
+            message:'Asignacion Creada',
             id_asignacion_mov:id_asignacion_mov,
             id_vacante_mov:id_vacante_mov,
             id_inscripto_mov:id_inscripto_mov,
