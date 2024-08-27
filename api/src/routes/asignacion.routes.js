@@ -11,6 +11,7 @@ const router = Router();
 router.post('/createasignacionmov', createAsignacionMov);
 
 //Modificar una asignacion
+//con id de asignacion se genera una observacion con fecha de actualizacion.
 router.put('/editasignacionmov/:idAsignacionMov', editAsignacionMov);
 
 module.exports = router;
