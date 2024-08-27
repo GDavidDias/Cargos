@@ -13,7 +13,7 @@ module.exports = async(req,res)=>{
     console.log('que trae observaciones: ', observaciones);
 
     try{
-        const [result] = await pool.query(`UPDATE asignacion_mov SET id_vacante_mov=${id_vacante_mov}, id_inscripto_mov=${id_inscripto_mov}, datetime_asignacion='${datetime_asignacion}', id_estado_asignacion=${id_estado_asignacion}, observaciones='${observaciones}', datetime_actualizacion='${datetime_actualizacion}'
+        const [result] = await pool.query(`UPDATE asignacion_mov SET id_vacante_mov=${id_vacante_mov}, id_inscripto_mov=${id_inscripto_mov},  id_estado_asignacion=${id_estado_asignacion}, observaciones='${observaciones}', datetime_actualizacion='${datetime_actualizacion}'
             WHERE id_asignacion_mov = ${idAsignacionMov} ; `);
 
         console.log('que trae result editAsignacionMov: ', result);
@@ -28,7 +28,7 @@ module.exports = async(req,res)=>{
         });
 
     }catch(error){
-
+        res.status(400).send(error.message);
     }
 
 }
