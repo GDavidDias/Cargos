@@ -23,7 +23,7 @@ const Home = () =>{
             case 'VacantesMov': //Pantalla de Vacantes para Movimientos segun Nivel
                 setContent(<VacantesMov/>);
                 break;
-            case 'AsignacionesMov': //Pantalla de Asignaciones Realizadas, segun tipo de movimiento y nivel
+            case 'Asignaciones': //Pantalla de Asignaciones Realizadas, segun tipo de movimiento y nivel
                 setContent(<AsignacionesMov/>);
                 break;
             case 'EditDocumento':
