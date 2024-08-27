@@ -1,7 +1,7 @@
 const pool = require('../../database/connection.js');
 
 module.exports = async(req,res)=>{
-    //MODIFICA UNA ASIGNACION
+    //MODIFICA UNA ASIGNACION AGREGANDO UNA FECHA DE MODIFICACION Y OBSERVACION
     const {idAsignacionMov} = req.params;
     console.log('que trae idAsignacionMov: ', idAsignacionMov);
 
