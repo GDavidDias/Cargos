@@ -1,10 +1,16 @@
 import { useEffect } from "react";
 import { FaRegUserCircle, FaPowerOff  } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const VacantesMov = () =>{
     
     const configSG = useSelector((state)=>state.config);
+    const navigate=useNavigate();
+
+    const logOut = () =>{
+        navigate('/')
+    };
 
     useEffect(()=>{
         console.log('que tiene configSG en VacantesMov: ', configSG);
@@ -34,7 +40,7 @@ const VacantesMov = () =>{
                     <FaPowerOff 
                         className="mr-4 text-2xl text-[#73685F] hover:cursor-pointer hover:text-[#7C8EA6] transition-transform duration-500 transform hover:scale-125"
                         title="Salir"
-                        // onClick={()=>logout()}
+                        onClick={()=>logOut()}
                     />
                 </div>
             </div>

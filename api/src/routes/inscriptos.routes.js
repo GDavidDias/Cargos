@@ -8,7 +8,7 @@ const {
 const router = Router();
 
 //Traer todos los inscriptos.
-router.get('/inscriptosmov', getAllInscriptosMov);
+router.post('/inscriptosmov', getAllInscriptosMov);
 
 //Modificar datos del inscripto.
 router.put('/editinscriptosmov/:idInscriptoMov', editInscriptoMov);

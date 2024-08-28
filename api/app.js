@@ -6,6 +6,7 @@ const inscriptosMovRoutes = require('./src/routes/inscriptos.routes.js');
 const vacantesRoutes = require('./src/routes/vacantes.routes.js');
 const listadoVacMovRoutes = require('./src/routes/listados.routes.js');
 const asignacionMovRoutes = require('./src/routes/asignacion.routes.js');
+const configuracionRoutes = require('./src/routes/configuracion.routes.js');
 
 const app = express();
 
@@ -22,7 +23,7 @@ app.use('/api', inscriptosMovRoutes);
 app.use('/api', vacantesRoutes);
 app.use('/api', listadoVacMovRoutes);
 app.use('/api', asignacionMovRoutes);
-
+app.use('/api', configuracionRoutes);
 
 
 module.exports = app;

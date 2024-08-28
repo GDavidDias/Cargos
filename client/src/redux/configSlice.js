@@ -5,7 +5,8 @@ const initialState = {
     nivel:{
         id_nivel:'',
         descripcion:''
-    }
+    },
+    config:[]
 }
 
 export const configSlice = createSlice({
@@ -20,8 +21,11 @@ export const configSlice = createSlice({
             state.nivel.id_nivel = id_nivel;
             state.nivel.descripcion = descripcion;
         },
+        setConfig:(state,action)=>{
+            state.config = action.payload;
+        },
     }
 });
 
-export const {setPage, setNivel} = configSlice.actions;
+export const {setPage, setNivel, setConfig} = configSlice.actions;
 export default configSlice.reducer;

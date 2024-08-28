@@ -48,17 +48,17 @@ const SideBar = () => {
         dispatch(setPage('Listados'))
     };
 
-    const submitNivelInicial = () =>{
-        console.log('Presiono Nivel Inicial');
-        const datosNivel=[{id_nivel:1, descripcion:'INICIAL'}];
-        dispatch(setNivel(datosNivel));
-    };
+    // const submitNivelInicial = () =>{
+    //     console.log('Presiono Nivel Inicial');
+    //     const datosNivel=[{id_nivel:1, descripcion:'INICIAL'}];
+    //     dispatch(setNivel(datosNivel));
+    // };
 
-    const submitNivelPrimario = ()=>{
-        console.log('Presiono Nivel Primario');
-        const datosNivel=[{id_nivel:2, descripcion:'PRIMARIO'}];
-        dispatch(setNivel(datosNivel));
-    };
+    // const submitNivelPrimario = ()=>{
+    //     console.log('Presiono Nivel Primario');
+    //     const datosNivel=[{id_nivel:2, descripcion:'PRIMARIO'}];
+    //     dispatch(setNivel(datosNivel));
+    // };
 
     useEffect(()=>{
         console.log('que tiene pageSG: ', pageSG);
@@ -166,7 +166,7 @@ const SideBar = () => {
             </div>
 
             {/* SELECCION NIVEL */}
-            <div className="ml-2 mt-6 text-white text-base flex flex-col">
+            {/* <div className="ml-2 mt-6 text-white text-base flex flex-col">
                 <label>temporalmente seleccionar nivel al loguearse</label>
                 <button 
                     className="border-[1px] border-white m-2 rounded"
@@ -176,7 +176,7 @@ const SideBar = () => {
                     className="border-[1px] border-white m-2 rounded"
                     onClick={()=>submitNivelPrimario()}
                 >Primario</button>
-            </div>
+            </div> */}
         </div>
     )
 };
