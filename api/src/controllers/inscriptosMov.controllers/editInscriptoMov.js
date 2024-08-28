@@ -5,7 +5,7 @@ module.exports = async(req,res)=>{
     const{idInscriptoMov} = req.params;
     console.log('que trae idInscriptoMov: ', idInscriptoMov);
 
-    const{cargo_actual, cargo_solicitado, dni, apellido, nombre, observacion, total, orden, nro_escuela, legajo, id_especialidad, id_tipo_inscripto, id_nivel} = req.body;
+    const{cargo_actual, cargo_solicitado, dni, apellido, nombre, observacion, total, orden, nro_escuela, legajo, id_especialidad, id_tipo_inscripto, id_listado_inscriptos} = req.body;
     console.log('que trae cargo_actual: ', cargo_actual);
     console.log('que trae cargo_solicitado: ', cargo_solicitado);
     console.log('que trae dni: ', dni);
@@ -18,10 +18,10 @@ module.exports = async(req,res)=>{
     console.log('que trae legajo: ', legajo);
     console.log('que trae id_especialidad: ', id_especialidad);
     console.log('que trae id_tipo_inscripto: ', id_tipo_inscripto);
-    console.log('que trae id_nivel: ', id_nivel);
+    console.log('que trae id_listado_inscriptos: ', id_listado_inscriptos);
 
     try{
-        const [result] = await pool.query(`UPDATE inscriptos_mov SET cargo_actual='${cargo_actual}', cargo_solicitado='${cargo_solicitado}', dni='${dni}', apellido='${apellido}', nombre='${nombre}', observacion='${observacion}', total='${total}', orden=${orden}, nro_escuela='${nro_escuela}', legajo=${legajo}, id_especialidad=${id_especialidad}, id_tipo_inscripto=${id_tipo_inscripto}, id_nivel=${id_nivel}
+        const [result] = await pool.query(`UPDATE inscriptos_mov SET cargo_actual='${cargo_actual}', cargo_solicitado='${cargo_solicitado}', dni='${dni}', apellido='${apellido}', nombre='${nombre}', observacion='${observacion}', total='${total}', orden=${orden}, nro_escuela='${nro_escuela}', legajo=${legajo}, id_especialidad=${id_especialidad}, id_tipo_inscripto=${id_tipo_inscripto}, id_listado_inscriptos=${id_listado_inscriptos}
             WHERE id_inscriptos_mov = ${idInscriptoMov} `);
         
         console.log('que trae result editInscriptoMov: ', result);
@@ -40,7 +40,7 @@ module.exports = async(req,res)=>{
             legajo:legajo, 
             id_especialidad:id_especialidad, 
             id_tipo_inscripto:id_tipo_inscripto, 
-            id_nivel:id_nivel
+            id_listado_inscriptos:id_listado_inscriptos
         });
 
     }catch(error){

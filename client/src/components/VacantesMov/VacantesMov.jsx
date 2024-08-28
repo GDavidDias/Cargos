@@ -4,11 +4,11 @@ import { useSelector } from "react-redux";
 
 const VacantesMov = () =>{
     
-    const nivelSG = useSelector((state)=>state.page.nivel);
+    const configSG = useSelector((state)=>state.config);
 
     useEffect(()=>{
-        console.log('que tiene nivelSG en VacantesMov: ', nivelSG);
-    },[nivelSG])
+        console.log('que tiene configSG en VacantesMov: ', configSG);
+    },[configSG])
 
     return(
         <div className="h-full w-full">
@@ -16,7 +16,7 @@ const VacantesMov = () =>{
             <div className="bg-[#C9D991] h-[8vh] flex flex-row">
                 {/* TITULOS - BOTONES - NIVEL */}
                 <div className="w-[45vw] flex justify-center items-start flex-col">
-                    <label className="ml-4 text-base font-semibold">NIVEL {nivelSG}</label>
+                    <label className="ml-4 text-base font-semibold">NIVEL {configSG.nivel.descripcion}</label>
                     <div className="flex flex-row">
                         <label className="ml-4 text-lg font-sans font-bold">VACANTES</label>
                         {/* <button 

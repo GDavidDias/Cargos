@@ -3,14 +3,14 @@ import { MdOutlineAssignmentTurnedIn } from "react-icons/md";
 import { CgList } from "react-icons/cg";
 import logo from '../../assets/JUNTA-04-xs.png';
 import { useDispatch, useSelector } from "react-redux";
-import { setNivel, setPage } from "../../redux/pageSlice";
 import { useEffect } from "react";
+import { setNivel, setPage } from "../../redux/configSlice";
 
 const SideBar = () => {
     const dispatch = useDispatch();
     
-    const pageSG = useSelector((state)=>state.page.page);
-    const nivelSG = useSelector((state)=>state.page.nivel);
+    const pageSG = useSelector((state)=>state.config.page);
+    const nivelSG = useSelector((state)=>state.config.nivel);
 
     const submitInscriptosMov =()=>{
         //
@@ -50,12 +50,14 @@ const SideBar = () => {
 
     const submitNivelInicial = () =>{
         console.log('Presiono Nivel Inicial');
-        dispatch(setNivel('INICIAL'));
+        const datosNivel=[{id_nivel:1, descripcion:'INICIAL'}];
+        dispatch(setNivel(datosNivel));
     };
 
     const submitNivelPrimario = ()=>{
         console.log('Presiono Nivel Primario');
-        dispatch(setNivel('PRIMARIO'))
+        const datosNivel=[{id_nivel:2, descripcion:'PRIMARIO'}];
+        dispatch(setNivel(datosNivel));
     };
 
     useEffect(()=>{

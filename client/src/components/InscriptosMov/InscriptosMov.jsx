@@ -1,13 +1,30 @@
 import { useEffect } from "react";
 import { FaRegUserCircle, FaPowerOff  } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { fetchAllInscriptosMov } from "../../utils/fetchAllInscriptosMov";
 
 const InscriptosMov = ()=>{
-    const nivelSG = useSelector((state)=>state.page.nivel);
+    const configSG = useSelector((state)=>state.config);
+
+    const getInscriptosMovListado = async(id) =>{
+        console.log('que trae id getInscriptosMovListado: ', id);
+        if(id){
+            data = await fetchAllInscriptosMov(id);
+        }
+
+    };
 
     useEffect(()=>{
-        console.log('que tiene nivelSG en InscriptosMov: ', nivelSG);
-    },[nivelSG])
+        console.log('que tiene configSG en InscriptosMov: ', configSG);
+        //getInscriptosMovListado(nivelSG.id_nivel);
+    },[configSG])
+
+    //Al Ingresar se carga el listado de inscriptos segun el listado seleccionado
+    useEffect(()=>{
+        
+        //getInscriptosMovListado(nivelSG.id_nivel);
+
+    },[])
 
     return(
         <div className="h-full w-full">
@@ -15,7 +32,7 @@ const InscriptosMov = ()=>{
             <div className="bg-[#C9D991] h-[8vh] flex flex-row">
                 {/* TITULOS - BOTONES - NIVEL */}
                 <div className="w-[45vw] flex justify-center items-start flex-col">
-                    <label className="ml-4 text-base font-semibold">NIVEL {nivelSG}</label>
+                    <label className="ml-4 text-base font-semibold">NIVEL {configSG.nivel.descripcion}</label>
                     <div className="flex flex-row">
                         <label className="ml-4 text-lg font-sans font-bold">INSCRIPTOS - Luom</label>
                         <button 
@@ -42,7 +59,7 @@ const InscriptosMov = ()=>{
                 <div className="m-2 border-[1px] border-[#758C51] rounded h-[83vh]">
                     {/* PARTE SUPERIOR DE TABLA */}
                     <div className="border-b-[1px] border-slate-300 h-[6vh]">
-                        
+
                     </div>
 
                     {/* PARTE INFERIOR DE DATOS DE TABLA */}

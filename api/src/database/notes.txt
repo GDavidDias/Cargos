@@ -2,7 +2,7 @@ CREATE DATABASE dbcargos;
 
 USE dbcargos;
 
-CREATE TABLE inscriptos_mov(id_inscriptos_mov INT(11) NOT NULL AUTO_INCREMENT, cargo_actual VARCHAR(50) DEFAULT NULL, cargo_solicitado VARCHAR(50) DEFAULT NULL, dni VARCHAR(50) DEFAULT NULL, apellido VARCHAR(250) DEFAULT NULL, nombre VARCHAR(250) DEFAULT NULL, observacion VARCHAR(250) DEFAULT NULL, total VARCHAR(50) DEFAULT NULL, orden INT(11) DEFAULT NULL, nro_escuela VARCHAR(250) DEFAULT NULL,  legajo INT(11) DEFAULT NULL, id_especialidad INT(7) DEFAULT NULL, id_tipo_inscripto INT(7) DEFAULT NULL, id_nivel INT(7) DEFAULT NULL,  PRIMARY KEY(id_inscriptos_mov));
+CREATE TABLE inscriptos_mov(id_inscriptos_mov INT(11) NOT NULL AUTO_INCREMENT, cargo_actual VARCHAR(50) DEFAULT NULL, cargo_solicitado VARCHAR(50) DEFAULT NULL, dni VARCHAR(50) DEFAULT NULL, apellido VARCHAR(250) DEFAULT NULL, nombre VARCHAR(250) DEFAULT NULL, observacion VARCHAR(250) DEFAULT NULL, total VARCHAR(50) DEFAULT NULL, orden INT(11) DEFAULT NULL, nro_escuela VARCHAR(250) DEFAULT NULL,  legajo INT(11) DEFAULT NULL, id_especialidad INT(7) DEFAULT NULL, id_tipo_inscripto INT(7) DEFAULT NULL, id_listado_inscriptos INT(7) DEFAULT NULL,  PRIMARY KEY(id_inscriptos_mov));
 
 CREATE TABLE especialidad(id_especialidad INT(11) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(250) DEFAULT NULL, abreviatura VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_especialidad));
 
@@ -16,12 +16,41 @@ CREATE TABLE vacantes_mov(id_vacante_mov INT(11) NOT NULL AUTO_INCREMENT, id_lis
 
 CREATE TABLE nivel(id_nivel INT(7) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_nivel));
 
-CREATE TABLE listado_vacantes_mov(id_listado_vac_mov INT(7) NOT NULL AUTO_INCREMENT, año VARCHAR(50) DEFAULT NULL, id_nivel INT(7) DEFAULT NULL, resolucion VARCHAR(250) DEFAULT NULL, descripcion VARCHAR(250) DEFAULT NULL, PRIMARY KEY(id_listado_vac_mov));
+CREATE TABLE listado_vacantes(id_listado_vacantes INT(7) NOT NULL AUTO_INCREMENT, año VARCHAR(50) DEFAULT NULL, id_nivel INT(7) DEFAULT NULL, resolucion VARCHAR(250) DEFAULT NULL, descripcion VARCHAR(250) DEFAULT NULL, PRIMARY KEY(id_listado_vacantes));
+
+CREATE TABLE listado_inscriptos(id_listado_inscriptos INT(7) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(250) DEFAULT NULL, id_nivel INT(7) DEFAULT NULL, PRIMARY KEY(id_listado_inscriptos));
+
+CREATE TABLE configuracion(id_configuracion INT(7) NOT NULL AUTO_INCREMENT, id_nivel INT(7) DEFAULT NULL, id_listado_inscriptos_mov INT(7) DEFAULT NULL, id_listado_vacantes_mov INT(7) DEFAULT NULL, id_listado_inscriptos_tit INT(7) DEFAULT NULL, id_listado_vacantes_tit INT(7) DEFAULT NULL, PRIMARY KEY(id_configuracion));
 
 -----------------------------------------
---PARA INSERT listado_vacantes_mov
-INSERT INTO listado_vacantes_mov(año, id_nivel, resolucion, descripcion) VALUES(2024, 2, '', 'Listado Nivel Primario - Carga Masiva');
-INSERT INTO listado_vacantes_mov(año, id_nivel, resolucion, descripcion) VALUES(2024, 1, '', 'Listado Nivel Inicial - Carga Masiva');
+--PARA INSERT configuracion
++---------------------------+------+------+-----+---------+----------------+
+| Field                     | Type | Null | Key | Default | Extra          |
++---------------------------+------+------+-----+---------+----------------+
+| id_configuracion          | int  | NO   | PRI | NULL    | auto_increment |
+| id_nivel                  | int  | YES  |     | NULL    |                |
+| id_listado_inscriptos_mov | int  | YES  |     | NULL    |                |
+| id_listado_vacantes_mov   | int  | YES  |     | NULL    |                |
+| id_listado_inscriptos_tit | int  | YES  |     | NULL    |                |
+| id_listado_vacantes_tit   | int  | YES  |     | NULL    |                |
++---------------------------+------+------+-----+---------+----------------+
+
+INSERT INTO configuracion(id_nivel, id_listado_inscriptos_mov, id_listado_vacantes_mov, id_listado_inscriptos_tit, id_listado_vacantes_tit) VALUES(1, 1, 1, 2, 2);
+INSERT INTO configuracion(id_nivel, id_listado_inscriptos_mov, id_listado_vacantes_mov, id_listado_inscriptos_tit, id_listado_vacantes_tit) VALUES(2, 3, 3, 4, 4);
+
+------------------------------------------------------
+--PARA INSERT listado_inscriptos
+INSERT INTO listado_inscriptos(descripcion, id_nivel) VALUES('2024 - Inscriptos Movimientos - Inicial',1);
+INSERT INTO listado_inscriptos(descripcion, id_nivel) VALUES('2024 - Inscriptos Titularizaciones - Inicial',1);
+INSERT INTO listado_inscriptos(descripcion, id_nivel) VALUES('2024 - Inscriptos Movimientos - Primaria',2);
+INSERT INTO listado_inscriptos(descripcion, id_nivel) VALUES('2024 - Inscriptos Titularizaciones - Primaria',2);
+
+----------------------------------------------------------
+--PARA INSERT listado_vacantes
+INSERT INTO listado_vacantes(año, id_nivel, resolucion, descripcion) VALUES(2024, 1, '', '2024 - Listado Movimientos - Nivel Inicial');
+INSERT INTO listado_vacantes(año, id_nivel, resolucion, descripcion) VALUES(2024, 1, '', '2024 - Listado Titularizaciones - Nivel Inicial');
+INSERT INTO listado_vacantes(año, id_nivel, resolucion, descripcion) VALUES(2024, 2, '', '2024 - Listado Movimientos - Nivel Primario');
+INSERT INTO listado_vacantes(año, id_nivel, resolucion, descripcion) VALUES(2024, 2, '', '2024 - Listado Titularizaciones - Nivel Primario');
 
 --------------------------------------
 --PARA INSERT VACANTES MOVIMIENTOS

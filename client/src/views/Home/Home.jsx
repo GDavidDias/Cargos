@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Footer from "../Footer/Footer";
 import SideBar from "../SideBar/SideBar";
 import { useDispatch, useSelector } from "react-redux";
-import { setPage } from "../../redux/pageSlice";
+import { setPage } from "../../redux/configSlice";
 import InscriptosMov from "../../components/InscriptosMov/InscriptosMov";
 import VacantesMov from "../../components/VacantesMov/VacantesMov";
 import AsignacionesMov from "../../components/AsignacionesMov/AsignacionesMov";
@@ -14,7 +14,7 @@ const Home = () =>{
     const dispatch = useDispatch();
 
     
-    const pageSG = useSelector((state)=>state.page.page);
+    const pageSG = useSelector((state)=>state.config.page);
     const[content, setContent]=useState(null);
 
     useEffect(()=>{

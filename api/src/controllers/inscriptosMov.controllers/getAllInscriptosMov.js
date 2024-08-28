@@ -2,16 +2,19 @@ const pool = require('../../database/connection.js');
 
 module.exports = async(req,res)=>{
     //TRAE TODOS LOS INSCRIPTOS DE LA TABLA inscriptos_mov
-    //QUE SEAN DEL NIVEL INDICADO EN id_nivel
+    //QUE SEAN DEL NIVEL INDICADO EN EL LISTADO id_listado_inscriptos
     console.log('ingresa a getAllInscriptosMov');
-    const {id_nivel} = req.body;
+    const {id_listado_inscriptos} = req.body;
 
-    console.log('que trae id_nivel: ', id_nivel);
+    console.log('que trae id_listado_inscriptos: ', id_listado_inscriptos);
 
     try{
-        const [result] = await pool.query(`SELECT id_inscriptos_mov, cargo_actual, cargo_solicitado, dni, apellido, nombre, observacion, total, orden, nro_escuela, legajo, id_especialidad, id_tipo_inscripto, id_nivel
-            FROM inscriptos_mov
-            WHERE id_nivel = ${id_nivel}
+        const [result] = await pool.query(`SELECT im.id_inscriptos_mov, im.cargo_actual, im.cargo_solicitado, im.dni, im.apellido, im.nombre, im.observacion, im.total, im.orden, im.nro_escuela, im.legajo, im.id_especialidad, e.descripcion AS especialidad, im.id_tipo_inscripto, ti.descripcion AS tipoinscripto, im.id_listado_inscriptos, li.descripcion
+            FROM inscriptos_mov AS im
+            LEFT JOIN especialidad AS e ON im.id_especialidad = e.id_especialidad 
+            LEFT JOIN tipo_inscripto AS ti ON im.id_tipo_inscripto = ti.id_tipo_inscripto
+            LEFT JOIN listado_inscriptos li ON im.id_listado_inscriptos = li.id_listado_inscriptos
+            WHERE im.id_listado_inscriptos = ${id_listado_inscriptos}
             `);
 
         console.log('que trae result getAllInscriptosMov: ', result);
