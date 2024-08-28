@@ -27,7 +27,25 @@ const SideBar = () => {
         //
         console.log('Presiona en Asignaciones');
         dispatch(setPage('Asignaciones'))
-    }
+    };
+
+    const submitInscriptosTit = () =>{
+        //
+        console.log('Presiona en Inscriptos Titularizacion');
+        dispatch(setPage('InscriptosTit'))
+    };
+
+    const submitVacantesTit = () =>{
+        //
+        console.log('Presiona en Vacantes Titularizacion');
+        dispatch(setPage('VacantesTit'))
+    };
+
+    const submitListados = () =>{
+        //
+        console.log('Presiona en Listados');
+        dispatch(setPage('Listados'))
+    };
 
     useEffect(()=>{
         console.log('que tiene pageSG: ', pageSG);
@@ -80,22 +98,24 @@ const SideBar = () => {
                 <label >Titularizacion</label>
                 <div 
                     className={` rounded p-[4px] flex flex-row justify-start items-center
-                        ${(pageSG==='VacantesMov')
+                        ${(pageSG==='InscriptosTit')
                         ?'bg-[#C9D991]'
                         :'hover:bg-[#C9D991]'
                     }
                         `}
+                    onClick={()=>submitInscriptosTit()}
                 >
                     <PiUserListBold className="text-xl font-bold mr-2"/>
                     <label className="">Inscriptos</label>
                 </div>
                 <div 
                     className={` rounded p-[4px] flex flex-row justify-start items-center
-                        ${(pageSG==='VacantesMov')
+                        ${(pageSG==='VacantesTit')
                         ?'bg-[#C9D991]'
                         :'hover:bg-[#C9D991]'
                     }
                         `}
+                    onClick={()=>submitVacantesTit()}
                 >
                     <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
                     <label className="">Vacantes</label>
@@ -119,11 +139,12 @@ const SideBar = () => {
                 </div>
                 <div 
                     className={` rounded p-[4px] flex flex-row justify-start items-center
-                        ${(pageSG==='VacantesMov')
+                        ${(pageSG==='Listados')
                         ?'bg-[#C9D991]'
                         :'hover:bg-[#C9D991]'
                     }
                         `}
+                    onClick={()=>submitListados()}
                 >
                     <CgList className="text-xl font-bold mr-2"/>
                     <label className="">Listados</label>

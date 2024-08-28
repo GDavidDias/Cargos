@@ -6,6 +6,9 @@ import { setPage } from "../../redux/pageSlice";
 import InscriptosMov from "../../components/InscriptosMov/InscriptosMov";
 import VacantesMov from "../../components/VacantesMov/VacantesMov";
 import AsignacionesMov from "../../components/AsignacionesMov/AsignacionesMov";
+import InscriptosTit from "../../components/InscriptosTit/InscriptosTit";
+import VacantesTit from "../../components/VacantesTit/VacantesTit";
+import Listados from "../../components/Listados/Listados";
 
 const Home = () =>{
     const dispatch = useDispatch();
@@ -23,14 +26,17 @@ const Home = () =>{
             case 'VacantesMov': //Pantalla de Vacantes para Movimientos segun Nivel
                 setContent(<VacantesMov/>);
                 break;
+            case 'InscriptosTit':
+                setContent(<InscriptosTit/>);
+                break;
+            case 'VacantesTit':
+                setContent(<VacantesTit/>);
+                break;
             case 'Asignaciones': //Pantalla de Asignaciones Realizadas, segun tipo de movimiento y nivel
                 setContent(<AsignacionesMov/>);
                 break;
-            case 'EditDocumento':
-                //setContent(<EditarDocumento/>);
-                break;
-            case 'Metricas':
-                //setContent(<Dashboard/>);
+            case 'Listados': //Pantalla de Listados
+                setContent(<Listados/>);
                 break;
         }
     },[pageSG]);
