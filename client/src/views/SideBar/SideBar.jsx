@@ -3,13 +3,14 @@ import { MdOutlineAssignmentTurnedIn } from "react-icons/md";
 import { CgList } from "react-icons/cg";
 import logo from '../../assets/JUNTA-04-xs.png';
 import { useDispatch, useSelector } from "react-redux";
-import { setPage } from "../../redux/pageSlice";
+import { setNivel, setPage } from "../../redux/pageSlice";
 import { useEffect } from "react";
 
 const SideBar = () => {
     const dispatch = useDispatch();
     
     const pageSG = useSelector((state)=>state.page.page);
+    const nivelSG = useSelector((state)=>state.page.nivel);
 
     const submitInscriptosMov =()=>{
         //
@@ -47,9 +48,20 @@ const SideBar = () => {
         dispatch(setPage('Listados'))
     };
 
+    const submitNivelInicial = () =>{
+        console.log('Presiono Nivel Inicial');
+        dispatch(setNivel('INICIAL'));
+    };
+
+    const submitNivelPrimario = ()=>{
+        console.log('Presiono Nivel Primario');
+        dispatch(setNivel('PRIMARIO'))
+    };
+
     useEffect(()=>{
         console.log('que tiene pageSG: ', pageSG);
-    },[pageSG])
+        console.log('que tiene nivelSG: ', nivelSG);
+    },[pageSG,nivelSG])
 
     return(
         <div className="bg-[#7C8EA6] w-full h-full shadow-right-only-md">
@@ -149,6 +161,19 @@ const SideBar = () => {
                     <CgList className="text-xl font-bold mr-2"/>
                     <label className="">Listados</label>
                 </div>
+            </div>
+
+            {/* SELECCION NIVEL */}
+            <div className="ml-2 mt-6 text-white text-base flex flex-col">
+                <label>temporalmente seleccionar nivel al loguearse</label>
+                <button 
+                    className="border-[1px] border-white m-2 rounded"
+                    onClick={()=>submitNivelInicial()}
+                >Inicial</button>
+                <button 
+                    className="border-[1px] border-white m-2 rounded"
+                    onClick={()=>submitNivelPrimario()}
+                >Primario</button>
             </div>
         </div>
     )
