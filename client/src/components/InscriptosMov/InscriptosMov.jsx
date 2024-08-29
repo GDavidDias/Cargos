@@ -19,12 +19,18 @@ const InscriptosMov = ()=>{
     const configSG = useSelector((state)=>state.config);
     const navigate = useNavigate();
 
-    //PARA PODER FILTRAR LOS LISTADOS SE DETERMINA QUE 
+    //ESTADO PARA PODER FILTRAR LOS LISTADOS SE DETERMINA QUE 
     // disponibilidad -> 1
     // activos -> 2
     const[tipoInscripto, setTipoInscripto]=useState(2);
+
+    //ESTADO DONDE SE ALMACENA EL LISTADO POR TIPO DE LISTADO
     const[listadoInscriptosMov, setListadoInscriptosMov]=useState([]);
+
+    //ESTADO PARA APLICAR FILTROS SOBRE EL LISTADO CARGADO INICIALMENTE
     const[filterListadoInscriptosMov, setFilterListadoInscriptosMov]=useState([]);
+
+    //ESTADO QUE ALMACENA LOS DATOS DE UN INSCRIPTO SELECIONADO PARA VER SUS DATOS
     const[datosInscriptoSelect, setDatosInscriptoSelect]=useState('');
 
     //cargo_actual, cargo_solicitado, dni, apellido, nombre, observacion, total, orden, nro_escuela, legajo, id_especialidad, id_tipo_inscripto, id_listado_inscriptos
@@ -47,6 +53,15 @@ const InscriptosMov = ()=>{
     //ESTADO CAMBIA A editar -> HABILITA BOTONES GUARDAR Y CANCELAR
     //SI NO MODIFICA NADA EL ESTADO ES ver -> HABILITA BOTON CERRAR
     const[estadoForm, setEstadoForm]=useState('ver');
+
+    //ESTADO USADO EN CAMPO BUSQUEDA
+    const[inputSearch, setInputSearch]=useState('');
+
+    //ESTADO LOCAL DE FILTRO DE ESTADO DE LOS INSCRIPTOS
+    //PUEDEN SER: "todos", "sinasignar" o "asignados"
+    //PARA NO TENER UN CAMPOS ADICIONAL SOBRE ESTADO
+    const[estadoInscripto, setEstadoInscripto]=useState('todos');
+
 
     const logOut = () =>{
         navigate('/')
@@ -82,19 +97,6 @@ const InscriptosMov = ()=>{
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO
         await getInscriptosMov(idFilterListado);
 
-    };
-
-    //PROCESO QUE SE EJECUTA AL PRESIONAR BOTON "Activos" o "Disponibilidad"
-    //PERMITE FILTRAR EL LISTADO DE INSCRIPTOS POR ALGUN TIPO DE INSCRIPTO
-    const filtroListado = (tipoIns) =>{
-        let listadoFiltrado=[];
-        if(tipoIns===1){
-            listadoFiltrado = listadoInscriptosMov.filter((inscriptos)=>inscriptos.id_tipo_inscripto===1);
-        }else{
-            listadoFiltrado = listadoInscriptosMov.filter((inscriptos)=>inscriptos.id_tipo_inscripto!=1);
-        }
-
-        setFilterListadoInscriptosMov(listadoFiltrado);
     };
 
     //PRESIONO SOBRE BOTON VER DATOS DEL INSCRIPTO
@@ -160,14 +162,100 @@ const InscriptosMov = ()=>{
 
     //ESTE PROCEDIMIENTO CARGA DE NUEVO EL LISTADO DE INSCRIPTOS POR ALGUNA
     //MODIFICACION EN LOS DATOS QUE SE OBSERVAN
-    const recargaListadoInscriptos = () =>{
-        //LLAMO A PROCECIMIENTO PARA BUSCAR ID_LISTADO Y EL MISMO TRAE
-        //DATOS DE INCRIPTOS Y CARGA EN ESTADO LOCAL
-        buscoIdlistadoInscrip(configSG.nivel.id_nivel);
+    //TAMBIEN SE USA PARA APLICAR FILTROS AL SELECCIONAR ALGUNO
+    const recargaListadoInscriptos = async() =>{
+        try{
+            //LLAMO A PROCECIMIENTO PARA BUSCAR ID_LISTADO Y EL MISMO TRAE
+            //DATOS DE INCRIPTOS Y CARGA EN ESTADO LOCAL
+            await buscoIdlistadoInscrip(configSG.nivel.id_nivel);
+    
+            //APLICO LOS FILTROS
+            aplicoFiltrosListado(listadoInscriptosMov);
+            
+        }catch(error){
+            console.error('Error al recargar el listado de inscriptos: ', error);
+        }
+    };
 
-        //APLICO LOS FILTROS YA CONFIGURADOS DE INSCRIPTOS ACTIVOS O DISPONIBILIDAD
-        filtroListado(tipoInscripto);
-    }
+
+    //PROCESO QEU SE EJECUTA AL APLICAR ALGUN FILTRO
+    const aplicoFiltrosListado = async(data) =>{
+        //ELIMINO LA BUSQUEDA YA QUE SE DEBE EJECUTAR CON FILTROS YA APLICADOS
+        setInputSearch('');
+
+        let dataFilter = await data.filter(item=>{
+            if(tipoInscripto===1){
+                if(estadoInscripto==='asignados'){
+                    return(
+                        (!tipoInscripto || item.id_tipo_inscripto===1) &&
+                        (!estadoInscripto || item.vacante_asignada!=null)
+                    );
+                }else if(estadoInscripto==='sinasignar'){
+                    return(
+                        (!tipoInscripto || item.id_tipo_inscripto===1) &&
+                        (!estadoInscripto || item.vacante_asignada===null)
+                    );
+                }else if(estadoInscripto==='todos'){
+                    return(
+                        (!tipoInscripto || item.id_tipo_inscripto===1)
+                    );
+                }
+            }else{
+                if(estadoInscripto==='asignados'){
+                    return(
+                        (!tipoInscripto || item.id_tipo_inscripto!=1) &&
+                        (!estadoInscripto || item.vacante_asignada!=null)
+                    );
+                }else if(estadoInscripto==='sinasignar'){
+                    return(
+                        (!tipoInscripto || item.id_tipo_inscripto!=1) &&
+                        (!estadoInscripto || item.vacante_asignada===null)
+                    );
+                }else if(estadoInscripto==='todos'){
+                    return(
+                        (!tipoInscripto || item.id_tipo_inscripto!=1)
+                    );
+                }
+            };
+        });
+
+        setFilterListadoInscriptosMov(dataFilter)
+    };
+
+
+    //PROCESO QUE SE EJECUTA AL INICIAR RENDERIZADO
+    //MUESTRA LOS INSCRIPTOS "Activos" = 1
+    const filtroInicialListado = () =>{
+        const listadoFiltrado = listadoInscriptosMov.filter((inscriptos)=>inscriptos.id_tipo_inscripto===1);
+
+        setFilterListadoInscriptosMov(listadoFiltrado);
+    };
+
+    //ESCRIBO DENTRO DE INPUT SEARCH
+    const handleInputSearchChange = (event) =>{
+        const {value} = event.target;
+        setInputSearch(value);
+    };
+
+    //PRESIONO EN BOTON CANCELAR DENTRO DE INPUT SEARCH
+    const handleCancelSearch=async()=>{
+        //seteoFiltrosBusquedaInicio();
+        setInputSearch('')
+        //setDocRecFilter(docrecSG);
+        aplicoFiltrosListado(listadoInscriptosMov);
+    };
+
+    //SE BUSCAN LOS DOCUMENTOS QUE SE GUARDARON EN EL STORE GLOBAL USANDO FILTRO SEGUN EL INPUT SEARCH
+    const submitSearch = async()=>{
+        //console.log('presiono buscar con este input: ', inputSearch);
+        let searchDoc;
+        searchDoc = await filterListadoInscriptosMov.filter(inscripto=>inscripto.nombre.toLowerCase().includes(inputSearch.toLowerCase()) || inscripto.apellido.toLowerCase().includes(inputSearch.toLowerCase()) || inscripto.nro_escuela.toLowerCase().includes(inputSearch.toLowerCase()) || inscripto.dni.includes(inputSearch));
+        setFilterListadoInscriptosMov(searchDoc);
+    };    
+
+    useEffect(()=>{
+        console.log('que tien campo inputSearch: ', inputSearch);
+    },[inputSearch])
 
     useEffect(()=>{
         //CARGA VALORES INICIALES EN formInscripto y coloca estadoForm en 'ver'
@@ -178,25 +266,31 @@ const InscriptosMov = ()=>{
         console.log('como queda el listado filtrado filterListadoInscriptosMov: ', filterListadoInscriptosMov);
     },[filterListadoInscriptosMov])
 
+    //SI HAY ALGUNA MODIFICACION EN UN FILTRO O SI listadoInscriptoMov se actualiza por alguna modificacion
+    //en un inscripto se ejecuta applyFilters
     useEffect(()=>{
+        console.log('APLICO FILTRO')
         console.log('que tiene estado local tipoInscripto: ', tipoInscripto);
-        //FILTRO EL LISTADO DE INSCRIPTOS DE MOVIMIENTO
-        filtroListado(tipoInscripto);
-    },[tipoInscripto])
+        console.log('que tiene estado local estadoInscripto: ', estadoInscripto);
+        //AL CAMBIAR ESTADO DE TIPO INSCRIPTO, LLAMO A FUNCION QUE APLICA FILTROS
+        //PASO EL LISTADO ORIGINAL CARGADO AL INICIAR listadoInscriptosMov
+        aplicoFiltrosListado(listadoInscriptosMov);
+    },[listadoInscriptosMov,tipoInscripto, estadoInscripto])
 
     //VEO EL LISTADO DE INSCRIPTOS DE MOVIMIENTO
     useEffect(()=>{
-        console.log('que tiene listadoInscriptosMov: ', listadoInscriptosMov);
+        console.log('que tiene listadoInscriptosMov (CARGA INICIAL): ', listadoInscriptosMov);
         //?PROCESO SE EJECUTA EN CARGA INICIAL
         //NI BIEN CARGO EL LISTADO DE INSCRIPTOS FILTRO CON ESTADO ACTIVO
         //FILTRO EL LISTADO DE INSCRIPTOS DE MOVIMIENTO
-        filtroListado(tipoInscripto);
+        filtroInicialListado();
+        //filtroEstadoInscripto(estadoInscripto);
     },[listadoInscriptosMov])
 
     //VEO LA CONFIGURACION GLOBAL
     useEffect(()=>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
-        console.log('que tiene configSG en InscriptosMov: ', configSG);
+        console.log('que tiene configSG en InscriptosMov (CARGA INICIAL): ', configSG);
     },[configSG])
 
 
@@ -204,7 +298,7 @@ const InscriptosMov = ()=>{
     useEffect(()=>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
         //LLAMO AL PROCEDIMIENTO buscoIdlistadoInscrip Y PASO EL NIVEL CARGADO EN STORE GLOBAL
-        console.log('que listado configurado del nivel trae: ',buscoIdlistadoInscrip(configSG.nivel.id_nivel));
+        console.log('que listado configurado del nivel trae (CARGA INICIAL): ',buscoIdlistadoInscrip(configSG.nivel.id_nivel));
 
     },[]);
 
@@ -250,8 +344,62 @@ const InscriptosMov = ()=>{
             <div className="h-[87vh]">
                 <div className="m-2 border-[1px] border-[#758C51] rounded h-[83vh]">
                     {/* PARTE SUPERIOR DE TABLA */}
-                    <div className="border-b-[1px] border-slate-300 h-[6vh]">
+                    <div className="border-b-[1px] border-slate-300 h-[6vh] flex flex-row items-center">
+                        {/* Filtros */}
+                        <div className="text-base w-[50%] ">
+                            <label 
+                                className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
+                                    ${(estadoInscripto==='todos')
+                                        ?`border-sky-500 text-sky-500`
+                                        :`border-zinc-300 text-black`
+                                    }
+                                    `}
+                                onClick={()=>setEstadoInscripto('todos')}
+                            >Todos</label>
+                            <label 
+                                className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
+                                    ${(estadoInscripto==='sinasignar')
+                                        ?`border-sky-500 text-sky-500`
+                                        :`border-zinc-300 text-black`
+                                    }
+                                    `}
+                                onClick={()=>setEstadoInscripto('sinasignar')}
+                            >Sin Asignar</label>
+                            <label 
+                                className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
+                                    ${(estadoInscripto==='asignados')
+                                        ?`border-sky-500 text-sky-500`
+                                        :`border-zinc-300 text-black`
+                                    }
+                                    `}
+                                onClick={()=>setEstadoInscripto('asignados')}
+                            >Asignados</label>
+                        </div>
 
+                        {/* Campo de Busqueda */}
+                        <div className="w-[50%]  flex justify-end">
+                            <div className="border-[1px] border-zinc-300 w-[20vw] flex flex-row items-center justify-between">
+                                <input 
+                                    className="w-[60mm] focus:outline-none rounded"
+                                    placeholder="Buscar..."
+                                    type="text"
+                                    value={inputSearch}
+                                    onChange={handleInputSearchChange}
+                                />
+                                <div className="flex flex-row">
+                                    {(inputSearch!='') &&
+                                        <FaTimes
+                                            className="text-slate-400 cursor-pointer "
+                                            onClick={()=>handleCancelSearch()}
+                                        />
+                                    }
+                                    <FaSearch 
+                                        className="text-zinc-500 cursor-pointer border-2 border-sky-300 mr-2"
+                                        onClick={()=>submitSearch()}
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* PARTE INFERIOR DE DATOS DE TABLA */}
@@ -268,7 +416,6 @@ const InscriptosMov = ()=>{
                                     <th className="border-r-[1px] border-zinc-300">Cargo Actual</th>
                                     <th className="border-r-[1px] border-zinc-300">Cargo Solicitado</th>
                                     <th className="border-r-[1px] border-zinc-300">Observacion</th>
-                                    <th className="border-r-[1px] border-zinc-300">Estado</th>
                                     <th className="">Acciones</th>
                                 </tr>
                             </thead>
@@ -289,7 +436,6 @@ const InscriptosMov = ()=>{
                                                 <td className="text-center">{inscripto.cargo_actual}</td>
                                                 <td className="text-center">{inscripto.cargo_solicitado}</td>
                                                 <td className="text-sm">{inscripto.observacion}</td>
-                                                <td></td>
                                                 <td>
                                                     <div className="flex flex-row items-center justify-between mx-2">
                                                         <FaEye 
