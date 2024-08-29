@@ -7,10 +7,15 @@ import { FaDotCircle, FaSearch, FaEye, FaTimes} from "react-icons/fa";
 import { BiTransferAlt } from "react-icons/bi";
 import {useModal} from '../../hooks/useModal';
 import ModalEdit from "../ModalEdit/ModalEdit";
+import Modal from '../Modal/Modal';
+import axios from "axios";
+import {URL} from '../../../varGlobal';
 
 
 const InscriptosMov = ()=>{
+    const[isOpenModalEdit,openModalEdit,closeModalEdit]=useModal(false);
     const[isOpenModal,openModal,closeModal]=useModal(false);
+    const[mensajeModalInfo, setMensajeModalInfo]=useState('');
     const configSG = useSelector((state)=>state.config);
     const navigate = useNavigate();
 
@@ -79,6 +84,8 @@ const InscriptosMov = ()=>{
 
     };
 
+    //PROCESO QUE SE EJECUTA AL PRESIONAR BOTON "Activos" o "Disponibilidad"
+    //PERMITE FILTRAR EL LISTADO DE INSCRIPTOS POR ALGUN TIPO DE INSCRIPTO
     const filtroListado = (tipoIns) =>{
         let listadoFiltrado=[];
         if(tipoIns===1){
@@ -95,7 +102,7 @@ const InscriptosMov = ()=>{
         //ENVIO A STORE LOCAL DATOS DE INSCRIPTO PARA MOSTRARLO EN MODAL Y PODER EDITARLOS
         console.log('que recibe datos inscripto: ', datos);
         setDatosInscriptoSelect(datos);
-        openModal();
+        openModalEdit();
     };
 
     const handleChange = (event) => {
@@ -127,9 +134,40 @@ const InscriptosMov = ()=>{
         setEstadoForm('ver');
     };
 
-    const submitGuardarCambiosFormInscripto = () =>{
-        
+    const submitGuardarCambiosFormInscripto = async() =>{
+        const idInscripto = datosInscriptoSelect.id_inscriptos_mov;
+        console.log(' que tiene idInscripto: ', idInscripto);
+        await axios.put(`${URL}/api/editinscriptosmov/${idInscripto}`,formInscripto)
+            .then(async res=>{
+                console.log('que trae res de editinscriptosmov: ', res);
+                //MOSTRAR MENSAJE DE DATOS ACTUALIZADOS
+                setMensajeModalInfo('Datos Modificados Correctamente')
+                openModal();
+            })
+            .catch(error=>{
+                console.log('que trae error editinscriptosmov: ', error)
+            });
     };
+
+    const submitCloseModal = ()=>{
+        closeModal();
+        //CAMBIO ESTADO DE ESTADO FORM INSCRIPTO
+        setEstadoForm('ver');
+        //CARGO DE NUEVO EL LISTADO DE INSCRIPTOS CON DATOS ACTUALIZADOS Y 
+        //APLICO FILTRO DE "Activos" o "Disponibilidad"
+        recargaListadoInscriptos();
+    };
+
+    //ESTE PROCEDIMIENTO CARGA DE NUEVO EL LISTADO DE INSCRIPTOS POR ALGUNA
+    //MODIFICACION EN LOS DATOS QUE SE OBSERVAN
+    const recargaListadoInscriptos = () =>{
+        //LLAMO A PROCECIMIENTO PARA BUSCAR ID_LISTADO Y EL MISMO TRAE
+        //DATOS DE INCRIPTOS Y CARGA EN ESTADO LOCAL
+        buscoIdlistadoInscrip(configSG.nivel.id_nivel);
+
+        //APLICO LOS FILTROS YA CONFIGURADOS DE INSCRIPTOS ACTIVOS O DISPONIBILIDAD
+        filtroListado(tipoInscripto);
+    }
 
     useEffect(()=>{
         //CARGA VALORES INICIALES EN formInscripto y coloca estadoForm en 'ver'
@@ -149,6 +187,7 @@ const InscriptosMov = ()=>{
     //VEO EL LISTADO DE INSCRIPTOS DE MOVIMIENTO
     useEffect(()=>{
         console.log('que tiene listadoInscriptosMov: ', listadoInscriptosMov);
+        //?PROCESO SE EJECUTA EN CARGA INICIAL
         //NI BIEN CARGO EL LISTADO DE INSCRIPTOS FILTRO CON ESTADO ACTIVO
         //FILTRO EL LISTADO DE INSCRIPTOS DE MOVIMIENTO
         filtroListado(tipoInscripto);
@@ -156,12 +195,14 @@ const InscriptosMov = ()=>{
 
     //VEO LA CONFIGURACION GLOBAL
     useEffect(()=>{
+        //?PROCESO SE EJECUTA EN CARGA INICIAL
         console.log('que tiene configSG en InscriptosMov: ', configSG);
     },[configSG])
 
 
     //AL INGRESAR SE CARGA EL LISTADO DE INSCRIPTOS
     useEffect(()=>{
+        //?PROCESO SE EJECUTA EN CARGA INICIAL
         //LLAMO AL PROCEDIMIENTO buscoIdlistadoInscrip Y PASO EL NIVEL CARGADO EN STORE GLOBAL
         console.log('que listado configurado del nivel trae: ',buscoIdlistadoInscrip(configSG.nivel.id_nivel));
 
@@ -269,7 +310,7 @@ const InscriptosMov = ()=>{
                 </div>
             </div>
         
-        <ModalEdit isOpen={isOpenModal} closeModal={closeModal}>
+        <ModalEdit isOpen={isOpenModalEdit} closeModal={closeModalEdit}>
             <div className="border-2 border-green-500 h-100 w-100 ">
                 <label className="text-xl text-center font-bold " translate='no'>DATOS DEL INSCRIPTO</label>
                 <div className="h-[40vh] w-[50vw] mt-5">
@@ -378,7 +419,7 @@ const InscriptosMov = ()=>{
                     {(estadoForm==='ver') &&
                         <button
                             className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
-                            onClick={closeModal}
+                            onClick={closeModalEdit}
                             translate='no'
                         >CERRAR</button>
                     }
@@ -401,6 +442,19 @@ const InscriptosMov = ()=>{
 
             </div>
         </ModalEdit>
+
+        {/* MODAL DE NOTIFICACIONES */}
+        <Modal isOpen={isOpenModal} closeModal={closeModal}>
+            <div className="mt-10 w-72">
+                <h1 className="text-xl text-center font-bold">{mensajeModalInfo}</h1>
+                <div className="flex justify-center">
+                    <button
+                        className="border-2 border-[#557CF2] mt-10 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
+                        onClick={()=>submitCloseModal()}
+                    >OK</button>
+                </div>
+            </div>
+        </Modal>
 
         </div>
     )
