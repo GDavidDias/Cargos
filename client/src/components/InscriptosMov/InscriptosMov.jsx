@@ -5,8 +5,12 @@ import { fetchAllInscriptosMov } from "../../utils/fetchAllInscriptosMov";
 import { useNavigate } from "react-router-dom";
 import { FaDotCircle, FaSearch, FaEye, FaTimes} from "react-icons/fa";
 import { BiTransferAlt } from "react-icons/bi";
+import {useModal} from '../../hooks/useModal';
+import ModalEdit from "../ModalEdit/ModalEdit";
+
 
 const InscriptosMov = ()=>{
+    const[isOpenModal,openModal,closeModal]=useModal(false);
     const configSG = useSelector((state)=>state.config);
     const navigate = useNavigate();
 
@@ -16,6 +20,28 @@ const InscriptosMov = ()=>{
     const[tipoInscripto, setTipoInscripto]=useState(2);
     const[listadoInscriptosMov, setListadoInscriptosMov]=useState([]);
     const[filterListadoInscriptosMov, setFilterListadoInscriptosMov]=useState([]);
+    const[datosInscriptoSelect, setDatosInscriptoSelect]=useState('');
+
+    //cargo_actual, cargo_solicitado, dni, apellido, nombre, observacion, total, orden, nro_escuela, legajo, id_especialidad, id_tipo_inscripto, id_listado_inscriptos
+    const[formInscripto, setFormInscripto]=useState({
+        cargo_actual:'', 
+        cargo_solicitado:'', 
+        dni:'', 
+        apellido:'', 
+        nombre:'', 
+        observacion:'', 
+        total:'', 
+        orden:'', 
+        nro_escuela:'', 
+        legajo:'', 
+        id_especialidad:'', 
+        id_tipo_inscripto:'', 
+        id_listado_inscriptos:''
+    });
+    //ESTADO USADO PARA VALIDAR SI MODIFICO ALGUN DATO DEL FORMULARIO, DE SER ASI
+    //ESTADO CAMBIA A editar -> HABILITA BOTONES GUARDAR Y CANCELAR
+    //SI NO MODIFICA NADA EL ESTADO ES ver -> HABILITA BOTON CERRAR
+    const[estadoForm, setEstadoForm]=useState('ver');
 
     const logOut = () =>{
         navigate('/')
@@ -63,6 +89,52 @@ const InscriptosMov = ()=>{
 
         setFilterListadoInscriptosMov(listadoFiltrado);
     };
+
+    //PRESIONO SOBRE BOTON VER DATOS DEL INSCRIPTO
+    const submitVerDatosInscripto = (datos) =>{
+        //ENVIO A STORE LOCAL DATOS DE INSCRIPTO PARA MOSTRARLO EN MODAL Y PODER EDITARLOS
+        console.log('que recibe datos inscripto: ', datos);
+        setDatosInscriptoSelect(datos);
+        openModal();
+    };
+
+    const handleChange = (event) => {
+        const{name, value} = event.target;
+        setFormInscripto({
+            ...formInscripto,
+            [name]:value
+        });
+        setEstadoForm('editar');
+    };
+
+    const valoresInicialesFormInscripto = ()=>{
+        //CARGAR EN EL STORE LOCAL LOS DATOS DEL INSCRIPTO SELECCIONADO
+        setFormInscripto({
+            cargo_actual:datosInscriptoSelect.cargo_actual, 
+            cargo_solicitado:datosInscriptoSelect.cargo_solicitado, 
+            dni:datosInscriptoSelect.dni, 
+            apellido:datosInscriptoSelect.apellido, 
+            nombre:datosInscriptoSelect.nombre, 
+            observacion:datosInscriptoSelect.observacion, 
+            total:datosInscriptoSelect.total, 
+            orden:datosInscriptoSelect.orden, 
+            nro_escuela:datosInscriptoSelect.nro_escuela, 
+            legajo:datosInscriptoSelect.legajo, 
+            id_especialidad:datosInscriptoSelect.id_especialidad, 
+            id_tipo_inscripto:datosInscriptoSelect.id_tipo_inscripto, 
+            id_listado_inscriptos:datosInscriptoSelect.id_listado_inscriptos
+        });
+        setEstadoForm('ver');
+    };
+
+    const submitGuardarCambiosFormInscripto = () =>{
+        
+    };
+
+    useEffect(()=>{
+        //CARGA VALORES INICIALES EN formInscripto y coloca estadoForm en 'ver'
+        valoresInicialesFormInscripto();
+    },[datosInscriptoSelect]);
 
     useEffect(()=>{
         console.log('como queda el listado filtrado filterListadoInscriptosMov: ', filterListadoInscriptosMov);
@@ -179,7 +251,11 @@ const InscriptosMov = ()=>{
                                                 <td></td>
                                                 <td>
                                                     <div className="flex flex-row items-center justify-between mx-2">
-                                                        <FaEye className="hover:cursor-pointer hover:text-[#83F272]" title="Ver Datos"/>
+                                                        <FaEye 
+                                                            className="hover:cursor-pointer hover:text-[#83F272]" 
+                                                            title="Ver Datos"
+                                                            onClick={()=>submitVerDatosInscripto(inscripto)}
+                                                        />
                                                         <BiTransferAlt className="text-2xl hover:cursor-pointer hover:text-[#83F272]" title="Asignacion"/>
                                                     </div>
                                                 </td>
@@ -192,6 +268,140 @@ const InscriptosMov = ()=>{
                     </div>
                 </div>
             </div>
+        
+        <ModalEdit isOpen={isOpenModal} closeModal={closeModal}>
+            <div className="border-2 border-green-500 h-100 w-100 ">
+                <label className="text-xl text-center font-bold " translate='no'>DATOS DEL INSCRIPTO</label>
+                <div className="h-[40vh] w-[50vw] mt-5">
+                    <div className="flex flex-row">
+                        <div className="flex flex-col mr-2">
+                            <label className="text-sm">N°Orden</label>
+                            <input 
+                                className="border-[1px] border-zinc-400 w-[15mm] text-center"
+                                value={formInscripto.orden}
+                                disabled={true}
+                            />
+                        </div>
+                        
+                        <div className="flex flex-col mx-2">
+                            <label className="text-sm">Apellido</label>
+                            <input 
+                                name="apellido"
+                                className="border-[1px] border-zinc-400 w-[50mm] pl-[2px]"
+                                value={formInscripto.apellido}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="flex flex-col mx-2">
+                            <label className="text-sm">Nombre</label>
+                            <input 
+                                name="nombre"
+                                className="border-[1px] border-zinc-400 w-[60mm] pl-[2px]"
+                                value={formInscripto.nombre}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
+                    <div className="flex flex-row mt-4">
+                        <div className="flex flex-col mr-2">
+                            <label className="text-sm">Puntaje</label>
+                            <input 
+                                name="total"
+                                className="border-[1px] border-zinc-400 w-[15mm] text-center"
+                                value={formInscripto.total}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="flex flex-col mr-2">
+                            <label className="text-sm">DNI</label>
+                            <input 
+                                name="dni"
+                                className="border-[1px] border-zinc-400 w-[35mm] pl-[2px]"
+                                value={formInscripto.dni}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="flex flex-col mx-2">
+                            <label className="text-sm">Escuela</label>
+                            <input 
+                                name="nro_escuela"
+                                className="border-[1px] border-zinc-400 w-[55mm] pl-[2px]"
+                                value={formInscripto.nro_escuela}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        
+                    </div>
+                    <div className="flex flex-row mt-4">
+                        <div className="flex flex-col mr-2">
+                            <label className="text-sm">Cargo Actual</label>
+                            <input 
+                                name="cargo_actual"
+                                className="border-[1px] border-zinc-400 w-[25mm] pl-[2px]"
+                                value={formInscripto.cargo_actual}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="flex flex-col mx-2">
+                            <label className="text-sm">Cargo Solicitado</label>
+                            <input 
+                                name="cargo_solicitado"
+                                className="border-[1px] border-zinc-400 w-[25mm] pl-[2px]"
+                                value={formInscripto.cargo_solicitado}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
+                    <div className="flex flex-row mt-4">
+                        <div className="flex flex-col mr-2">
+                            <label className="text-sm">Observaciones</label>
+                            <input 
+                                className="border-[1px] border-zinc-400 w-[60mm] pl-[2px]"
+                                value={formInscripto.observacion}
+                                disabled={true}
+                            />
+                        </div>
+                        <div className="flex flex-col mr-2">
+                            <label className="text-sm">Legajo</label>
+                            <input 
+                                name="legajo"
+                                className="border-[1px] border-zinc-400 w-[30mm] pl-[2px]"
+                                value={formInscripto.legajo}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* VISIBILIDAD DE BOTONES */}
+                <div className="flex justify-center">
+                    {(estadoForm==='ver') &&
+                        <button
+                            className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                            onClick={closeModal}
+                            translate='no'
+                        >CERRAR</button>
+                    }
+                    {(estadoForm==='editar') &&
+                        <div>
+                            <button
+                                className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                                onClick={()=>submitGuardarCambiosFormInscripto()}
+                                translate='no'
+                            >GUARDAR</button>
+                            <button
+                                className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                                onClick={()=>valoresInicialesFormInscripto()}
+                                translate='no'
+                            >CANCELAR</button>
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+        </ModalEdit>
+
         </div>
     )
 };
