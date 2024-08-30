@@ -21,7 +21,7 @@ router.put('/editvacantemov/:idVacanteMov', editVacantesMov);
 router.post('/vacantemov', createVacantesMov);
 
 //--Traer todas las vacantes disponibles.
-router.get('/vacantesdisp', getVacantesMovDisp);
+router.post('/vacantesdisp', getVacantesMovDisp);
 
 //--Traer las vacantes disponibles según especialidad.
 router.get('/vacantesmovesp/:idEspecialidad', getVacantesMovDispByEsp)

@@ -10,30 +10,49 @@ import ModalEdit from "../ModalEdit/ModalEdit";
 import Modal from '../Modal/Modal';
 import axios from "axios";
 import {URL} from '../../../varGlobal';
+import { fetchVacantesDispMov } from "../../utils/fetchVacanteDispMov";
+import { LuArrowUpDown } from "react-icons/lu";
 
 
 const InscriptosMov = ()=>{
+
+    const navigate = useNavigate();
+
+    //E.G que trae la configuracion de sistema
+    const configSG = useSelector((state)=>state.config);
+
+    //E.L. de Ventanas Modales
+    const[isOpenModalAsign,openModalAsign,closeModalAsign]=useModal(false);
+    const[isOpenModalVac,openModalVac,closeModalVac]=useModal(false);
     const[isOpenModalEdit,openModalEdit,closeModalEdit]=useModal(false);
     const[isOpenModal,openModal,closeModal]=useModal(false);
     const[mensajeModalInfo, setMensajeModalInfo]=useState('');
-    const configSG = useSelector((state)=>state.config);
-    const navigate = useNavigate();
 
-    //ESTADO PARA PODER FILTRAR LOS LISTADOS SE DETERMINA QUE 
-    // disponibilidad -> 1
-    // activos -> 2
+    //E.L. para filtrar los listados, que se determinan por
+    // disponibilidad -> 1  / activos -> 2
     const[tipoInscripto, setTipoInscripto]=useState(2);
 
-    //ESTADO DONDE SE ALMACENA EL LISTADO POR TIPO DE LISTADO
+    //E.L. donde se almacena el Listado de Inscriptos (carga inicial)
+    //y segun el tipo de listado segun configuracion
     const[listadoInscriptosMov, setListadoInscriptosMov]=useState([]);
 
-    //ESTADO PARA APLICAR FILTROS SOBRE EL LISTADO CARGADO INICIALMENTE
+    //E.L. para aplicar filtros sobre el listado de inscriptos
     const[filterListadoInscriptosMov, setFilterListadoInscriptosMov]=useState([]);
 
-    //ESTADO QUE ALMACENA LOS DATOS DE UN INSCRIPTO SELECIONADO PARA VER SUS DATOS
+    //E.L. donde se almacena el listado de Vacantes Disponibles (carga inicial)
+    //y segun el tipo de listado de vacantes indicado en configuracion
+    const[listadoVacantesDispMov, setListadoVacantesDispMov]=useState([]);
+
+    //E.L para aplicar filtros sobre el listado de Vacantes Disponibles
+    const[filterListadoVacantesDispMov, setFilterListadoVacantesDispMov]=useState([]);
+
+    //E.L. que almacena los datos de una Vacante Seleccionada
+    const[datosVacanteSelect, setDatosVacanteSelect]=useState('');
+
+    //E.L. que almacena los datos de un inscripto seleccionado
     const[datosInscriptoSelect, setDatosInscriptoSelect]=useState('');
 
-    //cargo_actual, cargo_solicitado, dni, apellido, nombre, observacion, total, orden, nro_escuela, legajo, id_especialidad, id_tipo_inscripto, id_listado_inscriptos
+    //E.L. de form que se usa para actualizar los datos del inscripto
     const[formInscripto, setFormInscripto]=useState({
         cargo_actual:'', 
         cargo_solicitado:'', 
@@ -49,26 +68,46 @@ const InscriptosMov = ()=>{
         id_tipo_inscripto:'', 
         id_listado_inscriptos:''
     });
-    //ESTADO USADO PARA VALIDAR SI MODIFICO ALGUN DATO DEL FORMULARIO, DE SER ASI
-    //ESTADO CAMBIA A editar -> HABILITA BOTONES GUARDAR Y CANCELAR
-    //SI NO MODIFICA NADA EL ESTADO ES ver -> HABILITA BOTON CERRAR
+
+    //E.L que se usa para validar si se modifico algun dato del formulario, si es asi
+    //el estado cambia a "editar" -> habilita botones GUARDAR y CANCELAR
+    //si no modifica nada el estado es "ver" - habilita boton CERRAR
     const[estadoForm, setEstadoForm]=useState('ver');
 
-    //ESTADO USADO EN CAMPO BUSQUEDA
+    //E.L. para input busqueda
     const[inputSearch, setInputSearch]=useState('');
+    
+    //E.L. para input busqueda en Vacantes Disponibles
+    const[inputSearchVac, setInputSearchVac]=useState('');
 
-    //ESTADO LOCAL DE FILTRO DE ESTADO DE LOS INSCRIPTOS
-    //PUEDEN SER: "todos", "sinasignar" o "asignados"
-    //PARA NO TENER UN CAMPOS ADICIONAL SOBRE ESTADO
+    //E.L. para filtro de estado de los incriptos
+    //puede ser: "todos", "sinasignar" o "asignados"
     const[estadoInscripto, setEstadoInscripto]=useState('todos');
 
+    //-------------------------------------
+    //      PROCEDIMIENTOS Y FUNCIONES
+    //-------------------------------------
 
     const logOut = () =>{
         navigate('/')
     };
 
+    //Proc que trae el ID del listado configurado
+    const buscoIdlistadoInscrip = async(id_nivel) =>{
+        //Filtro configuracion para el nivel
+        const configFilterNivel = await configSG.config.filter((configNivel)=>configNivel.id_nivel==id_nivel);
+        console.log('que trae configFilterNivel: ', configFilterNivel);
 
-    //ESTE PROCEDIMIENTO CARGA EL LISTADO INSCRIPTOS MOV AL ESTADO LOCAL
+        //Traigo el id_listado cargado en configuracion para:
+        //LISTADO DE INSCRIPTOS DE MOVIMIENTOS -> id_listado_inscriptos_mov
+        const idFilterListado = configFilterNivel[0]?.id_listado_inscriptos_mov;
+        console.log('que tiene idFilterListado: ',idFilterListado);
+
+        //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO
+        await getInscriptosMov(idFilterListado);
+    };
+
+    //Este Proc carga el listado de inscriptos_mov al E.L
     const getInscriptosMov = async(id_listado) =>{
         let data;
         console.log('que trae id_listado getInscriptosMovListado: ', id_listado);
@@ -80,33 +119,47 @@ const InscriptosMov = ()=>{
                 setListadoInscriptosMov(data); 
             };
         };
-    };    
+    }; 
 
-
-    //ESTE PROCEDIMIENTO TRAE EL ID DEL LISTADO CONFIGURADO
-    const buscoIdlistadoInscrip = async(id_nivel) =>{
+    //Proc: traigo el ID del listado de Vacantes configurado
+    const buscoIDListadoVacantes = async(id_nivel) =>{
         //Filtro configuracion para el nivel
         const configFilterNivel = await configSG.config.filter((configNivel)=>configNivel.id_nivel==id_nivel);
         console.log('que trae configFilterNivel: ', configFilterNivel);
 
-        //Traigo el id_listado cargado en configuracion para:
-        //LISTADO DE INSCRIPTOS DE MOVIMIENTOS -> id_listado_inscriptos_mov
-        const idFilterListado = configFilterNivel[0].id_listado_inscriptos_mov;
+        //Traigo el id del listado cargado en configuracion para:
+        //LISTADO DE VACANTES DE MOVIMIENTOS -> id_listado_vacantes_mov
+        const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_mov;
         console.log('que tiene idFilterListado: ',idFilterListado);
 
-        //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO
-        await getInscriptosMov(idFilterListado);
-
+        //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE VACANTES
+        await getVacantesDisponiblesMov(idFilterListado)
     };
 
-    //PRESIONO SOBRE BOTON VER DATOS DEL INSCRIPTO
+    //Este Proc carga el listado de VACANTES Disponibles al E.L
+    const getVacantesDisponiblesMov = async(id_listado) =>{
+        let data;
+        console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
+        if(id_listado){
+            data = await fetchVacantesDispMov(id_listado);
+            console.log('que trae data de fetchVacantesDispMov: ', data);
+
+            if(data?.length!=0){
+                setListadoVacantesDispMov(data); 
+                setFilterListadoVacantesDispMov(data);
+            };
+        };
+    };  
+
+    //Proc al presionar icono "Ver Datos", setea en E.L los datos del inscripto
     const submitVerDatosInscripto = (datos) =>{
-        //ENVIO A STORE LOCAL DATOS DE INSCRIPTO PARA MOSTRARLO EN MODAL Y PODER EDITARLOS
         console.log('que recibe datos inscripto: ', datos);
         setDatosInscriptoSelect(datos);
         openModalEdit();
     };
 
+    //Proc que se ejecuta al realizar alguna modificacion en los inputs de los 
+    //datos del inscripto, cambiando el estado del form a "editar"
     const handleChange = (event) => {
         const{name, value} = event.target;
         setFormInscripto({
@@ -116,8 +169,8 @@ const InscriptosMov = ()=>{
         setEstadoForm('editar');
     };
 
+    //Proc q carga en E.L. datos de inscripto seleccionado
     const valoresInicialesFormInscripto = ()=>{
-        //CARGAR EN EL STORE LOCAL LOS DATOS DEL INSCRIPTO SELECCIONADO
         setFormInscripto({
             cargo_actual:datosInscriptoSelect.cargo_actual, 
             cargo_solicitado:datosInscriptoSelect.cargo_solicitado, 
@@ -136,6 +189,7 @@ const InscriptosMov = ()=>{
         setEstadoForm('ver');
     };
 
+    //Proc al guardar cambios en los datos del inscripto
     const submitGuardarCambiosFormInscripto = async() =>{
         const idInscripto = datosInscriptoSelect.id_inscriptos_mov;
         console.log(' que tiene idInscripto: ', idInscripto);
@@ -151,18 +205,29 @@ const InscriptosMov = ()=>{
             });
     };
 
+    //Proc al cerrar Ventana Modal de Notificacion llamado desde
+    //Ventana Modal de Datos de Inscripto
     const submitCloseModal = ()=>{
+        //Cierro Modal Notificacion
         closeModal();
-        //CAMBIO ESTADO DE ESTADO FORM INSCRIPTO
+        //Cierro Modal de Asignacion
+        closeModalAsign();
+        //Cierro Modal de Vacantes Disponibles
+        closeModalVac();
+        //Cambio estado de form inscripto
         setEstadoForm('ver');
-        //CARGO DE NUEVO EL LISTADO DE INSCRIPTOS CON DATOS ACTUALIZADOS Y 
-        //APLICO FILTRO DE "Activos" o "Disponibilidad"
+        //Vacio estado de Inscripto Seleccionado
+        setDatosInscriptoSelect('');
+        //Vacio estado de Vacante Seleccionada
+        setDatosVacanteSelect('');
+        //Cargo de nuevo listado de inscriptos con datos actualizados,
+        //aplico los filtros y traigo dato si fue asignado o no
         recargaListadoInscriptos();
     };
 
-    //ESTE PROCEDIMIENTO CARGA DE NUEVO EL LISTADO DE INSCRIPTOS POR ALGUNA
-    //MODIFICACION EN LOS DATOS QUE SE OBSERVAN
-    //TAMBIEN SE USA PARA APLICAR FILTROS AL SELECCIONAR ALGUNO
+    
+    //Proc: realiza recarga de listado de inscriptos, por alguna modificacion
+    //tambien aplica los filtros seteados en los estados
     const recargaListadoInscriptos = async() =>{
         try{
             //LLAMO A PROCECIMIENTO PARA BUSCAR ID_LISTADO Y EL MISMO TRAE
@@ -171,16 +236,16 @@ const InscriptosMov = ()=>{
     
             //APLICO LOS FILTROS
             aplicoFiltrosListado(listadoInscriptosMov);
-            
+
         }catch(error){
             console.error('Error al recargar el listado de inscriptos: ', error);
         }
     };
 
 
-    //PROCESO QEU SE EJECUTA AL APLICAR ALGUN FILTRO
+    //Proc: se ejecuta al aplicar algun filtro
     const aplicoFiltrosListado = async(data) =>{
-        //ELIMINO LA BUSQUEDA YA QUE SE DEBE EJECUTAR CON FILTROS YA APLICADOS
+        //Borro campos Input Busqueda, ya que primero se aplica filtro y luego busqueda
         setInputSearch('');
 
         let dataFilter = await data.filter(item=>{
@@ -223,42 +288,155 @@ const InscriptosMov = ()=>{
     };
 
 
-    //PROCESO QUE SE EJECUTA AL INICIAR RENDERIZADO
-    //MUESTRA LOS INSCRIPTOS "Activos" = 1
+    //Proc: se ejecuta en Carga Inicial, inicia filtrando inscriptos "Activos" = 1
     const filtroInicialListado = () =>{
         const listadoFiltrado = listadoInscriptosMov.filter((inscriptos)=>inscriptos.id_tipo_inscripto===1);
 
         setFilterListadoInscriptosMov(listadoFiltrado);
     };
 
-    //ESCRIBO DENTRO DE INPUT SEARCH
+    //-----------PROCESOS DE BUSQUEDA EN LISTADO INSCRIPTOS------------
+    //Escribir dentro del input de busqueda
     const handleInputSearchChange = (event) =>{
         const {value} = event.target;
         setInputSearch(value);
     };
 
-    //PRESIONO EN BOTON CANCELAR DENTRO DE INPUT SEARCH
+    //Presiono boton Cancelar (X) dentro de input busqueda
     const handleCancelSearch=async()=>{
         //seteoFiltrosBusquedaInicio();
         setInputSearch('')
         //setDocRecFilter(docrecSG);
         aplicoFiltrosListado(listadoInscriptosMov);
     };
-
-    //SE BUSCAN LOS DOCUMENTOS QUE SE GUARDARON EN EL STORE GLOBAL USANDO FILTRO SEGUN EL INPUT SEARCH
+    
+    //Proc: ejecuta la busqueda, filtrando datos de input busqueda en los campos
+    //del listado de inscriptos filtrado
     const submitSearch = async()=>{
         //console.log('presiono buscar con este input: ', inputSearch);
         let searchDoc;
         searchDoc = await filterListadoInscriptosMov.filter(inscripto=>inscripto.nombre.toLowerCase().includes(inputSearch.toLowerCase()) || inscripto.apellido.toLowerCase().includes(inputSearch.toLowerCase()) || inscripto.nro_escuela.toLowerCase().includes(inputSearch.toLowerCase()) || inscripto.dni.includes(inputSearch));
         setFilterListadoInscriptosMov(searchDoc);
     };    
+    //-------------------------------------------------------------------
+
+    //-----------PROCESOS DE BUSQUEDA EN VACANTES DISPONIBLES------------
+    //Escribir dentro del input de busqueda
+    const handleInputSearchVacChange = (event) =>{
+        const {value} = event.target;
+        setInputSearchVac(value);
+    };
+
+    const busquedaDinamica=()=>{
+        if(inputSearchVac!=''){
+            submitSearchVac();
+        }else{
+            setFilterListadoVacantesDispMov(listadoVacantesDispMov);
+        }
+    };
+
+    //Presiono boton Cancelar (X) dentro de input busqueda
+    const handleCancelSearchVac = async()=>{
+        setInputSearchVac('')
+        setFilterListadoVacantesDispMov(listadoVacantesDispMov);
+        //setDocRecFilter(docrecSG);
+        //aplicoFiltrosListado(listadoInscriptosMov);
+    };
+    
+    //Proc: ejecuta la busqueda, filtrando datos de input busqueda en los campos
+    //del listado de Vacantes Disponibles
+    const submitSearchVac = async()=>{
+        //console.log('presiono buscar con este input: ', inputSearch);
+        let searchVac;
+        searchVac = await listadoVacantesDispMov.filter(vacante=>vacante.establecimiento.toLowerCase().includes(inputSearchVac.toLowerCase()) || vacante.cargo.toLowerCase().includes(inputSearchVac.toLowerCase()) || vacante.modalidad.toLowerCase().includes(inputSearchVac.toLowerCase()) || vacante.turno.toLowerCase().includes(inputSearchVac) || vacante.region.toLowerCase().includes(inputSearchVac) || vacante.localidad.toLowerCase().includes(inputSearchVac));
+        setFilterListadoVacantesDispMov(searchVac);
+    };    
+    //-------------------------------------------------------------------    
+
+    //Proc: Al presionar sobre uno de los encabezados en el icono Ordenar
+    const submitOrderVac = (campo_order)=>{
+        
+    };
+
+    //Proc: Al presionar sobre icono Ver Vacantes Disponibles
+    const submitVerVacantes = (datos) =>{
+        //vacion input busqueda
+        setInputSearchVac('')
+        console.log('que recibe datos inscripto al Ver Vacantes: ', datos);
+        setDatosInscriptoSelect(datos);
+        //cargo listado original de vacantes disponibles
+        setFilterListadoVacantesDispMov(listadoVacantesDispMov);
+        openModalVac();
+    };
+
+    //Proc prsiona sobre icono asignar en Vacantes disponibles
+    const submitAsignar = (vacante)=>{
+        console.log('datos recibidos de Vacante: ', vacante);
+        setDatosVacanteSelect(vacante);
+        openModalAsign();
+    };
+
+    //?PROCESO DE ASIGNACION
+    const submitAsignarVacante = async() => {
+        if(datosInscriptoSelect.id_tipo_inscripto===1){
+            //Inscripto en Disponibilidad -> Solo Asigna Vacante a Inscripto
+            console.log('Asignacion Simple');
+            const fechaHoraActual = await traeFechaHoraActual();
+            const formAsignacion={
+                id_vacante_mov:datosVacanteSelect.id_vacante_mov, 
+                id_inscripto_mov:datosInscriptoSelect.id_inscriptos_mov, 
+                datetime_asignacion:fechaHoraActual, 
+                id_estado_asignacion:1 //estado Asignada
+            }
+            console.log('como arma form para Asignacion: ', formAsignacion);
+            await axios.post(`${URL}/api/createasignacionmov`,formAsignacion)
+            .then(async res=>{
+                console.log('que trae res de createasignacionmov: ', res);
+                //Mostrar Notificacion de Movimiento realizado
+                setMensajeModalInfo('Movimiento Asignado Correctamente')
+                openModal();
+            })
+            .catch(error=>{
+                console.log('que trae error createasignacionmov: ', error)
+            });
+        }else{
+            //Inscripto Activo -> Asigna Vacante a Inscripto y Debe Generar Nueva Vacante
+            console.log('Asignacion Rulo');
+            //
+        }
+
+        //Al final del Proceso de Asignacion recargo el listado de Vacantes Disponibles
+        buscoIDListadoVacantes(configSG.nivel.id_nivel);
+    };
+
+    const traeFechaHoraActual = () => {
+        const now = new Date();
+        
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Meses van de 0 a 11, por eso se suma 1
+        const day = String(now.getDate()).padStart(2, '0');
+    
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
+
+
+    //A medida que se escribe en el Input de BUsqueda de Vacantes Disponibles se ejecuta
+    //la busqueda filtrando el listado de vacantes
+    useEffect(()=>{
+        busquedaDinamica();
+    },[inputSearchVac])
 
     useEffect(()=>{
-        console.log('que tien campo inputSearch: ', inputSearch);
+        console.log('que tiene campo inputSearch: ', inputSearch);
     },[inputSearch])
 
+    //Al setear en E.L los datos del inscripto seleccionado
     useEffect(()=>{
-        //CARGA VALORES INICIALES EN formInscripto y coloca estadoForm en 'ver'
+        //llamo a Proc para cargar valores iniciales en formInscripto y estadoForm en "ver"
         valoresInicialesFormInscripto();
     },[datosInscriptoSelect]);
 
@@ -266,16 +444,21 @@ const InscriptosMov = ()=>{
         console.log('como queda el listado filtrado filterListadoInscriptosMov: ', filterListadoInscriptosMov);
     },[filterListadoInscriptosMov])
 
-    //SI HAY ALGUNA MODIFICACION EN UN FILTRO O SI listadoInscriptoMov se actualiza por alguna modificacion
-    //en un inscripto se ejecuta applyFilters
+    //Al setear algun FILTRO o si listadoInscripto se recarga por modificacion de datos
     useEffect(()=>{
         console.log('APLICO FILTRO')
         console.log('que tiene estado local tipoInscripto: ', tipoInscripto);
         console.log('que tiene estado local estadoInscripto: ', estadoInscripto);
-        //AL CAMBIAR ESTADO DE TIPO INSCRIPTO, LLAMO A FUNCION QUE APLICA FILTROS
-        //PASO EL LISTADO ORIGINAL CARGADO AL INICIAR listadoInscriptosMov
+
         aplicoFiltrosListado(listadoInscriptosMov);
     },[listadoInscriptosMov,tipoInscripto, estadoInscripto])
+
+
+    //VEO EL LISTADO DE VACANTES DE MOVIMIENTO
+    useEffect(()=>{
+        //?PROCESO SE EJECUTA EN CARGA INICIAL
+        console.log('que tiene listadoVacantesMov (CARGA INICIAL): ', listadoVacantesDispMov);
+    },[listadoVacantesDispMov])
 
     //VEO EL LISTADO DE INSCRIPTOS DE MOVIMIENTO
     useEffect(()=>{
@@ -284,7 +467,6 @@ const InscriptosMov = ()=>{
         //NI BIEN CARGO EL LISTADO DE INSCRIPTOS FILTRO CON ESTADO ACTIVO
         //FILTRO EL LISTADO DE INSCRIPTOS DE MOVIMIENTO
         filtroInicialListado();
-        //filtroEstadoInscripto(estadoInscripto);
     },[listadoInscriptosMov])
 
     //VEO LA CONFIGURACION GLOBAL
@@ -298,7 +480,9 @@ const InscriptosMov = ()=>{
     useEffect(()=>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
         //LLAMO AL PROCEDIMIENTO buscoIdlistadoInscrip Y PASO EL NIVEL CARGADO EN STORE GLOBAL
-        console.log('que listado configurado del nivel trae (CARGA INICIAL): ',buscoIdlistadoInscrip(configSG.nivel.id_nivel));
+        buscoIdlistadoInscrip(configSG.nivel.id_nivel);
+        //LLAMO AL PROCEDIMIENTO buscoIDListadoVacantes Y PASO EL NIVEL CARGADO EN STORE GLOBAL
+        buscoIDListadoVacantes(configSG.nivel.id_nivel);
 
     },[]);
 
@@ -378,23 +562,23 @@ const InscriptosMov = ()=>{
 
                         {/* Campo de Busqueda */}
                         <div className="w-[50%]  flex justify-end">
-                            <div className="border-[1px] border-zinc-300 w-[20vw] flex flex-row items-center justify-between">
+                            <div className="border-[1px] border-zinc-400 w-[20vw] rounded flex flex-row items-center justify-between mr-2">
                                 <input 
-                                    className="w-[60mm] focus:outline-none rounded"
+                                    className="w-[15vw] focus:outline-none rounded"
                                     placeholder="Buscar..."
                                     type="text"
                                     value={inputSearch}
                                     onChange={handleInputSearchChange}
                                 />
-                                <div className="flex flex-row">
+                                <div className="flex flex-row items-center">
                                     {(inputSearch!='') &&
                                         <FaTimes
-                                            className="text-slate-400 cursor-pointer "
+                                            className="text-slate-400 cursor-pointer text-lg"
                                             onClick={()=>handleCancelSearch()}
                                         />
                                     }
                                     <FaSearch 
-                                        className="text-zinc-500 cursor-pointer border-2 border-sky-300 mr-2"
+                                        className="text-zinc-500 cursor-pointer mr-2"
                                         onClick={()=>submitSearch()}
                                     />
                                 </div>
@@ -422,9 +606,10 @@ const InscriptosMov = ()=>{
                             <tbody>
                                 {
                                     filterListadoInscriptosMov?.map((inscripto, index)=>{
+                                        const colorFila = inscripto.vacante_asignada ?`bg-red-200` :``
                                         return(
                                             <tr 
-                                                className="text-lg font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300"
+                                                className={`text-lg font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 ${colorFila}`}
                                                 key={index}
                                             >
                                                 <td className="text-center">{inscripto.orden}</td>
@@ -437,13 +622,17 @@ const InscriptosMov = ()=>{
                                                 <td className="text-center">{inscripto.cargo_solicitado}</td>
                                                 <td className="text-sm">{inscripto.observacion}</td>
                                                 <td>
-                                                    <div className="flex flex-row items-center justify-between mx-2">
+                                                    <div className="flex flex-row items-center justify-between mx-2 ">
                                                         <FaEye 
                                                             className="hover:cursor-pointer hover:text-[#83F272]" 
                                                             title="Ver Datos"
                                                             onClick={()=>submitVerDatosInscripto(inscripto)}
                                                         />
-                                                        <BiTransferAlt className="text-2xl hover:cursor-pointer hover:text-[#83F272]" title="Asignacion"/>
+                                                        <BiTransferAlt 
+                                                            className="text-2xl hover:cursor-pointer hover:text-[#83F272]"      
+                                                            title="Vacantes"
+                                                            onClick={()=>submitVerVacantes(inscripto)}
+                                                        />
                                                     </div>
                                                 </td>
                                             </tr>
@@ -456,10 +645,259 @@ const InscriptosMov = ()=>{
                 </div>
             </div>
         
+        
+        {/* MODAL DE VACANTES DISPONIBLES*/}
+        <ModalEdit isOpen={isOpenModalVac} closeModal={closeModalVac}>
+            <div className="h-100 w-100  flex flex-col items-center">
+                <label className="text-xl text-center font-bold " translate='no'>VACANTES DISPONIBLES</label>
+                {/* DATOS DEL INSCRIPTO */}
+                <div className="border-[1px] border-zinc-300  flex justify-center rounded-md shadow font-semibold">
+                    <label className="mx-4 text-zinc-500">Docente: {datosInscriptoSelect.apellido} {datosInscriptoSelect.nombre}</label>
+                    <label className="mr-4 text-red-400">Cargo Origen: {datosInscriptoSelect.cargo_actual}</label>
+                    <label className="mr-4 text-sky-500">Cargo Solicitado: {datosInscriptoSelect.cargo_solicitado}</label>
+                </div>
+                <div className="h-[60vh] w-[90vw] mt-2 ">
+                    {/* PARTE SUPERIOR - FILTROS Y BUSQUEDA */}
+                    <div className="border-[1px] border-zinc-400 rounded-t-lg h-[9vh] flex flex-col bg-[#dde8b7]">
+                        {/* CUADRO BUSQUEDA */}
+                        <div className="flex justify-end my-[4px]">
+                            <div className="border-[1px] border-zinc-400 w-[20vw] rounded flex flex-row items-center justify-between mr-2 bg-white">
+                                <input 
+                                    className="w-[15vw] focus:outline-none rounded pl-[2px]"
+                                    placeholder="Buscar..."
+                                    type="text"
+                                    value={inputSearchVac}
+                                    onChange={handleInputSearchVacChange}
+                                />
+                                <div className="flex flex-row items-center ">
+                                    {(inputSearchVac!='') &&
+                                        <FaTimes
+                                            className="text-slate-400 cursor-pointer text-lg"
+                                            onClick={()=>handleCancelSearchVac()}
+                                        />
+                                    }
+                                    <FaSearch 
+                                        className="text-zinc-500 cursor-pointer mr-2"
+                                        onClick={()=>submitSearchVac()}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        {/* ORDENAMIENTO POR CAMPOS SEGUN FILTRO BUSQUEDA */}
+                        <div className="flex flex-row">
+                            <div className="flex flex-row items-center justify-center w-[2vw] border-r-[1px] border-zinc-200 hover:text-sky-500">
+                                <label className="font-base">ID</label>
+                            </div>
+                            <div className="flex flex-row items-center justify-center w-[15vw] border-r-[1px] border-zinc-200 hover:text-sky-500">
+                                <label className="font-semibold">Escuela</label>
+                                <LuArrowUpDown 
+                                    className="ml-2 cursor-pointer"
+                                    onClick={()=>submitOrderVac('establecimiento')}
+                                />
+                            </div>
+                            <div className="flex flex-row items-center justify-center w-[10vw] border-r-[1px] border-zinc-200">
+                                <label className="font-semibold">Cargo</label>
+                                {/* <LuArrowUpDown className="ml-2"/> */}
+                            </div>
+                            <div className="flex flex-row items-center justify-center w-[13vw] border-r-[1px] border-zinc-200">
+                                <label className="font-semibold">Modalidad</label>
+                                {/* <LuArrowUpDown className="ml-2"/> */}
+                            </div>
+                            <div className="flex flex-row items-center justify-center w-[10vw] border-r-[1px] border-zinc-200">
+                                <label className="font-semibold">Turno</label>
+                                {/* <LuArrowUpDown className="ml-2"/> */}
+                            </div>
+                            <div className="flex flex-row items-center justify-center w-[10vw] border-r-[1px] border-zinc-200">
+                                <label className="font-semibold">Region</label>
+                                {/* <LuArrowUpDown className="ml-2"/> */}
+                            </div>
+                            <div className="flex flex-row items-center justify-center w-[15vw] border-r-[1px] border-zinc-200 hover:text-sky-500">
+                                <label className="font-semibold">Localidad</label>
+                                <LuArrowUpDown 
+                                    className="ml-2 cursor-pointer"
+                                    onClick={()=>submitOrderVac('localidad')}
+                                />
+                            </div>
+                            <div className="flex flex-row items-center justify-center w-[8vw] border-r-[1px] border-zinc-200 hover:text-sky-500">
+                                <label className="font-semibold">Zona</label>
+                                <LuArrowUpDown 
+                                    className="ml-2 cursor-pointer"
+                                    onClick={()=>submitOrderVac('zona')}
+                                />
+                            </div>
+                            <div className="flex flex-row items-center justify-center w-[8vw] ">
+                                <label className="font-semibold">Acciones</label>
+                            </div>
+                        </div>
+                    </div>
+                    {/* PARTE INFERIOR - DATOS DE TABLA */}
+                    <div className="w-full h-[52vh] overflow-y-auto border-[1px] border-zinc-400 rounded-b-lg border-t-0">
+                        <table className="">
+                            {/* <thead>
+                                <tr className="text-sm border-b-[1px] border-zinc-300">
+                                    <th className="border-r-[1px] border-zinc-300">Escuela</th>
+                                    <th className="border-r-[1px] border-zinc-300">Cargo</th>
+                                    <th className="border-r-[1px] border-zinc-300">Modalidad</th>
+                                    <th className="border-r-[1px] border-zinc-300">Turno</th>
+                                    <th className="border-r-[1px] border-zinc-300">Region</th>
+                                    <th className="border-r-[1px] border-zinc-300">Localidad</th>
+                                    <th className="border-r-[1px] border-zinc-300">Zona</th>
+                                </tr>
+                            </thead> */}
+                            <tbody>
+                                {
+                                    filterListadoVacantesDispMov?.map((vacante, index)=>{
+                                        return(
+                                            <tr
+                                                className={`text-lg font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 `}
+                                                        key={index}
+                                            >
+                                                <td className="w-[2vw] pl-[4px] font-light">{vacante.id_vacante_mov
+                                                }</td>
+                                                <td className="w-[15vw] pl-[4px] text-center">{vacante.establecimiento} - {vacante.obs_establecimiento}</td>
+                                                <td className="w-[10vw] pl-[4px] text-center">{vacante.cargo}</td>
+                                                <td className="w-[13vw] pl-[4px] text-center">{vacante.modalidad}</td>
+                                                <td className="w-[10vw] pl-[4px]">{vacante.turno}</td>
+                                                <td className="w-[10vw] pl-[4px] text-center">{vacante.region}</td>
+                                                <td className="w-[15vw] pl-[4px]">{vacante.localidad}</td>
+                                                <td className="w-[8vw] pl-[4px] text-center">{vacante.zona}</td>
+                                                <td className="w-[8vw]">
+                                                    <div className="flex flex-row items-center justify-center">
+                                                        <FaEye 
+                                                            className="mr-2 hover:cursor-pointer hover:text-[#83F272]" 
+                                                            title="Ver Datos"
+                                                            //onClick={()=>submitVerDatosInscripto(inscripto)}
+                                                        />
+                                                        <BiTransferAlt 
+                                                            className="text-2xl hover:cursor-pointer hover:text-[#83F272]"      title="Asignacion"
+                                                            onClick={()=>submitAsignar(vacante)}
+                                                        />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <div>
+                    <button
+                        className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                        onClick={closeModalVac}
+                        translate='no'
+                    >CERRAR</button>
+                </div>
+            </div>
+        </ModalEdit>
+
+        {/* MODAL DE ASIGNACION */}
+        <ModalEdit isOpen={isOpenModalAsign} closeModal={closeModalAsign}>
+            <div className="h-100 w-100  flex flex-col items-center">
+                <label 
+                    className="text-xl text-center font-bold " 
+                    translate='no'
+                >
+                {`ASIGNACION VACANTE (
+                    ${datosInscriptoSelect.tipoinscripto} ) `}
+                </label>
+                {/* DATOS DEL INSCRIPTO */}
+                <div className="border-[1px] border-purple-400  flex flex-col justify-center rounded-md shadow font-semibold text-lg bg-purple-100 mb-2">
+                    <div className="flex flex-row">
+                        <label className="mx-4 text-zinc-800">Docente: {datosInscriptoSelect.apellido} {datosInscriptoSelect.nombre}</label>
+                        <label className="mr-4 text-zinc-800">DNI: {datosInscriptoSelect.dni}</label>
+                    </div>
+                </div>
+                {/* DATOS DE LOS CARGOS */}
+                <div className="flex flex-row h-[54vh] w-[50vw]">
+                    {/* CARGO ORIGEN */}
+                    <div className="flex flex-col border-[1px] border-red-500 w-[50%] items-center m-y-[4px] mr-2 rounded-md shadow-lg">
+                        <label>Cargo Actual</label>
+                        <div>
+                            <label className="mb-0 font-semibold text-sm ">Escuela</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosInscriptoSelect.nro_escuela}</div>
+                        </div>
+                        <div>
+                            <label className="font-semibold text-sm">Cargo</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosInscriptoSelect.cargo_actual}</div>
+                        </div>
+                        <div>
+                            <label className="font-semibold text-sm">Modalidad</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]"></div>
+                        </div>
+                        <div>
+                            <label className="font-semibold text-sm">Turno</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]"></div>
+                        </div>
+                        <div>
+                            <label className="font-semibold text-sm">Region</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]"></div>
+                        </div>
+                        <div>
+                            <label className="font-semibold text-sm">Localidad</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]"></div>
+                        </div>
+                        <div>
+                            <label className="font-semibold text-sm">Zona</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]"></div>
+                        </div>
+                    </div>
+                    {/* CARGO A TOMAR */}
+                    <div className="flex flex-col border-[1px] border-sky-500 w-[50%] items-center items-center m-y-[4px] ml-2 rounded-md shadow-lg">
+                        <label>Cargo a Asignar</label>
+                        <div>
+                            <label className="mb-0 font-semibold text-sm ">Escuela</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] ">{datosVacanteSelect.establecimiento} {datosVacanteSelect.obs_establecimiento}</div>
+                        </div>
+                        <div>
+                            <label className="font-semibold text-sm">Cargo</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosVacanteSelect.cargo}</div>
+                        </div>
+                        <div>
+                            <label className="font-semibold text-sm">Modalidad</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosVacanteSelect.modalidad}</div>
+                        </div>
+                        <div>
+                            <label className="font-semibold text-sm">Turno</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosVacanteSelect.turno}</div>
+                        </div>
+                        <div>
+                            <label className="font-semibold text-sm">Region</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosVacanteSelect.region}</div>
+                        </div>
+                        <div>
+                            <label className="font-semibold text-sm">Localidad</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosVacanteSelect.localidad}</div>
+                        </div>
+                        <div>
+                            <label className="font-semibold text-sm">Zona</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosVacanteSelect.zona}</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button
+                        className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white shadow hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                        onClick={()=>submitAsignarVacante()}
+                        translate='no'
+                    >ACEPTAR</button>
+                    <button
+                        className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white shadow hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                        onClick={closeModalAsign}
+                        translate='no'
+                    >CANCELAR</button>
+                </div>                
+            </div>
+        </ModalEdit>
+
+        
+        {/* MODAL DE DATOS DEL INSCRIPTO */}
         <ModalEdit isOpen={isOpenModalEdit} closeModal={closeModalEdit}>
-            <div className="border-2 border-green-500 h-100 w-100 ">
+            <div className="h-100 w-100  flex flex-col">
                 <label className="text-xl text-center font-bold " translate='no'>DATOS DEL INSCRIPTO</label>
-                <div className="h-[40vh] w-[50vw] mt-5">
+                <div className="h-[40vh] w-[50vw] mt-5 ">
                     <div className="flex flex-row">
                         <div className="flex flex-col mr-2">
                             <label className="text-sm">N°Orden</label>
@@ -512,7 +950,7 @@ const InscriptosMov = ()=>{
                             <label className="text-sm">Escuela</label>
                             <input 
                                 name="nro_escuela"
-                                className="border-[1px] border-zinc-400 w-[55mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[77mm] pl-[2px]"
                                 value={formInscripto.nro_escuela}
                                 onChange={handleChange}
                             />
@@ -524,7 +962,7 @@ const InscriptosMov = ()=>{
                             <label className="text-sm">Cargo Actual</label>
                             <input 
                                 name="cargo_actual"
-                                className="border-[1px] border-zinc-400 w-[25mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[48mm] pl-[2px]"
                                 value={formInscripto.cargo_actual}
                                 onChange={handleChange}
                             />
@@ -533,11 +971,20 @@ const InscriptosMov = ()=>{
                             <label className="text-sm">Cargo Solicitado</label>
                             <input 
                                 name="cargo_solicitado"
-                                className="border-[1px] border-zinc-400 w-[25mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[48mm] pl-[2px]"
                                 value={formInscripto.cargo_solicitado}
                                 onChange={handleChange}
                             />
                         </div>
+                        <div className="flex flex-col mr-2">
+                            <label className="text-sm">Legajo</label>
+                            <input 
+                                name="legajo"
+                                className="border-[1px] border-zinc-400 w-[31mm] pl-[2px]"
+                                value={formInscripto.legajo}
+                                onChange={handleChange}
+                            />
+                        </div>                        
                     </div>
                     <div className="flex flex-row mt-4">
                         <div className="flex flex-col mr-2">
@@ -546,15 +993,6 @@ const InscriptosMov = ()=>{
                                 className="border-[1px] border-zinc-400 w-[60mm] pl-[2px]"
                                 value={formInscripto.observacion}
                                 disabled={true}
-                            />
-                        </div>
-                        <div className="flex flex-col mr-2">
-                            <label className="text-sm">Legajo</label>
-                            <input 
-                                name="legajo"
-                                className="border-[1px] border-zinc-400 w-[30mm] pl-[2px]"
-                                value={formInscripto.legajo}
-                                onChange={handleChange}
                             />
                         </div>
                     </div>
