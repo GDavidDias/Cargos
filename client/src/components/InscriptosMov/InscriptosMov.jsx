@@ -12,6 +12,8 @@ import axios from "axios";
 import {URL} from '../../../varGlobal';
 import { fetchVacantesDispMov } from "../../utils/fetchVacanteDispMov";
 import { LuArrowUpDown } from "react-icons/lu";
+import { TbSortAscending , TbSortDescending } from "react-icons/tb";
+
 
 
 const InscriptosMov = ()=>{
@@ -83,6 +85,12 @@ const InscriptosMov = ()=>{
     //E.L. para filtro de estado de los incriptos
     //puede ser: "todos", "sinasignar" o "asignados"
     const[estadoInscripto, setEstadoInscripto]=useState('todos');
+
+    //E.L para guardar el campo que va a ordenar Vacantes
+    const[campoOrderVac, setCampoOrderVac] = useState('');
+
+    //E.L switch para guardar el tipo de Ordenamiento de los datos
+    const[order, setOrder]=useState(true);
 
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
@@ -325,6 +333,7 @@ const InscriptosMov = ()=>{
     const handleInputSearchVacChange = (event) =>{
         const {value} = event.target;
         setInputSearchVac(value);
+        setCampoOrderVac('');
     };
 
     const busquedaDinamica=()=>{
@@ -355,7 +364,52 @@ const InscriptosMov = ()=>{
 
     //Proc: Al presionar sobre uno de los encabezados en el icono Ordenar
     const submitOrderVac = (campo_order)=>{
-        
+        //seteo vacio campo busqueda
+        setInputSearchVac('')
+        setCampoOrderVac(campo_order);
+        if(campo_order==='establecimiento'){
+            if(order){
+                //ordenar Descencente
+                const sortVac = [...filterListadoVacantesDispMov].sort((a,b)=>{
+                    return a.establecimiento>b.establecimiento ?1 :-1;
+                });
+                setFilterListadoVacantesDispMov(sortVac);
+            }else{
+                //Ordernar Ascendente
+                const sortVac = [...filterListadoVacantesDispMov].sort((a,b)=>{
+                    return a.establecimiento<b.establecimiento ?1 :-1;
+                });
+                setFilterListadoVacantesDispMov(sortVac);
+            }
+        }else if(campo_order==='localidad'){
+            if(order){
+                //ordenar Descencente
+                const sortVac = [...filterListadoVacantesDispMov].sort((a,b)=>{
+                    return a.localidad<b.localidad ?1 :-1;
+                });
+                setFilterListadoVacantesDispMov(sortVac);
+            }else{
+                //Ordernar Ascendente
+                const sortVac = [...filterListadoVacantesDispMov].sort((a,b)=>{
+                    return a.localidad>b.localidad ?1 :-1;
+                });
+                setFilterListadoVacantesDispMov(sortVac);
+            }
+        }else if(campo_order==='zona'){
+            if(order){
+                //ordenar Descencente
+                const sortVac = [...filterListadoVacantesDispMov].sort((a,b)=>{
+                    return a.zona>b.zona ?1 :-1;
+                });
+                setFilterListadoVacantesDispMov(sortVac);
+            }else{
+                //Ordernar Ascendente
+                const sortVac = [...filterListadoVacantesDispMov].sort((a,b)=>{
+                    return a.zona<b.zona ?1 :-1;
+                });
+                setFilterListadoVacantesDispMov(sortVac);
+            }
+        }
     };
 
     //Proc: Al presionar sobre icono Ver Vacantes Disponibles
@@ -688,12 +742,31 @@ const InscriptosMov = ()=>{
                             <div className="flex flex-row items-center justify-center w-[2vw] border-r-[1px] border-zinc-200 hover:text-sky-500">
                                 <label className="font-base">ID</label>
                             </div>
-                            <div className="flex flex-row items-center justify-center w-[15vw] border-r-[1px] border-zinc-200 hover:text-sky-500">
-                                <label className="font-semibold">Escuela</label>
-                                <LuArrowUpDown 
-                                    className="ml-2 cursor-pointer"
-                                    onClick={()=>submitOrderVac('establecimiento')}
-                                />
+                            <div 
+                                className={`flex flex-row items-center justify-center w-[15vw] border-r-    [1px] border-zinc-200 hover:text-sky-500  cursor-pointer
+                                    ${(campoOrderVac==='establecimiento')
+                                        ?`text-sky-500`
+                                        :``
+                                    }`}
+                                onClick={()=>{submitOrderVac('establecimiento');setOrder(!order)}}
+                            >
+                                <label className="font-semibold cursor-pointer">Escuela</label>
+                                {
+                                    (campoOrderVac==='establecimiento') &&
+                                    <div>
+                                        {(order)
+                                            ?<TbSortDescending className=" ml-2 cursor-pointer"/>
+                                            :<TbSortAscending className=" ml-2 cursor-pointer"/>
+                                        }
+                                    </div>
+                                }
+                                {
+                                    (campoOrderVac!='establecimiento') &&
+                                    <LuArrowUpDown 
+                                        className="ml-2 cursor-pointer"
+                                    />
+                                }
+                                
                             </div>
                             <div className="flex flex-row items-center justify-center w-[10vw] border-r-[1px] border-zinc-200">
                                 <label className="font-semibold">Cargo</label>
@@ -711,19 +784,55 @@ const InscriptosMov = ()=>{
                                 <label className="font-semibold">Region</label>
                                 {/* <LuArrowUpDown className="ml-2"/> */}
                             </div>
-                            <div className="flex flex-row items-center justify-center w-[15vw] border-r-[1px] border-zinc-200 hover:text-sky-500">
-                                <label className="font-semibold">Localidad</label>
-                                <LuArrowUpDown 
-                                    className="ml-2 cursor-pointer"
-                                    onClick={()=>submitOrderVac('localidad')}
-                                />
+                            <div 
+                                className={`flex flex-row items-center justify-center w-[15vw] border-r-    [1px] border-zinc-200 hover:text-sky-500 cursor-pointer
+                                    ${(campoOrderVac==='localidad')
+                                        ?`text-sky-500`
+                                        :``
+                                    }`}
+                                    onClick={()=>{submitOrderVac('localidad');setOrder(!order)}}
+                            >
+                                <label className="font-semibold cursor-pointer">Localidad</label>
+                                {
+                                    (campoOrderVac==='localidad') &&
+                                    <div>
+                                        {(order)
+                                            ?<TbSortDescending className="ml-2 cursor-pointer"/>
+                                            :<TbSortAscending className="ml-2 cursor-pointer"/>
+                                        }
+                                    </div>
+                                }
+                                {
+                                    (campoOrderVac!='localidad') &&
+                                    <LuArrowUpDown 
+                                        className="ml-2 cursor-pointer"
+                                    />
+                                }
                             </div>
-                            <div className="flex flex-row items-center justify-center w-[8vw] border-r-[1px] border-zinc-200 hover:text-sky-500">
-                                <label className="font-semibold">Zona</label>
-                                <LuArrowUpDown 
-                                    className="ml-2 cursor-pointer"
-                                    onClick={()=>submitOrderVac('zona')}
-                                />
+                            <div 
+                                className={`flex flex-row items-center justify-center w-[8vw] border-r-    [1px] border-zinc-200 hover:text-sky-500 cursor-pointer
+                                    ${(campoOrderVac==='zona')
+                                        ?`text-sky-500`
+                                        :``
+                                    }`}
+                                    onClick={()=>{submitOrderVac('zona');setOrder(!order)}}
+                            >
+                                <label className="font-semibold cursor-pointer">Zona</label>
+                                {
+                                    (campoOrderVac==='zona') &&
+                                    <div>
+                                        {(order)
+                                            ?<TbSortDescending className="ml-2 cursor-pointer"/>
+                                            :<TbSortAscending className="ml-2 cursor-pointer"/>
+                                        }
+                                    </div>
+                                }
+                                {
+                                    (campoOrderVac!='zona') &&
+                                    <LuArrowUpDown 
+                                        className="ml-2 cursor-pointer"
+                                    />
+                                }
                             </div>
                             <div className="flex flex-row items-center justify-center w-[8vw] ">
                                 <label className="font-semibold">Acciones</label>
