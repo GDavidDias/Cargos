@@ -92,6 +92,9 @@ const InscriptosMov = ()=>{
     //E.L switch para guardar el tipo de Ordenamiento de los datos
     const[order, setOrder]=useState(true);
 
+    //E.L guardo el id del listado de vacantes
+    const[idListVacMov,setIdListVacMov]=useState();
+
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
     //-------------------------------------
@@ -139,6 +142,9 @@ const InscriptosMov = ()=>{
         //LISTADO DE VACANTES DE MOVIMIENTOS -> id_listado_vacantes_mov
         const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_mov;
         console.log('que tiene idFilterListado: ',idFilterListado);
+
+        //Guardo id_listado_vacantes_mov para usarlo en Movimientos Rulos
+        setIdListVacMov(idFilterListado);
 
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE VACANTES
         await getVacantesDisponiblesMov(idFilterListado)
@@ -430,38 +436,76 @@ const InscriptosMov = ()=>{
         openModalAsign();
     };
 
-    //?PROCESO DE ASIGNACION
+    //?---------------------------------------------------------------
+    //?  -  -  -  PROCESO DE ASIGNACION
+    //?---------------------------------------------------------------
     const submitAsignarVacante = async() => {
-        if(datosInscriptoSelect.id_tipo_inscripto===1){
-            //Inscripto en Disponibilidad -> Solo Asigna Vacante a Inscripto
-            console.log('Asignacion Simple');
-            const fechaHoraActual = await traeFechaHoraActual();
-            const formAsignacion={
-                id_vacante_mov:datosVacanteSelect.id_vacante_mov, 
-                id_inscripto_mov:datosInscriptoSelect.id_inscriptos_mov, 
-                datetime_asignacion:fechaHoraActual, 
-                id_estado_asignacion:1 //estado Asignada
-            }
-            console.log('como arma form para Asignacion: ', formAsignacion);
-            await axios.post(`${URL}/api/createasignacionmov`,formAsignacion)
+        console.log('Asignacion Simple');
+
+        const fechaHoraActual = await traeFechaHoraActual();
+        const formAsignacion={
+            id_vacante_mov:datosVacanteSelect.id_vacante_mov, 
+            id_inscripto_mov:datosInscriptoSelect.id_inscriptos_mov, 
+            datetime_asignacion:fechaHoraActual, 
+            id_estado_asignacion:1 //estado Asignada
+        }
+        console.log('como arma form para Asignacion: ', formAsignacion);
+        await axios.post(`${URL}/api/createasignacionmov`,formAsignacion)
             .then(async res=>{
                 console.log('que trae res de createasignacionmov: ', res);
+                //?Verifico que tipo de Asignacion es
+                if(datosInscriptoSelect.id_tipo_inscripto===1){
+                    //Inscripto en Disponibilidad -> Solo Asigna Vacante a Inscripto
+                    //Mostrar Notificacion de Movimiento realizado
+                    setMensajeModalInfo('Movimiento Asignado Correctamente')
+                    openModal();
+                }else{
+                    //Inscripto Activo -> Una vez asignada vacante, deebe Generar Nueva Vacante del cargo que deja el inscripto
+                    creaNuevaVacante();
+                }
+            })
+            .catch(error=>{
+                console.log('que trae error createasignacionmov: ', error)
+            });
+
+        //Al final del Proceso de Asignacion recargo el listado de Vacantes Disponibles
+        buscoIDListadoVacantes(configSG.nivel.id_nivel);
+    };
+
+    const creaNuevaVacante = async() => {
+            //Creo una nueva Vacante con los datos del cargo que deja el Inscripto
+            //id_listado_vac_mov, orden, establecimiento, obs_establecimiento, region, departamento, localidad, cargo, turno, modalidad, cupof, id_especialidad, datetime_creacion, zona
+            const fechaHoraActualNuevaVac = await traeFechaHoraActual();
+            const formNuevaVacante={
+                id_listado_vac_mov:idListVacMov, //INT
+                orden:null,  //INT
+                establecimiento:datosInscriptoSelect.nro_escuela, //VARCHAR
+                obs_establecimiento:'', //VARCHAR
+                region:'', //VARCHAR
+                departamento:'', //VARCHAR
+                localidad:'', //VARCHAR
+                cargo:datosInscriptoSelect.cargo_actual, //VARCHAR
+                turno:'', //VARCHAR
+                modalidad:'', //VARCHAR
+                cupof:'', //VARCHAR
+                id_especialidad:null, //INTEGER
+                datetime_creacion:fechaHoraActualNuevaVac, //VARCHAR
+                zona:'' //VARCHAR
+            }
+            console.log('como arma formBody para Nueva Vacante: ', formNuevaVacante);
+            await axios.post(`${URL}/api/vacantemov`,formNuevaVacante)
+            .then(async res=>{
+                console.log('que trae res de createVacantesMov: ', res);
                 //Mostrar Notificacion de Movimiento realizado
                 setMensajeModalInfo('Movimiento Asignado Correctamente')
                 openModal();
             })
             .catch(error=>{
-                console.log('que trae error createasignacionmov: ', error)
+                console.log('que trae error createVacantesMov: ', error)
             });
-        }else{
-            //Inscripto Activo -> Asigna Vacante a Inscripto y Debe Generar Nueva Vacante
-            console.log('Asignacion Rulo');
-            //
-        }
-
-        //Al final del Proceso de Asignacion recargo el listado de Vacantes Disponibles
-        buscoIDListadoVacantes(configSG.nivel.id_nivel);
     };
+    //?---------------------------------------------------------------
+
 
     const traeFechaHoraActual = () => {
         const now = new Date();
