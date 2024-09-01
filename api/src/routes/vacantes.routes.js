@@ -6,7 +6,8 @@ const {
     createVacantesMov,
     getVacantesMovDisp,
     getVacantesMovDispByEsp,
-    delVacanteMov
+    delVacanteMov,
+    getVacanteMovAsignada
 } = require('../controllers/vacantesMov.controllers');
 
 const router = Router();
@@ -30,5 +31,8 @@ router.get('/vacantesmovesp/:idEspecialidad', getVacantesMovDispByEsp)
 // Se le pasa por parametro el id de la vacante (idVacanteMov)
 // y por body la observacion de la baja de vacante
 router.put('/delvacantemov/:idVacanteMov', delVacanteMov);
+
+//--Trae los datos de una VACANTE ASIGNADA
+router.post('/vacanteasignada/:idVacanteMov', getVacanteMovAsignada);
 
 module.exports = router;

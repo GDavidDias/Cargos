@@ -13,6 +13,7 @@ import {URL} from '../../../varGlobal';
 import { fetchVacantesDispMov } from "../../utils/fetchVacanteDispMov";
 import { LuArrowUpDown } from "react-icons/lu";
 import { TbSortAscending , TbSortDescending } from "react-icons/tb";
+import { fetchVacantesAsignadaMov } from "../../utils/fetchVacanteAsignadaMov";
 
 
 
@@ -95,6 +96,9 @@ const InscriptosMov = ()=>{
     //E.L guardo el id del listado de vacantes
     const[idListVacMov,setIdListVacMov]=useState();
 
+    //E.L guardo el cargo(vacante) asignada al Inscripto seleccionado
+    const[cargoAsignado, setCargoAsignado]=useState('');
+
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
     //-------------------------------------
@@ -166,9 +170,19 @@ const InscriptosMov = ()=>{
     };  
 
     //Proc al presionar icono "Ver Datos", setea en E.L los datos del inscripto
-    const submitVerDatosInscripto = (datos) =>{
+    const submitVerDatosInscripto = async(datos) =>{
         console.log('que recibe datos inscripto: ', datos);
         setDatosInscriptoSelect(datos);
+        //traigo los datos del cargo (vacante) asignado
+        if (datos.vacante_asignada!=null && datos.vacante_asignada!=''){
+            console.log('TIENE CARGO ASIGNADO');
+            const data = await fetchVacantesAsignadaMov(datos.vacante_asignada);
+            console.log('que trae data de fetchVacantesAsignadaMov: ', data[0]);
+            setCargoAsignado(data[0]);
+        }else{
+            setCargoAsignado('');
+        }
+
         openModalEdit();
     };
 
@@ -720,17 +734,22 @@ const InscriptosMov = ()=>{
                                                 <td className="text-center">{inscripto.cargo_solicitado}</td>
                                                 <td className="text-sm">{inscripto.observacion}</td>
                                                 <td>
-                                                    <div className="flex flex-row items-center justify-between mx-2 ">
+                                                    <div className="flex flex-row items-center justify-center mx-2 ">
                                                         <FaEye 
                                                             className="hover:cursor-pointer hover:text-[#83F272]" 
                                                             title="Ver Datos"
                                                             onClick={()=>submitVerDatosInscripto(inscripto)}
                                                         />
-                                                        <BiTransferAlt 
-                                                            className="text-2xl hover:cursor-pointer hover:text-[#83F272]"      
-                                                            title="Vacantes"
-                                                            onClick={()=>submitVerVacantes(inscripto)}
-                                                        />
+                                                        {
+                                                            (inscripto.vacante_asignada===null || inscripto.vacante_asignada==='')
+                                                            ?<BiTransferAlt 
+                                                                className="text-2xl hover:cursor-pointer hover:text-[#83F272] ml-2"      
+                                                                title="Vacantes"
+                                                                onClick={()=>submitVerVacantes(inscripto)}
+                                                            />
+                                                            :``
+                                                        }
+                                                        
                                                     </div>
                                                 </td>
                                             </tr>
@@ -883,6 +902,7 @@ const InscriptosMov = ()=>{
                             </div>
                         </div>
                     </div>
+
                     {/* PARTE INFERIOR - DATOS DE TABLA */}
                     <div className="w-full h-[52vh] overflow-y-auto border-[1px] border-zinc-400 rounded-b-lg border-t-0">
                         <table className="">
@@ -916,11 +936,11 @@ const InscriptosMov = ()=>{
                                                 <td className="w-[8vw] pl-[4px] text-center">{vacante.zona}</td>
                                                 <td className="w-[8vw]">
                                                     <div className="flex flex-row items-center justify-center">
-                                                        <FaEye 
+                                                        {/* <FaEye 
                                                             className="mr-2 hover:cursor-pointer hover:text-[#83F272]" 
                                                             title="Ver Datos"
                                                             //onClick={()=>submitVerDatosInscripto(inscripto)}
-                                                        />
+                                                        /> */}
                                                         <BiTransferAlt 
                                                             className="text-2xl hover:cursor-pointer hover:text-[#83F272]"      title="Asignacion"
                                                             onClick={()=>submitAsignar(vacante)}
@@ -1049,9 +1069,9 @@ const InscriptosMov = ()=>{
         {/* MODAL DE DATOS DEL INSCRIPTO */}
         <ModalEdit isOpen={isOpenModalEdit} closeModal={closeModalEdit}>
             <div className="h-100 w-100  flex flex-col">
-                <label className="text-xl text-center font-bold " translate='no'>DATOS DEL INSCRIPTO</label>
-                <div className="h-[40vh] w-[50vw] mt-5 ">
-                    <div className="flex flex-row">
+                <label className="text-xl text-center font-semibold " translate='no'>DATOS DEL INSCRIPTO</label>
+                <div className="h-[32vh] w-[50vw] mt-5 border-[1px] border-sky-800 rounded">
+                    <div className="flex flex-row ml-2 mt-2">
                         <div className="flex flex-col mr-2">
                             <label className="text-sm">N°Orden</label>
                             <input 
@@ -1080,7 +1100,7 @@ const InscriptosMov = ()=>{
                             />
                         </div>
                     </div>
-                    <div className="flex flex-row mt-4">
+                    <div className="flex flex-row ml-2 mt-4">
                         <div className="flex flex-col mr-2">
                             <label className="text-sm">Puntaje</label>
                             <input 
@@ -1110,7 +1130,7 @@ const InscriptosMov = ()=>{
                         </div>
                         
                     </div>
-                    <div className="flex flex-row mt-4">
+                    <div className="flex flex-row ml-2 mt-4">
                         <div className="flex flex-col mr-2">
                             <label className="text-sm">Cargo Actual</label>
                             <input 
@@ -1139,7 +1159,7 @@ const InscriptosMov = ()=>{
                             />
                         </div>                        
                     </div>
-                    <div className="flex flex-row mt-4">
+                    <div className="flex flex-row ml-2 mt-4">
                         <div className="flex flex-col mr-2">
                             <label className="text-sm">Observaciones</label>
                             <input 
@@ -1150,6 +1170,47 @@ const InscriptosMov = ()=>{
                         </div>
                     </div>
                 </div>
+
+                {/* DATOS DE CARGO TOMADO - SI SE LE ASIGNO VACANTE */}
+                {(datosInscriptoSelect.vacante_asignada!=null && datosInscriptoSelect.vacante_asignada!='') &&
+                <div className="h-[20vh] w-[50vw] mt-5 border-[1px] border-green-800 text-center rounded">
+                    <label className="text-xl text-center font-semibold " translate='no'>Cargo Asignado</label>
+                    {/* Datos a mostrar: Escuela, cargo, modalidad, turno, region, localidad, zona */}
+                    <div className="flex flex-row">
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Escuela</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[20vw] h-[4vh] pl-[4px]">{cargoAsignado.establecimiento} {cargoAsignado.obs_establecimiento}</div>
+                        </div>
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Cargo</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] ">{cargoAsignado.cargo}</div>
+                        </div>
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Modalidad</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] ">{cargoAsignado.modalidad}</div>
+                        </div>
+                    </div>    
+                    <div className="flex flex-row">
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Turno</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[8vw] h-[4vh] pl-[4px]">{cargoAsignado.turno}</div>
+                        </div>
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Region</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[4vw] h-[4vh] pl-[4px] ">{cargoAsignado.region}</div>
+                        </div>
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Localidad</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[17vw] h-[4vh] pl-[4px] ">{cargoAsignado.localidad}</div>
+                        </div>
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Zona</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] ">{cargoAsignado.zona}</div>
+                        </div>
+                    </div>    
+                    
+                </div>
+                }
 
                 {/* VISIBILIDAD DE BOTONES */}
                 <div className="flex justify-center">
