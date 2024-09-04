@@ -10,7 +10,7 @@ module.exports = async(req,res)=>{
 
     try{
         const [result] = await pool.query(`UPDATE inscriptos_mov 
-            SET id_vacante_generada_cargo_actual = '${idVacanteGenerada}' 
+            SET id_vacante_generada_cargo_actual = ${idVacanteGenerada}
             WHERE id_inscriptos_mov = ${idInscriptoMov} `);
 
         console.log('que trae result updateIdVacanteGenerada: ', result);

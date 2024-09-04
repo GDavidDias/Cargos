@@ -240,3 +240,6 @@ INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(109,'
 INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(110,'MIMBRERIA','MIMBRERIA');
 INSERT INTO especialidad(id_especialidad, descripcion, abreviatura) VALUES(111,'TECNICA LENGUA DE SEÑAS','TECNICA LENGUA DE SEÑAS');
 
+---------------------------
+PARA BORRAR TABLAS 
+truncate inscriptos_mov; truncate vacantes_mov; truncate asignacion_mov;

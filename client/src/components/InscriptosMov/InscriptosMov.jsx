@@ -1,22 +1,27 @@
 import { useEffect, useState } from "react";
-import { FaRegUserCircle, FaPowerOff  } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { fetchAllInscriptosMov } from "../../utils/fetchAllInscriptosMov";
 import { useNavigate } from "react-router-dom";
-import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit} from "react-icons/fa";
-import { BiTransferAlt } from "react-icons/bi";
 import {useModal} from '../../hooks/useModal';
 import ModalEdit from "../ModalEdit/ModalEdit";
 import Modal from '../Modal/Modal';
 import axios from "axios";
 import {URL} from '../../../varGlobal';
 import { fetchVacantesDispMov } from "../../utils/fetchVacanteDispMov";
-import { LuArrowUpDown } from "react-icons/lu";
 import { TbSortAscending , TbSortDescending } from "react-icons/tb";
 import { fetchVacantesAsignadaMov } from "../../utils/fetchVacanteAsignadaMov";
 import { fetchAsignacionByVacante } from "../../utils/fetchAsignacionByVacante";
 import { updateIdVacanteGenerada } from "../../utils/updateIdVacanteGenerada";
+import './InscriptosMov.modules.css';
+
+//-------ICONOS--------
+import { FaRegUserCircle, FaPowerOff  } from "react-icons/fa";
+import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit} from "react-icons/fa";
+import { BiTransferAlt } from "react-icons/bi";
+import { LuArrowUpDown } from "react-icons/lu";
 import { IoTrash } from "react-icons/io5";
+import { FiAlertTriangle } from "react-icons/fi";
+import { deleteVacanteMov } from "../../utils/deleteVacanteMov";
 
 
 
@@ -466,36 +471,49 @@ const InscriptosMov = ()=>{
     //?  -  -  -  PROCESO DE ASIGNACION
     //?---------------------------------------------------------------
     const submitAsignarVacante = async() => {
-        console.log('Asignacion Simple');
+        if(datosInscriptoSelect.id_vacante_generada_cargo_actual === datosVacanteSelect.id_vacante_mov){
+            setMensajeModalInfo('No puede seleccionar la misma vacante de su cargo original, seleccione otra vacante');
+            openModal();
+        }else{
 
-        const fechaHoraActual = await traeFechaHoraActual();
-        const formAsignacion={
-            id_vacante_mov:datosVacanteSelect.id_vacante_mov, 
-            id_inscripto_mov:datosInscriptoSelect.id_inscriptos_mov, 
-            datetime_asignacion:fechaHoraActual, 
-            id_estado_asignacion:1 //estado Asignada
+            console.log('Asignacion Simple');
+    
+            const fechaHoraActual = await traeFechaHoraActual();
+            const formAsignacion={
+                id_vacante_mov:datosVacanteSelect.id_vacante_mov, 
+                id_inscripto_mov:datosInscriptoSelect.id_inscriptos_mov, 
+                datetime_asignacion:fechaHoraActual, 
+                id_estado_asignacion:1 //estado Asignada
+            }
+            console.log('como arma form para Asignacion: ', formAsignacion);
+            await axios.post(`${URL}/api/createasignacionmov`,formAsignacion)
+                .then(async res=>{
+                    console.log('que trae res de createasignacionmov: ', res);
+                    //?Verifico que tipo de Asignacion es
+                    if(datosInscriptoSelect.id_tipo_inscripto===1){
+                        //?INSCRIPTO EN DISPONIBILIDAD -> Solo Asigna Vacante a Inscripto
+                        //Mostrar Notificacion de Movimiento realizado
+                        setMensajeModalInfo('Movimiento Asignado Correctamente')
+                        openModal();
+                    }else{
+                        //?INSCRIPTO ACTIVO -> Una vez asignada vacante, deebe Generar Nueva Vacante del cargo que deja el inscripto
+                        //?SOLO CREA NUEVA VACANTE SI NO ESTA GENERADA -> id_vacante_generada_cargo_actual IS NULL
+                        if(datosInscriptoSelect.id_vacante_generada_cargo_actual===null){
+                            creaNuevaVacante();
+                        }else{
+                            setMensajeModalInfo('Movimiento Asignado Correctamente')
+                            openModal();
+                        }
+    
+                    }
+                })
+                .catch(error=>{
+                    console.log('que trae error createasignacionmov: ', error)
+                });
+    
+            //Al final del Proceso de Asignacion recargo el listado de Vacantes Disponibles
+            await buscoIDListadoVacantes(configSG.nivel.id_nivel);
         }
-        console.log('como arma form para Asignacion: ', formAsignacion);
-        await axios.post(`${URL}/api/createasignacionmov`,formAsignacion)
-            .then(async res=>{
-                console.log('que trae res de createasignacionmov: ', res);
-                //?Verifico que tipo de Asignacion es
-                if(datosInscriptoSelect.id_tipo_inscripto===1){
-                    //?INSCRIPTO EN DISPONIBILIDAD -> Solo Asigna Vacante a Inscripto
-                    //Mostrar Notificacion de Movimiento realizado
-                    setMensajeModalInfo('Movimiento Asignado Correctamente')
-                    openModal();
-                }else{
-                    //?INSCRIPTO ACTIVO -> Una vez asignada vacante, deebe Generar Nueva Vacante del cargo que deja el inscripto
-                    creaNuevaVacante();
-                }
-            })
-            .catch(error=>{
-                console.log('que trae error createasignacionmov: ', error)
-            });
-
-        //Al final del Proceso de Asignacion recargo el listado de Vacantes Disponibles
-        await buscoIDListadoVacantes(configSG.nivel.id_nivel);
     };
 
     const creaNuevaVacante = async() => {
@@ -579,7 +597,39 @@ const InscriptosMov = ()=>{
         }catch(error){
             console.error(error.message);
         }
-        //Al final del Proceso de Asignacion recargo el listado de Vacantes Disponibles
+        //Al final del Proceso de Eliminar Asignacion recargo el listado de Vacantes Disponibles
+        await buscoIDListadoVacantes(configSG.nivel.id_nivel);
+    };
+
+    //Proc: elimina una vacante de movimiento generada por toma de cargo
+    //- Eliminar vacante de vacantes_mov
+    //- Actualizar inscriptos_mov en su campo: id_vacante_generada_cargo_actual a NULL
+    const submitEliminarVacanteMov = async(idVacanteMov)=>{
+        console.log('que trae idVacanteMo: ', idVacanteMov);
+        const fechaHoraActual = traeFechaHoraActual();
+        const datosBody={
+            obsDesactiva:`Se desactiva la VACANTE por Eliminacion ${fechaHoraActual}`
+        }
+        try{
+            await axios.put(`${URL}/api/delvacantemov/${idVacanteMov}`,datosBody)
+            .then(async res=>{
+                console.log('que trae res de delvacantemov: ', res);
+                //Actualizar campo id_vacante_generada_cargo_actual en Inscriptos_mov
+                const idVacanteGenerada=null;
+                const resUpdIdVacGen = await updateIdVacanteGenerada(datosInscriptoSelect.id_inscriptos_mov,idVacanteGenerada);
+                console.log('que trae resUpdIdVacGen: ', resUpdIdVacGen);
+
+                //Mostrar Notificacion de Eliminacion de Vacante
+                setMensajeModalInfo('Vacante Eliminada');
+                openModal();
+            }).catch(error=>{
+                console.log('que trae error delvacantemov: ', error)
+            });
+            
+        }catch(error){
+            console.error(error.message);
+        }
+        //Al final del Proceso de Eliminar Vacante recargo el listado de Vacantes Disponibles
         await buscoIDListadoVacantes(configSG.nivel.id_nivel);
     };
 
@@ -787,7 +837,13 @@ const InscriptosMov = ()=>{
                                                 <td className="text-center">{inscripto.cargo_solicitado}</td>
                                                 <td className="text-sm">{inscripto.observacion}</td>
                                                 <td>
-                                                    <div className="flex flex-row items-center justify-center mx-2 ">
+                                                    <div className="flex flex-row items-center justify-center  ">
+                                                        {(inscripto.vacante_asignada===null && inscripto.id_vacante_generada_cargo_actual!=null)
+                                                            ?<FiAlertTriangle    
+                                                                className="mr-2 blink text-red-500"
+                                                                />
+                                                            :``
+                                                        }
                                                         <FaEye 
                                                             className="hover:cursor-pointer hover:text-[#83F272]" 
                                                             title="Ver Datos"
@@ -1123,7 +1179,7 @@ const InscriptosMov = ()=>{
         <ModalEdit isOpen={isOpenModalEdit} closeModal={closeModalEdit}>
             <div className="h-100 w-100  flex flex-col">
                 <label className="text-xl text-center font-semibold " translate='no'>DATOS DEL INSCRIPTO</label>
-                <div className="min-h-[32vh] w-[50vw] mt-5 border-[1px] border-sky-800 rounded">
+                <div className="min-h-[32vh] w-[50vw] mt-2 border-[1px] border-sky-800 rounded">
                     <div className="flex flex-row ml-2 mt-2">
                         <div className="flex flex-col mr-2">
                             <label className="text-sm">N°Orden</label>
@@ -1191,26 +1247,53 @@ const InscriptosMov = ()=>{
                             />
                         </div>
                     </div>
-                    <div className="flex flex-row ml-2 mt-4 ">
-                        <div className="flex flex-col mr-2 ">
-                            <label className="text-sm">Cargo Actual</label>
-                            <input 
-                                name="cargo_actual"
-                                className="border-[2px] border-orange-400 w-[48mm] pl-[2px]"
-                                value={formInscripto.cargo_actual}
-                                onChange={handleChange}
-                            />
+                    <div className="flex flex-col mx-2 mt-4">
+                        <label className="text-sm font-semibold">Datos de su Cargo Actual</label>
+                        <div className="flex flex-row border-[1px] border-orange-500 rounded p-2 bg-orange-50">
+                            <div className="flex flex-col mr-2 ">
+                                <label className="text-sm">Cargo Actual</label>
+                                <input 
+                                    name="cargo_actual"
+                                    className="border-[1px] border-orange-400 w-[45mm] pl-[2px]"
+                                    value={formInscripto.cargo_actual}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className="flex flex-col mx-2">
+                                <label className="text-sm">Escuela</label>
+                                <input 
+                                    name="nro_escuela"
+                                    className="border-[1px] border-orange-400 w-[77mm] pl-[2px]"
+                                    value={formInscripto.nro_escuela}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            {
+                                (datosInscriptoSelect.id_vacante_generada_cargo_actual!=null)
+                                ?<div className="flex flex-col mr-2">
+                                    <label className="text-sm">N° Vac Gen</label>
+                                    <input 
+                                        name="nro_escuela"
+                                        className="border-[1px] border-orange-400 w-[10mm] pl-[2px]"
+                                        value={datosInscriptoSelect.id_vacante_generada_cargo_actual}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                :``
+                            }
+                            {
+                                (datosInscriptoSelect.vacante_asignada===null && datosInscriptoSelect.id_vacante_generada_cargo_actual!=null && asignacionCargoOriginal.length===0)
+                                ?<div className="flex flex-col mx-2 justify-center">
+                                    <IoTrash 
+                                        className="font-bold text-xl text-red-500 hover:scale-150 transition-all duration-500 blink cursor-pointer"
+                                        title="Eliminar Vacante Generada"
+                                        onClick={()=>submitEliminarVacanteMov(datosInscriptoSelect.id_vacante_generada_cargo_actual)}
+                                    />
+                                </div>
+                                :``
+                            }
                         </div>
-                        <div className="flex flex-col mx-2">
-                            <label className="text-sm">Escuela</label>
-                            <input 
-                                name="nro_escuela"
-                                className="border-[2px] border-orange-400 w-[77mm] pl-[2px]"
-                                value={formInscripto.nro_escuela}
-                                onChange={handleChange}
-                            />
-                        </div>
-                                                
+
                     </div>
                     <div className="flex flex-row ml-2 my-4">
                         <div className="flex flex-col mr-2">
@@ -1223,23 +1306,35 @@ const InscriptosMov = ()=>{
                         </div>
                     </div>
                 </div>
+                {/* AVISO DE ALERTA */}
+                {
+                    (datosInscriptoSelect.vacante_asignada===null && datosInscriptoSelect.id_vacante_generada_cargo_actual!=null)
+                    ?(asignacionCargoOriginal.length!=0)
+                        ?<div className="w-[50vw]">
+                            <label className="text-red-500 font-semibold ">Realice Toma de Cargo de Vacante Disponible. Si va a quedarse con su Cargo Original, elimine la asignacion del docente que tomo su cargo original.</label>
+                        </div>
+                        :<div className="w-[50vw]">
+                            <label className="text-red-500 font-semibold ">Su Cargo Original genero una Vacante Disponible, elimine la vacante generada o realice Toma de Cargo de una Vacante</label>
+                        </div>
+                    :``
+                }
 
 
                 {/* DATOS DE CARGO TOMADO - SI SE LE ASIGNO VACANTE */}
                 {(datosInscriptoSelect.vacante_asignada!=null && datosInscriptoSelect.vacante_asignada!='') &&
-                <div className="h-[20vh] w-[50vw] mt-5 border-[1px] border-green-800 text-center rounded">
+                <div className="h-[19vh] w-[50vw] mt-5 border-[1px] border-green-800 text-center rounded">
                 <div className="flex flex-row ">
                     <div className="w-[20%] "></div>
                     <div className="w-[60%] ">
                         <label className="text-xl text-center font-semibold " translate='no'>Toma de Cargo</label>
                     </div>
                     <div className="flex flex-row w-[20%] justify-end">
-                        <button className="font-bold text-lg mr-2 hover:text-green-500 hover:scale-150 transition-all duration-500">
+                        {/* <button className="font-bold text-lg mr-2 hover:text-green-500 hover:scale-150 transition-all duration-500">
                             <FaEdit 
                                 title="EDITAR"
                                 //onClick={}
                             />
-                        </button>
+                        </button> */}
                         <button className="font-bold text-lg mr-4 hover:text-red-500 hover:scale-150 transition-all duration-500">
                             <IoTrash 
                                 title="ELIMINAR"

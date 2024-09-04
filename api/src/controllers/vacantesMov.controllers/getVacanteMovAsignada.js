@@ -12,7 +12,8 @@ module.exports = async(req,res)=>{
             FROM vacantes_mov AS vm
             LEFT JOIN asignacion_mov AS am ON vm.id_vacante_mov = am.id_vacante_mov
             WHERE (vm.obs_desactiva IS NULL OR vm.obs_desactiva = "")
-            AND vm.id_vacante_mov=${idVacanteMov}`);
+            AND vm.id_vacante_mov=${idVacanteMov}
+            AND  am.obs_desactiva IS NULL`);
 
         console.log('que trae result getVacanteMovAsignada: ', result);
 
