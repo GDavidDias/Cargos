@@ -3,7 +3,7 @@ import { FaRegUserCircle, FaPowerOff  } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { fetchAllInscriptosMov } from "../../utils/fetchAllInscriptosMov";
 import { useNavigate } from "react-router-dom";
-import { FaDotCircle, FaSearch, FaEye, FaTimes} from "react-icons/fa";
+import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit} from "react-icons/fa";
 import { BiTransferAlt } from "react-icons/bi";
 import {useModal} from '../../hooks/useModal';
 import ModalEdit from "../ModalEdit/ModalEdit";
@@ -14,6 +14,9 @@ import { fetchVacantesDispMov } from "../../utils/fetchVacanteDispMov";
 import { LuArrowUpDown } from "react-icons/lu";
 import { TbSortAscending , TbSortDescending } from "react-icons/tb";
 import { fetchVacantesAsignadaMov } from "../../utils/fetchVacanteAsignadaMov";
+import { fetchAsignacionByVacante } from "../../utils/fetchAsignacionByVacante";
+import { updateIdVacanteGenerada } from "../../utils/updateIdVacanteGenerada";
+import { IoTrash } from "react-icons/io5";
 
 
 
@@ -99,6 +102,9 @@ const InscriptosMov = ()=>{
     //E.L guardo el cargo(vacante) asignada al Inscripto seleccionado
     const[cargoAsignado, setCargoAsignado]=useState('');
 
+    //E.L guardo datos de asignacion y docente que tomo cargo_original de otro docente
+    const[asignacionCargoOriginal, setAsignacionCargoOriginal]=useState('');
+
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
     //-------------------------------------
@@ -182,6 +188,12 @@ const InscriptosMov = ()=>{
         }else{
             setCargoAsignado('');
         }
+
+        //Traigo los datos de asignacion de su cargo original y docente quien lo tomo
+        
+        const datosAsignacion = await fetchAsignacionByVacante(datos.id_vacante_generada_cargo_actual);
+        console.log('que tra datosAsignacion de vacante generada: ', datosAsignacion);
+        setAsignacionCargoOriginal(datosAsignacion);
 
         openModalEdit();
     };
@@ -469,12 +481,12 @@ const InscriptosMov = ()=>{
                 console.log('que trae res de createasignacionmov: ', res);
                 //?Verifico que tipo de Asignacion es
                 if(datosInscriptoSelect.id_tipo_inscripto===1){
-                    //Inscripto en Disponibilidad -> Solo Asigna Vacante a Inscripto
+                    //?INSCRIPTO EN DISPONIBILIDAD -> Solo Asigna Vacante a Inscripto
                     //Mostrar Notificacion de Movimiento realizado
                     setMensajeModalInfo('Movimiento Asignado Correctamente')
                     openModal();
                 }else{
-                    //Inscripto Activo -> Una vez asignada vacante, deebe Generar Nueva Vacante del cargo que deja el inscripto
+                    //?INSCRIPTO ACTIVO -> Una vez asignada vacante, deebe Generar Nueva Vacante del cargo que deja el inscripto
                     creaNuevaVacante();
                 }
             })
@@ -483,40 +495,49 @@ const InscriptosMov = ()=>{
             });
 
         //Al final del Proceso de Asignacion recargo el listado de Vacantes Disponibles
-        buscoIDListadoVacantes(configSG.nivel.id_nivel);
+        await buscoIDListadoVacantes(configSG.nivel.id_nivel);
     };
 
     const creaNuevaVacante = async() => {
-            //Creo una nueva Vacante con los datos del cargo que deja el Inscripto
-            //id_listado_vac_mov, orden, establecimiento, obs_establecimiento, region, departamento, localidad, cargo, turno, modalidad, cupof, id_especialidad, datetime_creacion, zona
-            const fechaHoraActualNuevaVac = await traeFechaHoraActual();
-            const formNuevaVacante={
-                id_listado_vac_mov:idListVacMov, //INT
-                orden:null,  //INT
-                establecimiento:datosInscriptoSelect.nro_escuela, //VARCHAR
-                obs_establecimiento:'', //VARCHAR
-                region:'', //VARCHAR
-                departamento:'', //VARCHAR
-                localidad:'', //VARCHAR
-                cargo:datosInscriptoSelect.cargo_actual, //VARCHAR
-                turno:'', //VARCHAR
-                modalidad:'', //VARCHAR
-                cupof:'', //VARCHAR
-                id_especialidad:null, //INTEGER
-                datetime_creacion:fechaHoraActualNuevaVac, //VARCHAR
-                zona:'' //VARCHAR
-            }
-            console.log('como arma formBody para Nueva Vacante: ', formNuevaVacante);
-            await axios.post(`${URL}/api/vacantemov`,formNuevaVacante)
-            .then(async res=>{
-                console.log('que trae res de createVacantesMov: ', res);
-                //Mostrar Notificacion de Movimiento realizado
-                setMensajeModalInfo('Movimiento Asignado Correctamente')
-                openModal();
-            })
-            .catch(error=>{
-                console.log('que trae error createVacantesMov: ', error)
-            });
+        //Creo una nueva Vacante con los datos del cargo que deja el Inscripto
+        //id_listado_vac_mov, orden, establecimiento, obs_establecimiento, region, departamento, localidad, cargo, turno, modalidad, cupof, id_especialidad, datetime_creacion, zona
+        const fechaHoraActualNuevaVac = await traeFechaHoraActual();
+        const formNuevaVacante={
+            id_listado_vac_mov:idListVacMov, //INT
+            orden:null,  //INT
+            establecimiento:datosInscriptoSelect.nro_escuela, //VARCHAR
+            obs_establecimiento:'', //VARCHAR
+            region:'', //VARCHAR
+            departamento:'', //VARCHAR
+            localidad:'', //VARCHAR
+            cargo:datosInscriptoSelect.cargo_actual, //VARCHAR
+            turno:'', //VARCHAR
+            modalidad:'', //VARCHAR
+            cupof:'', //VARCHAR
+            id_especialidad:null, //INTEGER
+            datetime_creacion:fechaHoraActualNuevaVac, //VARCHAR
+            zona:'' //VARCHAR
+        }
+        console.log('como arma formBody para Nueva Vacante: ', formNuevaVacante);
+        await axios.post(`${URL}/api/vacantemov`,formNuevaVacante)
+        .then(async res=>{
+            console.log('que trae res de createVacantesMov: ', res);
+            //Mostrar Notificacion de Movimiento realizado
+            //Una vez creada la vacante, se debe actualizar el id_vacante_mov generada del cargo que dejo el inscripto
+            const idVacanteGenerada = res.data.id_vacantes_mov;
+            console.log('cual es el id de la vacante creada: ', idVacanteGenerada);
+
+            const resUpdIdVacGen = await updateIdVacanteGenerada(datosInscriptoSelect.id_inscriptos_mov,idVacanteGenerada);
+            console.log('que trae resUpdIdVacGen: ', resUpdIdVacGen);
+
+            setMensajeModalInfo('Movimiento Asignado Correctamente')
+            openModal();
+        })
+        .catch(error=>{
+            console.log('que trae error createVacantesMov: ', error)
+        });
+        //Al final del Proceso de Asignacion recargo el listado de Vacantes Disponibles
+        await buscoIDListadoVacantes(configSG.nivel.id_nivel);
     };
     //?---------------------------------------------------------------
 
@@ -533,6 +554,33 @@ const InscriptosMov = ()=>{
         const seconds = String(now.getSeconds()).padStart(2, '0');
     
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
+
+
+    const submitEliminarTomaCargo = async(idAsignacion) =>{
+        console.log('que trae idAsignacion: ', idAsignacion);
+        const fechaHoraActual = traeFechaHoraActual();
+        const datosBody={
+            obsDesactiva:`Se desactiva la Asignacion por Eliminacion ${fechaHoraActual}`
+        }
+
+        try{
+            await axios.post(`${URL}/api/delasignacionmov/${idAsignacion}`,datosBody)
+            .then(async res=>{
+                console.log('que trae res de delasignacionmov: ', res);
+                //Mostrar Notificacion de Eliminacion de Asignacion
+                setMensajeModalInfo('Toma de Cargo Eliminada');
+                openModal();
+            })
+            .catch(error=>{
+                console.log('que trae error createVacantesMov: ', error)
+            });
+
+        }catch(error){
+            console.error(error.message);
+        }
+        //Al final del Proceso de Asignacion recargo el listado de Vacantes Disponibles
+        await buscoIDListadoVacantes(configSG.nivel.id_nivel);
     };
 
 
@@ -563,7 +611,12 @@ const InscriptosMov = ()=>{
         console.log('que tiene estado local estadoInscripto: ', estadoInscripto);
 
         aplicoFiltrosListado(listadoInscriptosMov);
-    },[listadoInscriptosMov,tipoInscripto, estadoInscripto])
+    },[listadoInscriptosMov,tipoInscripto, estadoInscripto]);
+
+
+    useEffect(()=>{
+        console.log('que tiene asignacionCargoOriginal: ', asignacionCargoOriginal);
+    },[asignacionCargoOriginal])
 
 
     //VEO EL LISTADO DE VACANTES DE MOVIMIENTO
@@ -1070,7 +1123,7 @@ const InscriptosMov = ()=>{
         <ModalEdit isOpen={isOpenModalEdit} closeModal={closeModalEdit}>
             <div className="h-100 w-100  flex flex-col">
                 <label className="text-xl text-center font-semibold " translate='no'>DATOS DEL INSCRIPTO</label>
-                <div className="h-[32vh] w-[50vw] mt-5 border-[1px] border-sky-800 rounded">
+                <div className="min-h-[32vh] w-[50vw] mt-5 border-[1px] border-sky-800 rounded">
                     <div className="flex flex-row ml-2 mt-2">
                         <div className="flex flex-col mr-2">
                             <label className="text-sm">N°Orden</label>
@@ -1114,29 +1167,8 @@ const InscriptosMov = ()=>{
                             <label className="text-sm">DNI</label>
                             <input 
                                 name="dni"
-                                className="border-[1px] border-zinc-400 w-[35mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[30mm] pl-[2px]"
                                 value={formInscripto.dni}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="flex flex-col mx-2">
-                            <label className="text-sm">Escuela</label>
-                            <input 
-                                name="nro_escuela"
-                                className="border-[1px] border-zinc-400 w-[77mm] pl-[2px]"
-                                value={formInscripto.nro_escuela}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        
-                    </div>
-                    <div className="flex flex-row ml-2 mt-4">
-                        <div className="flex flex-col mr-2">
-                            <label className="text-sm">Cargo Actual</label>
-                            <input 
-                                name="cargo_actual"
-                                className="border-[1px] border-zinc-400 w-[48mm] pl-[2px]"
-                                value={formInscripto.cargo_actual}
                                 onChange={handleChange}
                             />
                         </div>
@@ -1157,9 +1189,30 @@ const InscriptosMov = ()=>{
                                 value={formInscripto.legajo}
                                 onChange={handleChange}
                             />
-                        </div>                        
+                        </div>
                     </div>
-                    <div className="flex flex-row ml-2 mt-4">
+                    <div className="flex flex-row ml-2 mt-4 ">
+                        <div className="flex flex-col mr-2 ">
+                            <label className="text-sm">Cargo Actual</label>
+                            <input 
+                                name="cargo_actual"
+                                className="border-[2px] border-orange-400 w-[48mm] pl-[2px]"
+                                value={formInscripto.cargo_actual}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="flex flex-col mx-2">
+                            <label className="text-sm">Escuela</label>
+                            <input 
+                                name="nro_escuela"
+                                className="border-[2px] border-orange-400 w-[77mm] pl-[2px]"
+                                value={formInscripto.nro_escuela}
+                                onChange={handleChange}
+                            />
+                        </div>
+                                                
+                    </div>
+                    <div className="flex flex-row ml-2 my-4">
                         <div className="flex flex-col mr-2">
                             <label className="text-sm">Observaciones</label>
                             <input 
@@ -1171,12 +1224,36 @@ const InscriptosMov = ()=>{
                     </div>
                 </div>
 
+
                 {/* DATOS DE CARGO TOMADO - SI SE LE ASIGNO VACANTE */}
                 {(datosInscriptoSelect.vacante_asignada!=null && datosInscriptoSelect.vacante_asignada!='') &&
                 <div className="h-[20vh] w-[50vw] mt-5 border-[1px] border-green-800 text-center rounded">
-                    <label className="text-xl text-center font-semibold " translate='no'>Cargo Asignado</label>
+                <div className="flex flex-row ">
+                    <div className="w-[20%] "></div>
+                    <div className="w-[60%] ">
+                        <label className="text-xl text-center font-semibold " translate='no'>Toma de Cargo</label>
+                    </div>
+                    <div className="flex flex-row w-[20%] justify-end">
+                        <button className="font-bold text-lg mr-2 hover:text-green-500 hover:scale-150 transition-all duration-500">
+                            <FaEdit 
+                                title="EDITAR"
+                                //onClick={}
+                            />
+                        </button>
+                        <button className="font-bold text-lg mr-4 hover:text-red-500 hover:scale-150 transition-all duration-500">
+                            <IoTrash 
+                                title="ELIMINAR"
+                                onClick={()=>submitEliminarTomaCargo(cargoAsignado.id_asignacion_mov)}
+                            />
+                        </button>
+                    </div>
+                </div>
                     {/* Datos a mostrar: Escuela, cargo, modalidad, turno, region, localidad, zona */}
                     <div className="flex flex-row">
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">ID Vacante</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[6vw] h-[4vh] pl-[4px]">{cargoAsignado.id_vacante_mov}</div>
+                        </div>
                         <div className="text-start ml-2">
                             <label className="font-semibold text-sm">Escuela</label>
                             <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[20vw] h-[4vh] pl-[4px]">{cargoAsignado.establecimiento} {cargoAsignado.obs_establecimiento}</div>
@@ -1207,16 +1284,43 @@ const InscriptosMov = ()=>{
                             <label className="font-semibold text-sm">Zona</label>
                             <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] ">{cargoAsignado.zona}</div>
                         </div>
-                    </div>    
-                    
+                    </div> 
                 </div>
                 }
+
+                {/* DATOS DE CARGO ORIGINAL TOMADO POR OTRO DOCENTE */}
+                {/* Solo se muestra si su cargo original fue tomado por otro docente */}
+                {(datosInscriptoSelect.id_tipo_inscripto!=1 && asignacionCargoOriginal.length!=0) &&
+                <div className="h[10vh] w-[50vw] mt-5 border-[2px] border-orange-500 text-center rounded">
+                <label className="text-xl text-center font-semibold " translate='no'>Docente que tomo su Cargo Original</label>
+                
+                {/* datos a mostrar: id vacante creada, id_inscripto que tomo su cargo, apellido, nombre, dni */}
+                    <div className="flex flex-row mb-2">
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Id Vacante</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[6vw] h-[4vh] pl-[4px]">{asignacionCargoOriginal[0].id_vacante_mov}</div>
+                        </div>
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Apellido</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[15vw] h-[4vh] pl-[4px] ">{asignacionCargoOriginal[0].apellido}</div>
+                        </div>
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Nombre</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[15vw] h-[4vh] pl-[4px] ">{asignacionCargoOriginal[0].nombre}</div>
+                        </div>
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Dni</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] ">{asignacionCargoOriginal[0].dni}</div>
+                        </div>
+                    </div>    
+                </div>
+                }                
 
                 {/* VISIBILIDAD DE BOTONES */}
                 <div className="flex justify-center">
                     {(estadoForm==='ver') &&
                         <button
-                            className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                            className="border-2 border-[#7C8EA6] mt-5 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
                             onClick={closeModalEdit}
                             translate='no'
                         >CERRAR</button>
@@ -1224,12 +1328,12 @@ const InscriptosMov = ()=>{
                     {(estadoForm==='editar') &&
                         <div>
                             <button
-                                className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                                className="border-2 border-[#7C8EA6] mt-5 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
                                 onClick={()=>submitGuardarCambiosFormInscripto()}
                                 translate='no'
                             >GUARDAR</button>
                             <button
-                                className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                                className="border-2 border-[#7C8EA6] mt-5 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
                                 onClick={()=>valoresInicialesFormInscripto()}
                                 translate='no'
                             >CANCELAR</button>

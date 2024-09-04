@@ -9,12 +9,13 @@ module.exports = async(req,res)=>{
     console.log('que trae id_listado_inscriptos: ', id_listado_inscriptos);
 
     try{
-        const [result] = await pool.query(`SELECT im.id_inscriptos_mov, im.cargo_actual, im.cargo_solicitado, im.dni, im.apellido, im.nombre, im.observacion, im.total, im.orden, im.nro_escuela, im.legajo, im.id_especialidad, e.descripcion AS especialidad, im.id_tipo_inscripto, ti.descripcion AS tipoinscripto, im.id_listado_inscriptos, li.descripcion, am.id_vacante_mov AS vacante_asignada
+        const [result] = await pool.query(`SELECT im.id_inscriptos_mov, im.cargo_actual, im.cargo_solicitado, im.dni, im.apellido, im.nombre, im.observacion, im.total, im.orden, im.nro_escuela, im.legajo, im.id_especialidad, e.descripcion AS especialidad, im.id_tipo_inscripto, ti.descripcion AS tipoinscripto, im.id_listado_inscriptos, li.descripcion, am2.id_vacante_mov AS vacante_asignada, im.id_vacante_generada_cargo_actual
             FROM inscriptos_mov AS im
             LEFT JOIN especialidad AS e ON im.id_especialidad = e.id_especialidad 
             LEFT JOIN tipo_inscripto AS ti ON im.id_tipo_inscripto = ti.id_tipo_inscripto
             LEFT JOIN listado_inscriptos AS li ON im.id_listado_inscriptos = li.id_listado_inscriptos
-            LEFT JOIN asignacion_mov AS am ON im.id_inscriptos_mov = am.id_inscripto_mov
+            LEFT JOIN (SELECT am.id_inscripto_mov, am.id_vacante_mov FROM asignacion_mov AS am WHERE am.obs_desactiva IS NULL) AS am2 ON im.id_inscriptos_mov = am2.id_inscripto_mov
+
             WHERE im.id_listado_inscriptos = ${id_listado_inscriptos}
             `);
 
