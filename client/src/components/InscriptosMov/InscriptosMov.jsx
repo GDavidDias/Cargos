@@ -168,7 +168,7 @@ const InscriptosMov = ()=>{
     //Este Proc carga el listado de VACANTES Disponibles al E.L
     const getVacantesDisponiblesMov = async(id_listado) =>{
         let data;
-        console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
+        //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
             data = await fetchVacantesDispMov(id_listado);
             console.log('que trae data de fetchVacantesDispMov: ', data);

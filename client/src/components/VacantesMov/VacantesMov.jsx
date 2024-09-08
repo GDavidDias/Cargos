@@ -1,10 +1,116 @@
-import { useEffect } from "react";
-import { FaRegUserCircle, FaPowerOff  } from "react-icons/fa";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import {useModal} from '../../hooks/useModal';
+import {URL} from '../../../varGlobal';
+
+//-------ICONOS--------
+import { FaRegUserCircle, FaPowerOff  } from "react-icons/fa";
+import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit} from "react-icons/fa";
+import { BiTransferAlt } from "react-icons/bi";
+import { LuArrowUpDown } from "react-icons/lu";
+import { IoTrash } from "react-icons/io5";
+import { FiAlertTriangle } from "react-icons/fi";
+import { deleteVacanteMov } from "../../utils/deleteVacanteMov";
+import { fetchAllVacantesMov } from "../../utils/fetchAllVacantes";
+import ModalEdit from "../ModalEdit/ModalEdit";
+import ContentModalVerVacante from "../ContentModalVerDatos/ContentModalVerVacante.jsx";
+import Modal from "../Modal/Modal";
+import axios from "axios";
+import ContentModalNuevaVacante from "../ContentModalNuevaVacante/ContentModalNuevaVacante";
+
+
 
 const VacantesMov = () =>{
-    
+
+    //E.L. para Ventanas Modales
+    const[isOpenModalVerVacante,openModalVerVacante,closeModalVerVacante]=useModal(false);
+    const[isOpenModalNuevo,openModalNuevo,closeModalNuevo]=useModal(false);
+    const[isOpenModal, openModal, closeModal]=useModal(false);
+    const[isOpenModalConfirm, openModalConfirm, closeModalConfirm]=useModal(false);
+
+    //E.L. para Mensaje en Modal de Notificaciones
+    const[mensajeModalInfo, setMensajeModalInfo]=useState('');
+    //E.L. para Mensaje en Modal de Confirmacion
+    const[mensajeModalConfirm, setMensajeModalConfirm]=useState('');
+    //E.L. para setear el estado de la respuesta del Modal de Confirmacion
+    const[estadoModalConfirm, setEstadoModalConfirm]=useState(false);
+
+    //E.L. para filtro de estado de las vacantes
+    //puede ser: "todas", "disponibles" o "asignadas"
+    const[estadoVacantes, setEstadoVacantes]=useState('todas');
+    //E.L guardo el id del listado de vacantes
+    const[idListVacMov,setIdListVacMov]=useState();
+
+    //E.L. que almacena los datos de una Vacante Seleccionada
+    const[datosVacanteSelect, setDatosVacanteSelect]=useState('');
+
+    //E.L. donde se almacena el listado de Vacantes  (carga inicial)
+    //y segun el tipo de listado de vacantes indicado en configuracion
+    const[listadoVacantesMov, setListadoVacantesMov]=useState([]);
+
+    //E.L para aplicar filtros sobre el listado de Vacantes
+    const[filterListadoVacantesMov, setFilterListadoVacantesMov]=useState([]);
+
+    //E.L que se usa para validar si se modifico algun dato del formulario, si es asi
+    //el estado cambia a "editar" -> habilita botones GUARDAR y CANCELAR
+    //si no modifica nada el estado es "ver" - habilita boton CERRAR
+    const[estadoForm, setEstadoForm]=useState('ver');    
+
+    //E.L. de id de vacante seleccionada
+    const[idVacanteSelect, setIdVacanteSelect]=useState();
+
+    //E.L. de form que se usa para actualizar los datos de la Vacante
+    const[formVacante, setFormVacante]=useState({
+        establecimiento:'', 
+        obs_establecimiento:'', 
+        cargo:'', 
+        modalidad:'', 
+        turno:'', 
+        cupof:'',
+        localidad:'', 
+        departamento:'',
+        region:'', 
+        zona:''
+    });
+
+    //E.L. para validar si va a permitir guardar nueva vacante.
+    const[validaFormNuevaVacante, setValidaFormNuevaVacante]=useState(false);
+
+    //E.L. de form que se usa para Nueva Vacante
+    const[formNuevaVacante, setFormNuevaVacante]=useState({
+        establecimiento:'', 
+        obs_establecimiento:'', 
+        cargo:'', 
+        modalidad:'', 
+        turno:'', 
+        cupof:'',
+        localidad:'', 
+        departamento:'',
+        region:'', 
+        zona:''
+    });
+
+    const handleChangeFormVacante =(event)=>{
+        const{name, value} = event.target;
+        setFormVacante({
+            ...formVacante,
+            [name]:value
+        });
+        setEstadoForm('editar')
+    };
+
+    const handleChangeFormNuevaVacante =(event)=>{
+        const{name, value} = event.target;
+        setFormNuevaVacante({
+            ...formNuevaVacante,
+            [name]:value.toUpperCase()
+        });
+    };
+
+
+
+
     const configSG = useSelector((state)=>state.config);
     const navigate=useNavigate();
 
@@ -12,9 +118,259 @@ const VacantesMov = () =>{
         navigate('/')
     };
 
+     //Proc: traigo el ID del listado de Vacantes Configurado
+     const buscoIDListadoVacantes = async(id_nivel) =>{
+        //Filtro configuracion para el nivel
+        const configFilterNivel = await configSG.config.filter((configNivel)=>configNivel.id_nivel==id_nivel);
+        console.log('que trae configFilterNivel: ', configFilterNivel);
+
+        //Traigo el id del listado cargado en configuracion para:
+        //LISTADO DE VACANTES DE MOVIMIENTOS -> id_listado_vacantes_mov
+        const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_mov;
+        console.log('que tiene idFilterListado: ',idFilterListado);
+
+        //Guardo id_listado_vacantes_mov para usarlo en nueva Vacante
+        setIdListVacMov(idFilterListado);
+
+        //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE VACANTES
+        await getVacantesMov(idFilterListado)
+    };
+
+    //Este Proc carga el listado de VACANTES al E.L
+    const getVacantesMov = async(id_listado) =>{
+        let data;
+        console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
+        if(id_listado){
+
+            data = await fetchAllVacantesMov(id_listado);
+
+            console.log('que trae data de fetchVacantesDispMov: ', data);
+
+            if(data?.length!=0){
+                setListadoVacantesMov(data); 
+                setFilterListadoVacantesMov(data);
+            };
+        };
+    };  
+
+    //Proceso para filtrar el listado de vacantes por todos/disponibles/asignado
+    const aplicoFiltroListadoVacantes = async(data)=>{
+        console.log('que tiene listado: ', data);
+        let dataFilter = await data.filter(item=>{
+            if(estadoVacantes==='todas'){
+                return(item.datetime_asignacion===null || item.datetime_asignacion!=null)
+            }else if(estadoVacantes==='disponibles'){
+                return(item.datetime_asignacion===null)
+            }else if(estadoVacantes==='asignadas'){
+                return(item.datetime_asignacion!=null)
+            }
+        })
+        setFilterListadoVacantesMov(dataFilter);
+    };
+
+    const submitVerDatosVacante = async(datosVacante) => {
+        console.log('presiono en submitVerDatosVacante');
+        console.log('que tiene datos de vacante: ', datosVacanteSelect)
+        await setDatosVacanteSelect(datosVacante);
+        //setIdVacanteSelect(datosVacante.id_vacante_mov);
+        //seteoDatosInicialesFormVacante(datosVacante);
+        openModalVerVacante();
+    };
+
+    const seteoDatosInicialesFormVacante = () =>{
+        setFormVacante({
+            establecimiento:datosVacanteSelect.establecimiento, 
+            obs_establecimiento:datosVacanteSelect.obs_establecimiento, 
+            cargo:datosVacanteSelect.cargo, 
+            modalidad:datosVacanteSelect.modalidad, 
+            turno:datosVacanteSelect.turno, 
+            cupof:datosVacanteSelect.cupof,
+            localidad:datosVacanteSelect.localidad, 
+            departamento:datosVacanteSelect.departamento,
+            region:datosVacanteSelect.region, 
+            zona:datosVacanteSelect.zona
+        });
+        setIdVacanteSelect(datosVacanteSelect.id_vacante_mov);
+        setEstadoForm('ver');
+    };
+
+    const submitGuardarFormVacante = async() => {
+        console.log('presiono en submitGuardarFormVacante');
+        const idVacanteMov=idVacanteSelect;
+        await axios.put(`${URL}/api/editvacantemov/${idVacanteMov}`,formVacante)
+            .then(async res=>{
+                console.log('que trae res de editvacantemov: ', res);
+                //Mostar mensaje de datos actualizados.
+                setMensajeModalInfo('Datos Modificados Correctamente')
+                openModal();
+            })
+            .catch(error=>{
+                console.log('que trae error editvacantemov: ', error);
+            })
+    };
+
+    const submitEliminarVacante = async(datos) => {
+        setIdVacanteSelect(datos.id_vacante_mov);
+        setDatosVacanteSelect(datos);
+        console.log('presiono en submitEliminarVacante');
+        console.log('que trae datos de vacante a eliminar: ', datos);
+
+        try{
+            await axios.post(`${URL}/api/vacantedeinscripto/${datos.id_vacante_mov}`)
+                .then(async res=>{
+                    console.log('que trae res de vacantedeinscripto: ', res.data);
+                    if(res.data.length===0){
+                        setMensajeModalConfirm('¿Seguro Elimina la Vacante?');
+                        openModalConfirm();
+                    }else{
+                        setMensajeModalInfo(`Para eliminar la Vacante generada del Movimiento de: ${res.data[0].apellido}, ${res.data[0].nombre} (DNI: ${res.data[0].dni}), dirigase a Inscriptos`);
+                        openModal();
+                    }
+                })
+        }catch(error){
+            console.log(error.message)
+        }
+
+    };
+    
+    const procesoEliminarVacante = async() => {
+        console.log('Ingresa a procesoEliminarVacante');
+        const idVacanteMov = idVacanteSelect;
+        console.log('que tiene idVacanteMov: ', idVacanteMov);
+        const fechaHoraActual = traeFechaHoraActual();
+        const datosBody={
+            obsDesactiva:`Se desactiva la VACANTE por Eliminacion ${fechaHoraActual}`
+        }
+
+        try{
+            await axios.put(`${URL}/api/delvacantemov/${idVacanteMov}`,datosBody)
+            .then(async res=>{
+                console.log('que trae res de delvacantemov: ', res);
+
+                //Mostrar Notificacion de Eliminacion de Vacante
+                setMensajeModalInfo('Vacante Eliminada');
+                openModal();
+
+            }).catch(error=>{
+                console.log('que trae error delvacantemov: ', error)
+            });
+            
+        }catch(error){
+            console.error(error.message);
+        }
+        //Al final del Proceso de Eliminar Vacante recargo el listado de Vacantes Disponibles
+        await buscoIDListadoVacantes(configSG.nivel.id_nivel);
+
+    };
+
+    const submitCloseModal = () => {
+        closeModal();
+        closeModalVerVacante();
+        closeModalNuevo();
+
+        //cambio estado de formVacante
+        setEstadoForm('ver');
+        //recargo listao de inscriptos con datos actualizados
+        buscoIDListadoVacantes(configSG.nivel.id_nivel);
+    };
+
+    const submitNuevaVacante = () =>{
+        setValidaFormNuevaVacante(false);
+        setInicialFormNuevaVacante();
+        openModalNuevo();
+    };
+
+    const submitCloseModalNuevo = ()=>{
+        closeModalNuevo();
+    };
+
+    const setInicialFormNuevaVacante=async()=>{
+        const fechaHoraActualNuevaVac = await traeFechaHoraActual();
+        setFormNuevaVacante({
+            id_listado_vac_mov:idListVacMov, //sale del listado de configuracion
+            orden:null, //va a ser null
+            id_especialidad:null, //va a ser null
+            datetime_creacion:fechaHoraActualNuevaVac, //traigo hora y fecha actual
+            establecimiento:'', 
+            obs_establecimiento:'', 
+            cargo:'', 
+            modalidad:'', 
+            turno:'', 
+            cupof:'',
+            localidad:'', 
+            departamento:'',
+            region:'', 
+            zona:''
+        });
+    };
+
+    const traeFechaHoraActual = () => {
+        const now = new Date();
+        
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Meses van de 0 a 11, por eso se suma 1
+        const day = String(now.getDate()).padStart(2, '0');
+    
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
+
+    const submitGuardarFormNuevaVacante = async() => {
+
+        console.log('presiono en submitGuardarFormNuevaVacante');
+        console.log('como queda formNuevaVacante: ', formNuevaVacante);
+        // const idVacanteMov=idVacanteSelect;
+        await axios.post(`${URL}/api/vacantemov`,formNuevaVacante)
+            .then(async res=>{
+                console.log('que trae res de vacantemov: ', res);
+                //Mostar mensaje de datos actualizados.
+                setMensajeModalInfo('Vacante Creada Correctamente')
+                openModal();
+            })
+            .catch(error=>{
+                console.log('que trae error vacantemov: ', error);
+            })
+    };
+
     useEffect(()=>{
-        console.log('que tiene configSG en VacantesMov: ', configSG);
-    },[configSG])
+        if(formNuevaVacante.establecimiento!='' && formNuevaVacante.cargo!='' ){
+            setValidaFormNuevaVacante(true);
+        }else{
+            setValidaFormNuevaVacante(false);
+        }
+    },[formNuevaVacante])
+
+    useEffect(()=>{
+        //console.log('como actualiza formVacante: ', formVacante);
+    },[formVacante])
+
+    //cada vez que aplco filtro, 
+    useEffect(()=>{
+        console.log('APLICO FILTRO');
+        console.log('que tiene estado local estadoVacantes: ', estadoVacantes);
+        aplicoFiltroListadoVacantes(listadoVacantesMov);
+
+    },[listadoVacantesMov,estadoVacantes])
+
+    useEffect(()=>{
+        seteoDatosInicialesFormVacante()
+    },[datosVacanteSelect])
+
+    //VEO CONFIGURACION GLOBAL
+    useEffect(()=>{
+        //?PROCESO SE EJECUTA EN CARGA INICIAL
+        console.log('que tiene configSG en VacantesMov (CARGA INICIAL): ', configSG);
+    },[configSG]);
+
+    //CARGO LISTADO DE VACANTES AL RENDERIZAR
+    useEffect(()=>{
+        //?PROCESO SE EJECUTA EN CARGA INICIAL
+        //LLAMO AL PROCEDIMIENTO buscoIDListadoVacantes Y PASO EL NIVEL CARGADO EN STORE GLOBAL
+        buscoIDListadoVacantes(configSG.nivel.id_nivel);
+    },[])
 
     return(
         <div className="h-full w-full">
@@ -25,10 +381,11 @@ const VacantesMov = () =>{
                     <label className="ml-4 text-base font-semibold">NIVEL {configSG.nivel.descripcion}</label>
                     <div className="flex flex-row">
                         <label className="ml-4 text-lg font-sans font-bold">VACANTES</label>
-                        {/* <button 
-                            className="ml-2 px-[2px] border-[1px] border-[#73685F] rounded hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] shadow"
-                        >Activos</button>
                         <button 
+                            className="ml-2 px-[2px] border-[1px] border-[#73685F] rounded hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] shadow"
+                            onClick={submitNuevaVacante}
+                        >Nueva Vacante</button>
+                        {/* <button 
                             className="ml-2 px-[2px] border-[1px] border-[#73685F] rounded hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] shadow"
                         >Disponibilidad</button> */}
                     </div>
@@ -46,10 +403,188 @@ const VacantesMov = () =>{
             </div>
             {/* CONTENIDO DE PAGINA */}
             <div className="h-[87vh]">
-                <div className="m-2 border-[1px] border-[#758C51] rounded h-[83vh]">
+                <div className="m-2 border-[1px] border-[#758C51] rounded h-[83vh] ">
+                    {/* PARTE SUPERIOR DE TABLA */}
+                    <div className="border-b-[1px] border-slate-300 h-[6vh] flex flex-row items-center">
+                        {/* Filtros */}
+                        <div className="text-base w-[50%] ">
+                            <label 
+                                className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
+                                    ${(estadoVacantes==='todas')
+                                        ?`border-sky-500 text-sky-500`
+                                        :`border-zinc-300 text-black`
+                                    }
+                                    `}
+                                onClick={()=>setEstadoVacantes('todas')}
+                            >Todas</label>
+                            <label 
+                                className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
+                                    ${(estadoVacantes==='disponibles')
+                                        ?`border-sky-500 text-sky-500`
+                                        :`border-zinc-300 text-black`
+                                    }
+                                    `}
+                                onClick={()=>setEstadoVacantes('disponibles')}
+                            >Disponibles</label>
+                            <label 
+                                className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
+                                    ${(estadoVacantes==='asignadas')
+                                        ?`border-sky-500 text-sky-500`
+                                        :`border-zinc-300 text-black`
+                                    }
+                                    `}
+                                onClick={()=>setEstadoVacantes('asignadas')}
+                            >Asignadas</label>
+                        </div>
+
+                        {/* Campo de Busqueda */}
+                        <div className="w-[50%]  flex justify-end">
+                            <div className="border-[1px] border-zinc-400 w-[20vw] rounded flex flex-row items-center justify-between mr-2">
+                                <input 
+                                    className="w-[15vw] focus:outline-none rounded"
+                                    placeholder="Buscar..."
+                                    type="text"
+                                    //value={inputSearch}
+                                    //onChange={handleInputSearchChange}
+                                />
+                                <div className="flex flex-row items-center">
+                                    {/* {(inputSearch!='') &&
+                                        <FaTimes
+                                            className="text-slate-400 cursor-pointer text-lg"
+                                            onClick={()=>handleCancelSearch()}
+                                        />
+                                    } */}
+                                    <FaSearch 
+                                        className="text-zinc-500 cursor-pointer mr-2"
+                                        onClick={()=>submitSearch()}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* PARTE INFERIOR DE DATOS DE TABLA */}
+                    <div className=" h-[80vh] overflow-y-auto">
+                        <table className="border-[1px] bg-slate-50 w-full">
+                            <thead>
+                                <tr className="sticky top-0 text-sm border-b-[2px] border-zinc-300 bg-zinc-200">
+                                    <th className="border-r-[1px] border-zinc-300">ID</th>
+                                    <th className="border-r-[1px] border-zinc-300">Establecimiento</th>
+                                    <th className="border-r-[1px] border-zinc-300">Cargo</th>
+                                    <th className="border-r-[1px] border-zinc-300">Modalidad</th>
+                                    <th className="border-r-[1px] border-zinc-300">Turno</th>
+                                    <th className="border-r-[1px] border-zinc-300">Region</th>
+                                    <th className="border-r-[1px] border-zinc-300">Localidad</th>
+                                    <th className="border-r-[1px] border-zinc-300">Zona</th>
+                                    <th className="">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {
+                                    filterListadoVacantesMov?.map((vacante, index)=>{
+                                        const colorFila = vacante.datetime_asignacion ?`bg-red-200` :``
+                                        return(
+                                            <tr 
+                                                className={`text-lg font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 ${colorFila}`}
+                                                key={index}
+                                            >
+                                                <td className="w-[2vw] pl-[4px] font-light">{vacante.id_vacante_mov
+                                                }</td>
+                                                <td className="text-center">{vacante.establecimiento} {vacante.obs_establecimiento}</td>
+                                                <td className="text-center">{vacante.cargo}</td>
+                                                <td className="text-center">{vacante.modalidad}</td>
+                                                <td>{vacante.turno}</td>
+                                                <td className="text-center">{vacante.region}</td>
+                                                <td>{vacante.localidad}</td>
+                                                <td className="text-center">{vacante.zona}</td>
+                                                <td>
+                                                    <div className="flex flex-row items-center justify-center  ">
+                                                        <FaEye 
+                                                            className="font-bold text-lg mr-2 text-sky-500 hover:scale-150 transition-all duration-500 cursor-pointer"
+                                                            title="Ver Datos"
+                                                            onClick={()=>submitVerDatosVacante(vacante)}
+                                                        />
+                                                        {
+                                                            (vacante.datetime_asignacion===null)
+                                                            ?<IoTrash 
+                                                                className="font-bold text-xl text-red-500 hover:scale-150 transition-all duration-500 cursor-pointer"
+                                                                title="Eliminar Vaante"
+                                                                onClick={()=>submitEliminarVacante(vacante)}
+                                                            />
+                                                            :``
+                                                        }
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                     
                 </div>
             </div>
+
+            {/* MODAL VER DATOS */}
+            <ModalEdit isOpen={isOpenModalVerVacante} closeModal={closeModalVerVacante}>
+                <ContentModalVerVacante
+                    idVacante={idVacanteSelect}
+                    formVacante={formVacante}
+                    closeModal={closeModalVerVacante}
+                    handleChangeFormVacante={handleChangeFormVacante}
+                    estadoForm={estadoForm}
+                    datosVacante={datosVacanteSelect}
+                    submitGuardarFormVacante={submitGuardarFormVacante}
+                />
+                
+            </ModalEdit>
+
+            {/* MODAL NUEVA VACANTE */}
+            <ModalEdit isOpen={isOpenModalNuevo} closeModal={closeModalNuevo}>
+                <ContentModalNuevaVacante
+                    formNuevaVacante={formNuevaVacante}
+                    closeModalNuevaVacante={submitCloseModalNuevo}
+                    handleChangeFormVacante={handleChangeFormNuevaVacante}
+                    valida={validaFormNuevaVacante}
+                    submitGuardarFormNuevaVacante={submitGuardarFormNuevaVacante}
+                />
+            </ModalEdit>
+
+            {/* MODAL DE CONFIRMACION ELIMINA VACANTE*/}
+            <ModalEdit isOpen={isOpenModalConfirm} closeModal={closeModalConfirm}>
+            <div className="mt-10 w-[30vw] flex flex-col items-center">
+                    <h1 className="text-xl text-center font-bold">{mensajeModalConfirm}</h1>
+                    <div className="flex flex-row">
+                        <div className="flex justify-center mr-2">
+                            <button
+                                className="border-2 border-[#557CF2] mt-10 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
+                                onClick={()=>{procesoEliminarVacante(); closeModalConfirm()}}
+                            >ACEPTAR</button>
+                        </div>
+                        <div className="flex justify-center ml-2">
+                            <button
+                                className="border-2 border-[#557CF2] mt-10 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
+                                onClick={()=>closeModalConfirm()}
+                            >CANCELAR</button>
+                        </div>
+                    </div>    
+                </div>
+            </ModalEdit>
+
+            {/* MODAL DE NOTIFICACIONES */}
+            <Modal isOpen={isOpenModal} closeModal={closeModal}>
+                <div className="mt-10 w-72">
+                    <h1 className="text-xl text-center font-bold">{mensajeModalInfo}</h1>
+                    <div className="flex justify-center">
+                        <button
+                            className="border-2 border-[#557CF2] mt-10 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
+                            onClick={()=>submitCloseModal()}
+                        >OK</button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     )
 };

@@ -7,13 +7,14 @@ const {
     getVacantesMovDisp,
     getVacantesMovDispByEsp,
     delVacanteMov,
-    getVacanteMovAsignada
+    getVacanteMovAsignada,
+    getVacanteMovInscripto
 } = require('../controllers/vacantesMov.controllers');
 
 const router = Router();
 
 // Traer todas las vacantes
-router.get('/allvacantesmov', getAllVacantesMov);
+router.post('/allvacantesmov', getAllVacantesMov);
 
 //--Modificar una vacante.
 router.put('/editvacantemov/:idVacanteMov', editVacantesMov);
@@ -34,5 +35,8 @@ router.put('/delvacantemov/:idVacanteMov', delVacanteMov);
 
 //--Trae los datos de una VACANTE ASIGNADA
 router.post('/vacanteasignada/:idVacanteMov', getVacanteMovAsignada);
+
+//Trae datos si la vacante es de un Inscripto de su cargo_origen
+router.post('/vacantedeinscripto/:idVacanteMov', getVacanteMovInscripto)
 
 module.exports = router;
