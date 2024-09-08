@@ -91,6 +91,12 @@ const VacantesMov = () =>{
         zona:''
     });
 
+    //E.L. para cuadro de busqueda
+    const[inputSearch, setInputSearch]=useState('');
+
+
+    //-----------PROCESOS Y FUNCIONES-----------
+
     const handleChangeFormVacante =(event)=>{
         const{name, value} = event.target;
         setFormVacante({
@@ -155,6 +161,7 @@ const VacantesMov = () =>{
 
     //Proceso para filtrar el listado de vacantes por todos/disponibles/asignado
     const aplicoFiltroListadoVacantes = async(data)=>{
+        setInputSearch('');
         console.log('que tiene listado: ', data);
         let dataFilter = await data.filter(item=>{
             if(estadoVacantes==='todas'){
@@ -335,6 +342,38 @@ const VacantesMov = () =>{
             })
     };
 
+    //---------PROCESO BUSQUEDA DINAMICA VACANTES -----------
+
+    const handleInputSearchChange = (event) =>{
+        const {value} = event.target;
+        setInputSearch(value);
+    };
+
+    const busquedaDinamica=()=>{
+        if(inputSearch!=''){
+            searchVacante();
+        }else{
+            aplicoFiltroListadoVacantes(listadoVacantesMov);
+        }
+    };
+
+    const searchVacante=async()=>{
+        const searchVac = await filterListadoVacantesMov.filter(vacante=>vacante.establecimiento.toLowerCase().includes(inputSearch.toLocaleLowerCase()) || vacante.cargo.toLowerCase().includes(inputSearch.toLowerCase()) || vacante.modalidad.toLowerCase().includes(inputSearch.toLowerCase()) || vacante.turno.toLowerCase().includes(inputSearch) || vacante.region.toLowerCase().includes(inputSearch) || vacante.localidad.toLowerCase().includes(inputSearch));
+        setFilterListadoVacantesMov(searchVac);
+    };
+
+    const handleCancelSearch =()=>{
+        setInputSearch('');
+        aplicoFiltroListadoVacantes(listadoVacantesMov);
+    };
+
+
+    //---------------------
+
+    useEffect(()=>{
+        busquedaDinamica();
+    },[inputSearch]);
+
     useEffect(()=>{
         if(formNuevaVacante.establecimiento!='' && formNuevaVacante.cargo!='' ){
             setValidaFormNuevaVacante(true);
@@ -444,20 +483,20 @@ const VacantesMov = () =>{
                                     className="w-[15vw] focus:outline-none rounded"
                                     placeholder="Buscar..."
                                     type="text"
-                                    //value={inputSearch}
-                                    //onChange={handleInputSearchChange}
+                                    value={inputSearch}
+                                    onChange={handleInputSearchChange}
                                 />
                                 <div className="flex flex-row items-center">
-                                    {/* {(inputSearch!='') &&
+                                    {(inputSearch!='') &&
                                         <FaTimes
                                             className="text-slate-400 cursor-pointer text-lg"
                                             onClick={()=>handleCancelSearch()}
                                         />
-                                    } */}
-                                    <FaSearch 
+                                    }
+                                    {/* <FaSearch 
                                         className="text-zinc-500 cursor-pointer mr-2"
                                         onClick={()=>submitSearch()}
-                                    />
+                                    /> */}
                                 </div>
                             </div>
                         </div>
