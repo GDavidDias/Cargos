@@ -6,6 +6,7 @@ const getVacantesMovDispByEsp = require('./getVacantesMovDispByEsp.js');
 const delVacanteMov = require('./delVacanteMov.js');
 const getVacanteMovAsignada = require('./getVacanteMovAsignada.js');
 const getVacanteMovInscripto = require('./getVacanteMovInscripto.js');
+const getVacanteMovAsignadaInscripto = require('./getVacanteMovAsignadaInscripto.js');
 
 module.exports={
     getAllVacantesMov,
@@ -15,7 +16,8 @@ module.exports={
     getVacantesMovDispByEsp,
     delVacanteMov,
     getVacanteMovAsignada,
-    getVacanteMovInscripto
+    getVacanteMovInscripto,
+    getVacanteMovAsignadaInscripto
 };
 
 // Traer todas las vacantes

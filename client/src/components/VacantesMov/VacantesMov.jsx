@@ -94,6 +94,9 @@ const VacantesMov = () =>{
     //E.L. para cuadro de busqueda
     const[inputSearch, setInputSearch]=useState('');
 
+    //E.L. para guardar los datos del inscripto al que se asigno vacante
+    const[inscriptoAsignado, setInscriptoAsignado]=useState([]);
+
 
     //-----------PROCESOS Y FUNCIONES-----------
 
@@ -176,11 +179,28 @@ const VacantesMov = () =>{
     };
 
     const submitVerDatosVacante = async(datosVacante) => {
+        setInscriptoAsignado([]);
         console.log('presiono en submitVerDatosVacante');
         console.log('que tiene datos de vacante: ', datosVacanteSelect)
         await setDatosVacanteSelect(datosVacante);
-        //setIdVacanteSelect(datosVacante.id_vacante_mov);
-        //seteoDatosInicialesFormVacante(datosVacante);
+        //busco datos de inscripto asignado si datetime_asignacion no es null
+        if(datosVacante.datetime_asignacion!=null){
+            console.log('Busco datos del inscripto asignado')
+            try{
+                await axios.post(`${URL}/api/vacanteasignadainscripto/${datosVacante.id_vacante_mov}`)
+                    .then(async res=>{
+                        console.log('que trae res de vacanteasignadainscripto: ', res.data);
+                        if(res.data.length!=0){
+                            setInscriptoAsignado(res.data);
+                            //setMensajeModalInfo(`Para eliminar la Vacante generada del Movimiento de: ${res.data[0].apellido}, ${res.data[0].nombre} (DNI: ${res.data[0].dni}), dirigase a Inscriptos`);
+                            //openModal();
+                        }
+                    })
+            }catch(error){
+                console.log(error.message)
+            }
+        }
+
         openModalVerVacante();
     };
 
@@ -369,6 +389,10 @@ const VacantesMov = () =>{
 
 
     //---------------------
+
+    useEffect(()=>{
+        console.log('que tiene inscriptoAsignado: ', inscriptoAsignado);
+    },[inscriptoAsignado])
 
     useEffect(()=>{
         busquedaDinamica();
@@ -576,6 +600,7 @@ const VacantesMov = () =>{
                     estadoForm={estadoForm}
                     datosVacante={datosVacanteSelect}
                     submitGuardarFormVacante={submitGuardarFormVacante}
+                    inscriptoAsignado={inscriptoAsignado}
                 />
                 
             </ModalEdit>

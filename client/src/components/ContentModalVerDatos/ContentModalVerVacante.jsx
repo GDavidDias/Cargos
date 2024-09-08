@@ -1,4 +1,4 @@
-const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFormVacante,estadoForm,datosVacante,submitGuardarFormVacante})=>{
+const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFormVacante,estadoForm,datosVacante,submitGuardarFormVacante,inscriptoAsignado})=>{
     console.log('ingreso a ContentModalVerVacante')
     //console.log('datos completo de Vacante Seleccionada: ', datosVacante);
     return(
@@ -8,7 +8,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                 translate='no'
             >Datos de la Vacante</label>
             <div>
-                <div className="min-h-[32vh] w-[60vw] mt-2 border-[1px] border-sky-800 rounded">
+                <div className="min-h-[23vh] w-[60vw] mt-2 border-[1px] border-sky-800 rounded">
                     <div className="flex flex-row ml-2 mt-2">
                         <div className="flex flex-col mr-2">
                             <label className="text-sm">ID</label>
@@ -130,7 +130,50 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                         </div>
 
                     </div>
+                    
                 </div>
+
+                {/* DATOS DE SU ASIGNACION */}
+                {(inscriptoAsignado.length!=0) &&
+                <div className="min-h-[10vh] w-[60vw] mt-2 border-[1px] border-orange-500 rounded">
+                    <label 
+                        className="ml-2 font-semibold"
+                    >Asignado a:</label>
+                    <div className="flex flex-row">
+                        <div className="flex flex-col mx-2">
+                            <label className="text-sm">Apellido</label>
+                            <input 
+                                name="apellido"
+                                className="border-[1px] border-zinc-400 w-[50mm] pl-[2px]"
+                                value={inscriptoAsignado[0].apellido}
+                                //onChange={handleChangeFormVacante}
+                                disabled={true}
+                            />
+                        </div>
+                        <div className="flex flex-col mx-2">
+                            <label className="text-sm">Nombre</label>
+                            <input 
+                                name="nombre"
+                                className="border-[1px] border-zinc-400 w-[70mm] pl-[2px]"
+                                value={inscriptoAsignado[0].nombre}
+                                //onChange={handleChangeFormVacante}
+                                disabled={true}
+                            />
+                        </div>
+                        <div className="flex flex-col mx-2">
+                            <label className="text-sm">DNI</label>
+                            <input 
+                                name="dni"
+                                className="border-[1px] border-zinc-400 w-[30mm] pl-[2px]"
+                                value={inscriptoAsignado[0].dni}
+                                //onChange={handleChangeFormVacante}
+                                disabled={true}
+                            />
+                        </div>
+                    </div>
+
+                </div>
+                }                
 
                 {/* VISIBILIDAD DE BOTONES */}
                 <div className="flex justify-center">
