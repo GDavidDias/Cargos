@@ -31,6 +31,7 @@ const InscriptosMov = ()=>{
 
     //E.G que trae la configuracion de sistema
     const configSG = useSelector((state)=>state.config);
+    const userSG = useSelector((state)=>state.user);
 
     //E.L. de Ventanas Modales
     const[isOpenModalAsign,openModalAsign,closeModalAsign]=useModal(false);
@@ -729,8 +730,8 @@ const InscriptosMov = ()=>{
                     </div>
                 </div>
                 {/* SECCION DATOS USUARIO */}
-                <div className="border-2 border-sky-500 w-[40vw] flex items-center justify-end">
-                    <label className="mr-2 italic text-sm">Usuario Logueado</label>
+                <div className=" w-[40vw] flex items-center justify-end">
+                    <label className="mr-2 italic text-sm">{userSG.nombre}</label>
                     <FaRegUserCircle className="mr-2 text-2xl text-[#73685F] " />
                     <FaPowerOff 
                         className="mr-4 text-2xl text-[#73685F] hover:cursor-pointer hover:text-[#7C8EA6] transition-transform duration-500 transform hover:scale-125"
@@ -1090,6 +1091,8 @@ const InscriptosMov = ()=>{
                     <div className="flex flex-row">
                         <label className="mx-4 text-zinc-800">Docente: {datosInscriptoSelect.apellido} {datosInscriptoSelect.nombre}</label>
                         <label className="mr-4 text-zinc-800">DNI: {datosInscriptoSelect.dni}</label>
+                        <label className="mr-4 text-zinc-800">Puntaje: {datosInscriptoSelect.total}</label>
+                        
                     </div>
                 </div>
                 {/* DATOS DE LOS CARGOS */}

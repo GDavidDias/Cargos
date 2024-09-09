@@ -22,7 +22,25 @@ CREATE TABLE listado_inscriptos(id_listado_inscriptos INT(7) NOT NULL AUTO_INCRE
 
 CREATE TABLE configuracion(id_configuracion INT(7) NOT NULL AUTO_INCREMENT, id_nivel INT(7) DEFAULT NULL, id_listado_inscriptos_mov INT(7) DEFAULT NULL, id_listado_vacantes_mov INT(7) DEFAULT NULL, id_listado_inscriptos_tit INT(7) DEFAULT NULL, id_listado_vacantes_tit INT(7) DEFAULT NULL, PRIMARY KEY(id_configuracion));
 
+CREATE TABLE usuarios (id_usuario INT(7) NOT NULL AUTO_INCREMENT, nombre VARCHAR(50) DEFAULT NULL, username VARCHAR(50) DEFAULT NULL, password VARCHAR(50) DEFAULT NULL, permiso INT(2) DEFAULT NULL, nivel INT(2) DEFAULT NULL, obs_desactiva VARCHAR(250) DEFAULT NULL,PRIMARY KEY(id_usuario));
 -----------------------------------------
+PERMISOS:
+1 - administrador
+2 - usernormal
+3 - invitado (docentes que no tienen usuario en sistema)
+---------------
+NIVEL:
+1 - inicial
+2 - primaria
+3 - todos
+--------------------------------------------
+-- PARA INSERT usuarios
+
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('usuario administrador', 'admin', '123',1,3);
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('usuario inicial', 'userini', '123',2,1);
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('usuario primario', 'userpri', '123',2,2);
+
+--------------------------------
 --PARA INSERT configuracion
 +---------------------------+------+------+-----+---------+----------------+
 | Field                     | Type | Null | Key | Default | Extra          |

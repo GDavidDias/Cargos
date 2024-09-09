@@ -23,6 +23,8 @@ import ContentModalNuevaVacante from "../ContentModalNuevaVacante/ContentModalNu
 
 const VacantesMov = () =>{
 
+    const userSG = useSelector((state)=>state.user);
+
     //E.L. para Ventanas Modales
     const[isOpenModalVerVacante,openModalVerVacante,closeModalVerVacante]=useModal(false);
     const[isOpenModalNuevo,openModalNuevo,closeModalNuevo]=useModal(false);
@@ -454,8 +456,8 @@ const VacantesMov = () =>{
                     </div>
                 </div>
                 {/* SECCION DATOS USUARIO */}
-                <div className="border-2 border-sky-500 w-[40vw] flex items-center justify-end">
-                    <label className="mr-2 italic text-sm">Usuario Logueado</label>
+                <div className=" w-[40vw] flex items-center justify-end">
+                    <label className="mr-2 italic text-sm">{userSG.nombre}</label>
                     <FaRegUserCircle className="mr-2 text-2xl text-[#73685F] " />
                     <FaPowerOff 
                         className="mr-4 text-2xl text-[#73685F] hover:cursor-pointer hover:text-[#7C8EA6] transition-transform duration-500 transform hover:scale-125"

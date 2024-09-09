@@ -5,12 +5,15 @@ import logo from '../../assets/JUNTA-04-xs.png';
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { setNivel, setPage } from "../../redux/configSlice";
+import { useNavigate } from "react-router-dom";
 
 const SideBar = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     
     const pageSG = useSelector((state)=>state.config.page);
     const nivelSG = useSelector((state)=>state.config.nivel);
+    const userSG = useSelector((state)=>state.user);
 
     const submitInscriptosMov =()=>{
         //
@@ -64,6 +67,13 @@ const SideBar = () => {
         console.log('que tiene pageSG: ', pageSG);
         console.log('que tiene nivelSG: ', nivelSG);
     },[pageSG,nivelSG])
+
+    useEffect(()=>{
+        console.log('que tiene userSG: ', userSG);
+        if(userSG.id_user===''){
+            navigate('/');
+        }
+    },[userSG])
 
     return(
         <div className="bg-[#7C8EA6] w-full h-full shadow-right-only-md">
