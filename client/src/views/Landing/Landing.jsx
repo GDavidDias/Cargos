@@ -97,9 +97,9 @@ const Landing = () => {
                 <div className="desktop:w-[90px] desktop:h-[90px] movil:w-[80px] movil:h-[80px] flex justify-center ">
                     <img className="desktop:w-[90px] desktop:h-[90px] movil:w-[80px] movil:h-[80px]" src=""/>
                 </div>
-                <div className="h-28  flex flex-col pl-4 justify-center">
-                    <label className="text-[38px]  font-bold text-white" translate='no'>Sistema de Cargos</label>
-                    <label className="text-[25px] text-white" translate='no'>Nivel {configSG.nivel?.descripcion}</label>
+                <div className="h-28  flex flex-col pl-4 justify-center items-center">
+                    <label className="text-[38px]  font-bold text-white" translate='no'>Sistema Entrega de Cargos</label>
+                    <label className="text-[25px] text-white font-semibold" translate='no'>Nivel {configSG.nivel?.descripcion}</label>
                 </div>
             </div>
 

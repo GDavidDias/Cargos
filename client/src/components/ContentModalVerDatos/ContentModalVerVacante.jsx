@@ -8,33 +8,33 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                 translate='no'
             >Datos de la Vacante</label>
             <div>
-                <div className="min-h-[23vh] w-[60vw] mt-2 border-[1px] border-sky-800 rounded">
-                    <div className="flex flex-row ml-2 mt-2">
-                        <div className="flex flex-col mr-2">
-                            <label className="text-sm">ID</label>
+                <div className="min-h-[23vh]  mt-2 border-[1px] border-sky-800 rounded">
+                    <div className="flex flex-col ml-2 mt-2 items-end justify-end">
+                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                            <label className="text-sm mr-2">ID:</label>
                             <input 
-                                className="border-[1px] border-zinc-400 w-[15mm] text-center"
+                                className="border-[1px] border-zinc-400 w-[60mm] text-start pl-2"
                                 value={idVacante}
                                 disabled={true}
                             />
                         </div>
-                        
-                        <div className="flex flex-col mx-2">
-                            <label className="text-sm">Establecimiento</label>
+
+                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                            <label className="text-sm mr-2">N° Est:</label>
                             <input 
                                 name="establecimiento"
-                                className="border-[1px] border-zinc-400 w-[50mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2"
                                 value={formVacante?.establecimiento}
                                 onChange={handleChangeFormVacante}
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
                             />
                         </div>
 
-                        <div className="flex flex-col mx-2">
-                            <label className="text-sm">Observaciones Establecimiento</label>
+                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                            <label className="text-sm mr-2">Nombre Est:</label>
                             <input 
                                 name="obs_establecimiento"
-                                className="border-[1px] border-zinc-400 w-[67mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2"
                                 value={formVacante?.obs_establecimiento}
                                 onChange={handleChangeFormVacante}
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
@@ -43,42 +43,42 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
 
 
                     </div>
-                    <div className="flex flex-row ml-2 mt-2">
-                        <div className="flex flex-col mr-2">
-                            <label className="text-sm">Cargo</label>
+                    <div className="flex flex-col ml-2  items-end justify-end">
+                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                            <label className="text-sm mr-2">Cargo:</label>
                             <input 
                                 name="cargo"
-                                className="border-[1px] border-zinc-400 w-[40mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2"
                                 value={formVacante?.cargo}
                                 onChange={handleChangeFormVacante}
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
                             />
                         </div>
-                        <div className="flex flex-col mr-2">
-                            <label className="text-sm">Modalidad</label>
+                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                            <label className="text-sm mr-2">Modalidad:</label>
                             <input 
                                 name="modalidad"
-                                className="border-[1px] border-zinc-400 w-[30mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2"
                                 value={formVacante?.modalidad}
                                 onChange={handleChangeFormVacante}
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
                             />
                         </div>
-                        <div className="flex flex-col mx-2">
-                            <label className="text-sm">Turno</label>
+                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                            <label className="text-sm mr-2">Turno:</label>
                             <input 
                                 name="turno"
-                                className="border-[1px] border-zinc-400 w-[30mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2"
                                 value={formVacante?.turno}
                                 onChange={handleChangeFormVacante}
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
                             />
                         </div>
-                        <div className="flex flex-col mx-2">
-                            <label className="text-sm">Cupof</label>
+                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                            <label className="text-sm mr-2">Cupof:</label>
                             <input 
                                 name="cupof"
-                                className="border-[1px] border-zinc-400 w-[30mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2"
                                 value={formVacante?.cupof}
                                 onChange={handleChangeFormVacante}
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
@@ -87,50 +87,48 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
 
                     </div>
 
-                    <div className="flex flex-row ml-2 mt-2">
-                        <div className="flex flex-col mr-2">
-                            <label className="text-sm">Region</label>
+                    <div className="flex flex-col ml-2 items-end justify-end">
+                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                            <label className="text-sm mr-2">Region:</label>
                             <input 
                                 name="region"
-                                className="border-[1px] border-zinc-400 w-[12mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2"
                                 value={formVacante?.region}
                                 onChange={handleChangeFormVacante}
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
                             />
                         </div>
-                        <div className="flex flex-col mx-2">
-                            <label className="text-sm">Departamento</label>
+                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                            <label className="text-sm mr-2">Departamento:</label>
                             <input 
                                 name="departamento"
-                                className="border-[1px] border-zinc-400 w-[50mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2"
                                 value={formVacante?.departamento}
                                 onChange={handleChangeFormVacante}
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
                             />
                         </div>
-                        <div className="flex flex-col mx-2">
-                            <label className="text-sm">Localidad</label>
+                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                            <label className="text-sm mr-2">Localidad:</label>
                             <input 
                                 name="localidad"
-                                className="border-[1px] border-zinc-400 w-[50mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2"
                                 value={formVacante?.localidad}
                                 onChange={handleChangeFormVacante}
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
                             />
                         </div>
-                        <div className="flex flex-col mx-2">
-                            <label className="text-sm">Zona</label>
+                        <div className="flex flex-row mt-[4px] mb-4 mx-2 items-center justify-end">
+                            <label className="text-sm mr-2">Zona:</label>
                             <input 
                                 name="zona"
-                                className="border-[1px] border-zinc-400 w-[16mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2"
                                 value={formVacante?.zona}
                                 onChange={handleChangeFormVacante}
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
                             />
                         </div>
-
                     </div>
-                    
                 </div>
 
                 {/* DATOS DE SU ASIGNACION */}
@@ -144,7 +142,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                             <label className="text-sm">Apellido</label>
                             <input 
                                 name="apellido"
-                                className="border-[1px] border-zinc-400 w-[50mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[50mm] pl-[2px] text-start pl-2"
                                 value={inscriptoAsignado[0].apellido}
                                 //onChange={handleChangeFormVacante}
                                 disabled={true}
@@ -154,7 +152,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                             <label className="text-sm">Nombre</label>
                             <input 
                                 name="nombre"
-                                className="border-[1px] border-zinc-400 w-[70mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[70mm] pl-[2px] text-start pl-2"
                                 value={inscriptoAsignado[0].nombre}
                                 //onChange={handleChangeFormVacante}
                                 disabled={true}
@@ -164,7 +162,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                             <label className="text-sm">DNI</label>
                             <input 
                                 name="dni"
-                                className="border-[1px] border-zinc-400 w-[30mm] pl-[2px]"
+                                className="border-[1px] border-zinc-400 w-[30mm] pl-[2px] text-start pl-2"
                                 value={inscriptoAsignado[0].dni}
                                 //onChange={handleChangeFormVacante}
                                 disabled={true}

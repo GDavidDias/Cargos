@@ -8,7 +8,7 @@ const ContentModalNuevaVacante = ({formNuevaVacante,closeModalNuevaVacante,handl
                 translate='no'
             >Nueva Vacante</label>
             <div>
-                <div className="min-h-[32vh] w-[60vw] mt-2 border-[1px] border-sky-800 rounded">
+                <div className="min-h-[32vh]  mt-2 border-[1px] border-sky-800 rounded">
                     <div className="flex flex-row ml-2 mt-2">
                         {/* <div className="flex flex-col mr-2">
                             <label className="text-sm">ID</label>
@@ -20,7 +20,7 @@ const ContentModalNuevaVacante = ({formNuevaVacante,closeModalNuevaVacante,handl
                         </div> */}
                         
                         <div className="flex flex-col mr-2">
-                            <label className="text-sm">Establecimiento</label>
+                            <label className="text-sm">N° Establecimiento</label>
                             <input 
                                 name="establecimiento"
                                 className="border-[1px] border-zinc-400 w-[50mm] pl-[2px]"
@@ -31,7 +31,7 @@ const ContentModalNuevaVacante = ({formNuevaVacante,closeModalNuevaVacante,handl
                         </div>
 
                         <div className="flex flex-col mx-2">
-                            <label className="text-sm">Observaciones Establecimiento</label>
+                            <label className="text-sm">Nombre Establecimiento</label>
                             <input 
                                 name="obs_establecimiento"
                                 className="border-[1px] border-zinc-400 w-[67mm] pl-[2px]"

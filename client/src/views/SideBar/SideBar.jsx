@@ -83,8 +83,9 @@ const SideBar = () => {
                     <img src={logo}/>
                 </div>
                 <div className="flex flex-col ml-[2px] text-white">
-                    <label className="">Sistema de</label>
-                    <label className="font-semibold ">CARGOS</label>
+                    <label className="">Sistema </label>
+                    <label className="mt-[-8px]">Entrega de </label>
+                    <label className="mt-[-6px] font-semibold ">CARGOS</label>
                 </div>
             </div>
 
@@ -114,6 +115,18 @@ const SideBar = () => {
                 >
                     <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
                     <label className="">Vacantes</label>
+                </div>
+                <div 
+                    className={` rounded p-[4px] flex flex-row justify-start items-center
+                        ${(pageSG==='Listados')
+                        ?'bg-[#C9D991]'
+                        :'hover:bg-[#C9D991]'
+                    }
+                        `}
+                    onClick={()=>submitListados()}
+                >
+                    <CgList className="text-xl font-bold mr-2"/>
+                    <label className="">Listados</label>
                 </div>
             </div>
 
@@ -161,18 +174,7 @@ const SideBar = () => {
                     <MdOutlineAssignmentTurnedIn className="text-xl font-bold mr-2"/>
                     <label className="">Asignaciones</label>
                 </div>
-                <div 
-                    className={` rounded p-[4px] flex flex-row justify-start items-center
-                        ${(pageSG==='Listados')
-                        ?'bg-[#C9D991]'
-                        :'hover:bg-[#C9D991]'
-                    }
-                        `}
-                    onClick={()=>submitListados()}
-                >
-                    <CgList className="text-xl font-bold mr-2"/>
-                    <label className="">Listados</label>
-                </div>
+                
             </div>
 
             {/* SELECCION NIVEL */}

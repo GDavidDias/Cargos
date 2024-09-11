@@ -22,6 +22,8 @@ import { LuArrowUpDown } from "react-icons/lu";
 import { IoTrash } from "react-icons/io5";
 import { FiAlertTriangle } from "react-icons/fi";
 import { deleteVacanteMov } from "../../utils/deleteVacanteMov";
+import { MdOutlineDoubleArrow } from "react-icons/md";
+import Paginador from "../Paginador/Paginador";
 
 
 
@@ -47,6 +49,9 @@ const InscriptosMov = ()=>{
     //E.L. donde se almacena el Listado de Inscriptos (carga inicial)
     //y segun el tipo de listado segun configuracion
     const[listadoInscriptosMov, setListadoInscriptosMov]=useState([]);
+
+    //guarda el id del listado de inscriptos
+    const[idListadoInscriptosMov, setIdListadoInscriptosMov]=useState('');
 
     //E.L. para aplicar filtros sobre el listado de inscriptos
     const[filterListadoInscriptosMov, setFilterListadoInscriptosMov]=useState([]);
@@ -111,6 +116,12 @@ const InscriptosMov = ()=>{
     //E.L guardo datos de asignacion y docente que tomo cargo_original de otro docente
     const[asignacionCargoOriginal, setAsignacionCargoOriginal]=useState('');
 
+    //E.L. para guardar datos de paginacion
+    const[paginacion, setPaginacion]=useState('');
+
+    //pagina actual
+    const[currentPage, setCurrentPage]=useState(1);
+
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
     //-------------------------------------
@@ -130,20 +141,29 @@ const InscriptosMov = ()=>{
         const idFilterListado = configFilterNivel[0]?.id_listado_inscriptos_mov;
         console.log('que tiene idFilterListado: ',idFilterListado);
 
+        //Guardo el id del listado de inscriptos
+        setIdListadoInscriptosMov(idFilterListado);
+
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO
-        await getInscriptosMov(idFilterListado);
+        await getInscriptosMov(idFilterListado,currentPage,tipoInscripto,estadoInscripto);
     };
 
     //Este Proc carga el listado de inscriptos_mov al E.L
-    const getInscriptosMov = async(id_listado) =>{
+    const getInscriptosMov = async(id_listado,page,idTipoInscripto,filtroAsignacion) =>{
         let data;
+        const limit=10;
         console.log('que trae id_listado getInscriptosMovListado: ', id_listado);
         if(id_listado){
-            data = await fetchAllInscriptosMov(id_listado);
-            console.log('que trae data de fetchAllInscriptosMov: ', data);
+            //paso id_listado, limit y page
+            data = await fetchAllInscriptosMov(id_listado, limit, page,idTipoInscripto,filtroAsignacion);
+            //console.log('que trae data de fetchAllInscriptosMov: ', data);
 
-            if(data?.length!=0){
-                setListadoInscriptosMov(data); 
+            if(data.result?.length!=0){
+                setListadoInscriptosMov(data.result); 
+                setPaginacion(data.paginacion);
+            }else{
+                setListadoInscriptosMov([]);
+                setPaginacion(data.paginacion);
             };
         };
     }; 
@@ -329,6 +349,8 @@ const InscriptosMov = ()=>{
                 }
             };
         });
+
+
 
         setFilterListadoInscriptosMov(dataFilter)
     };
@@ -634,6 +656,16 @@ const InscriptosMov = ()=>{
         await buscoIDListadoVacantes(configSG.nivel.id_nivel);
     };
 
+    const handlePageChange = (nuevaPagina)=>{
+        if(nuevaPagina>0 && nuevaPagina<=paginacion?.totalPages){
+            setCurrentPage(nuevaPagina);
+        };
+    };
+
+    useEffect(()=>{
+        //recargo listado de inscriptos con la nueva pagina
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto);
+    },[currentPage])
 
     //A medida que se escribe en el Input de BUsqueda de Vacantes Disponibles se ejecuta
     //la busqueda filtrando el listado de vacantes
@@ -661,8 +693,14 @@ const InscriptosMov = ()=>{
         console.log('que tiene estado local tipoInscripto: ', tipoInscripto);
         console.log('que tiene estado local estadoInscripto: ', estadoInscripto);
 
-        aplicoFiltrosListado(listadoInscriptosMov);
+        //aplicoFiltrosListado(listadoInscriptosMov);
+        //getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto);
+
     },[listadoInscriptosMov,tipoInscripto, estadoInscripto]);
+
+    useEffect(()=>{
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto);
+    },[tipoInscripto,estadoInscripto])
 
 
     useEffect(()=>{
@@ -705,14 +743,16 @@ const InscriptosMov = ()=>{
     return(
         <div className="h-full w-full">
             {/* ENCABEZADO DE PAGINA */}
-            <div className="bg-[#C9D991] h-[8vh] flex flex-row">
+            <div className="bg-[#C9D991] h-[12vh] flex flex-row">
                 {/* TITULOS - BOTONES - NIVEL */}
                 <div className="w-[45vw] flex justify-center items-start flex-col">
                     <label className="ml-4 text-base font-semibold">NIVEL {configSG.nivel.descripcion}</label>
                     <div className="flex flex-row">
-                        <label className="ml-4 text-lg font-sans font-bold">INSCRIPTOS - Luom</label>
+                        <label className="ml-4 text-lg font-sans font-bold">INSCRIPTOS - LUOM</label>
+                    </div>
+                    <div className="flex flex-row">
                         <button 
-                            className={`ml-2 px-[2px] border-[1px] rounded shadow 
+                            className={`ml-4 mr-2 px-[2px] border-[1px] rounded shadow 
                                 ${(tipoInscripto===2)
                                     ?`border-[#7C8EA6] bg-[#7C8EA6] text-white`
                                     :`border-[#73685F]  hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] `
@@ -742,7 +782,7 @@ const InscriptosMov = ()=>{
             </div>
             {/* CONTENIDO DE PAGINA */}
             <div className="h-[87vh]">
-                <div className="m-2 border-[1px] border-[#758C51] rounded h-[83vh]">
+                <div className="m-2 border-[1px] border-[#758C51] rounded h-[72vh]">
                     {/* PARTE SUPERIOR DE TABLA */}
                     <div className="border-b-[1px] border-slate-300 h-[6vh] flex flex-row items-center">
                         {/* Filtros */}
@@ -803,10 +843,10 @@ const InscriptosMov = ()=>{
                     </div>
 
                     {/* PARTE INFERIOR DE DATOS DE TABLA */}
-                    <div>
+                    <div className="h-[79vh] overflow-y-auto">
                         <table className="border-[1px] bg-slate-50 w-full">
                             <thead>
-                                <tr className="text-sm border-b-[1px] border-zinc-300">
+                                <tr className="sticky top-0 text-sm border-b-[1px] border-zinc-300 bg-zinc-200">
                                     <th className="border-r-[1px] border-zinc-300">Orden</th>
                                     <th className="border-r-[1px] border-zinc-300">Puntaje</th>
                                     <th className="border-r-[1px] border-zinc-300">Apellido</th>
@@ -821,8 +861,9 @@ const InscriptosMov = ()=>{
                             </thead>
                             <tbody>
                                 {
-                                    filterListadoInscriptosMov?.map((inscripto, index)=>{
-                                        const colorFila = inscripto.vacante_asignada ?`bg-red-200` :``
+                                    // filterListadoInscriptosMov?.map((inscripto, index)=>{
+                                    listadoInscriptosMov?.map((inscripto, index)=>{
+                                        const colorFila = inscripto.vacante_asignada ?`bg-red-200` :(((inscripto.id_inscriptos_mov % 2)===0) ?`bg-zinc-200` :``)
                                         return(
                                             <tr 
                                                 className={`text-lg font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 ${colorFila}`}
@@ -869,6 +910,16 @@ const InscriptosMov = ()=>{
                             </tbody>
                         </table>
                     </div>
+                </div>
+
+                {/* SECCION PAGINACION */}
+                <div className="flex justify-center">
+                    <Paginador 
+                        currentpage={paginacion.page}
+                        totalpage={paginacion.totalPages}
+                        onPageChange={handlePageChange}
+                        totalItems={paginacion.totalItems}
+                    />
                 </div>
             </div>
         
@@ -1042,7 +1093,7 @@ const InscriptosMov = ()=>{
                                                 <td className="w-[13vw] pl-[4px] text-center">{vacante.modalidad}</td>
                                                 <td className="w-[10vw] pl-[4px]">{vacante.turno}</td>
                                                 <td className="w-[10vw] pl-[4px] text-center">{vacante.region}</td>
-                                                <td className="w-[15vw] pl-[4px]">{vacante.localidad}</td>
+                                                <td className="w-[15vw] pl-[4px] text-center">{vacante.localidad}</td>
                                                 <td className="w-[8vw] pl-[4px] text-center">{vacante.zona}</td>
                                                 <td className="w-[8vw]">
                                                     <div className="flex flex-row items-center justify-center">
@@ -1092,73 +1143,75 @@ const InscriptosMov = ()=>{
                         <label className="mx-4 text-zinc-800">Docente: {datosInscriptoSelect.apellido} {datosInscriptoSelect.nombre}</label>
                         <label className="mr-4 text-zinc-800">DNI: {datosInscriptoSelect.dni}</label>
                         <label className="mr-4 text-zinc-800">Puntaje: {datosInscriptoSelect.total}</label>
-                        
                     </div>
                 </div>
                 {/* DATOS DE LOS CARGOS */}
                 <div className="flex flex-row h-[54vh] w-[50vw]">
                     {/* CARGO ORIGEN */}
-                    <div className="flex flex-col border-[1px] border-red-500 w-[50%] items-center m-y-[4px] mr-2 rounded-md shadow-lg">
-                        <label>Cargo Actual</label>
+                    <div className="flex flex-col border-[5px] border-red-500 w-[50%] items-center m-y-[4px] rounded-md shadow-lg bg-red-100">
+                        <label className="font-bold text-lg">ANTES</label>
                         <div>
                             <label className="mb-0 font-semibold text-sm ">Escuela</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosInscriptoSelect.nro_escuela}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosInscriptoSelect.nro_escuela}</div>
                         </div>
                         <div>
                             <label className="font-semibold text-sm">Cargo</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosInscriptoSelect.cargo_actual}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosInscriptoSelect.cargo_actual}</div>
                         </div>
                         <div>
                             <label className="font-semibold text-sm">Modalidad</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]"></div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50"></div>
                         </div>
                         <div>
                             <label className="font-semibold text-sm">Turno</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]"></div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50"></div>
                         </div>
                         <div>
                             <label className="font-semibold text-sm">Region</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]"></div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50"></div>
                         </div>
                         <div>
                             <label className="font-semibold text-sm">Localidad</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]"></div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50"></div>
                         </div>
                         <div>
                             <label className="font-semibold text-sm">Zona</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]"></div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50"></div>
                         </div>
                     </div>
+                    <div className="flex items-center justify-center">
+                        <MdOutlineDoubleArrow className="text-2xl animate-left-disappear"/>
+                    </div>
                     {/* CARGO A TOMAR */}
-                    <div className="flex flex-col border-[1px] border-sky-500 w-[50%] items-center items-center m-y-[4px] ml-2 rounded-md shadow-lg">
-                        <label>Cargo a Asignar</label>
+                    <div className="flex flex-col border-[5px] border-emerald-500 w-[50%] items-center items-center m-y-[4px] ml-[9px] rounded-md shadow-lg bg-emerald-100">
+                        <label className="font-bold text-lg">DESPUES</label>
                         <div>
                             <label className="mb-0 font-semibold text-sm ">Escuela</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] ">{datosVacanteSelect.establecimiento} {datosVacanteSelect.obs_establecimiento}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosVacanteSelect.establecimiento} {datosVacanteSelect.obs_establecimiento}</div>
                         </div>
                         <div>
                             <label className="font-semibold text-sm">Cargo</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosVacanteSelect.cargo}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosVacanteSelect.cargo}</div>
                         </div>
                         <div>
                             <label className="font-semibold text-sm">Modalidad</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosVacanteSelect.modalidad}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosVacanteSelect.modalidad}</div>
                         </div>
                         <div>
                             <label className="font-semibold text-sm">Turno</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosVacanteSelect.turno}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosVacanteSelect.turno}</div>
                         </div>
                         <div>
                             <label className="font-semibold text-sm">Region</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosVacanteSelect.region}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosVacanteSelect.region}</div>
                         </div>
                         <div>
                             <label className="font-semibold text-sm">Localidad</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosVacanteSelect.localidad}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosVacanteSelect.localidad}</div>
                         </div>
                         <div>
                             <label className="font-semibold text-sm">Zona</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px]">{datosVacanteSelect.zona}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosVacanteSelect.zona}</div>
                         </div>
                     </div>
                 </div>
@@ -1250,8 +1303,18 @@ const InscriptosMov = ()=>{
                             />
                         </div>
                     </div>
-                    <div className="flex flex-col mx-2 mt-4">
-                        <label className="text-sm font-semibold">Datos de su Cargo Actual</label>
+                    <div className="flex flex-row ml-2 my-4">
+                        <div className="flex flex-col mr-2">
+                            <label className="text-sm">Observaciones</label>
+                            <input 
+                                className="border-[1px] border-zinc-400 w-[60mm] pl-[2px]"
+                                value={formInscripto.observacion}
+                                disabled={true}
+                            />
+                        </div>
+                    </div>
+                    <div className="flex flex-col mx-2 my-4">
+                        <label className="text-sm font-semibold">Cargo que dejo</label>
                         <div className="flex flex-row border-[1px] border-orange-500 rounded p-2 bg-orange-50">
                             <div className="flex flex-col mr-2 ">
                                 <label className="text-sm">Cargo Actual</label>
@@ -1274,7 +1337,7 @@ const InscriptosMov = ()=>{
                             {
                                 (datosInscriptoSelect.id_vacante_generada_cargo_actual!=null)
                                 ?<div className="flex flex-col mr-2">
-                                    <label className="text-sm">N° Vac Gen</label>
+                                    <label className="text-sm">N° Vac</label>
                                     <input 
                                         name="nro_escuela"
                                         className="border-[1px] border-orange-400 w-[10mm] pl-[2px]"
@@ -1298,16 +1361,7 @@ const InscriptosMov = ()=>{
                         </div>
 
                     </div>
-                    <div className="flex flex-row ml-2 my-4">
-                        <div className="flex flex-col mr-2">
-                            <label className="text-sm">Observaciones</label>
-                            <input 
-                                className="border-[1px] border-zinc-400 w-[60mm] pl-[2px]"
-                                value={formInscripto.observacion}
-                                disabled={true}
-                            />
-                        </div>
-                    </div>
+                    
                 </div>
                 {/* AVISO DE ALERTA */}
                 {
@@ -1325,11 +1379,11 @@ const InscriptosMov = ()=>{
 
                 {/* DATOS DE CARGO TOMADO - SI SE LE ASIGNO VACANTE */}
                 {(datosInscriptoSelect.vacante_asignada!=null && datosInscriptoSelect.vacante_asignada!='') &&
-                <div className="h-[19vh] w-[50vw] mt-5 border-[1px] border-green-800 text-center rounded">
+                <div className="h-[19vh] w-[50vw] mt-5 border-[1px] border-emerald-500 text-center rounded bg-emerald-50">
                 <div className="flex flex-row ">
                     <div className="w-[20%] "></div>
                     <div className="w-[60%] ">
-                        <label className="text-xl text-center font-semibold " translate='no'>Toma de Cargo</label>
+                        <label className="text-xl text-center font-bold text-green-700" translate='no'>Cargo que tomó</label>
                     </div>
                     <div className="flex flex-row w-[20%] justify-end">
                         {/* <button className="font-bold text-lg mr-2 hover:text-green-500 hover:scale-150 transition-all duration-500">
@@ -1350,39 +1404,39 @@ const InscriptosMov = ()=>{
                     <div className="flex flex-row">
                         <div className="text-start ml-2">
                             <label className="font-semibold text-sm">ID Vacante</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[6vw] h-[4vh] pl-[4px]">{cargoAsignado.id_vacante_mov}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[6vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.id_vacante_mov}</div>
                         </div>
                         <div className="text-start ml-2">
                             <label className="font-semibold text-sm">Escuela</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[20vw] h-[4vh] pl-[4px]">{cargoAsignado.establecimiento} {cargoAsignado.obs_establecimiento}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.establecimiento} {cargoAsignado.obs_establecimiento}</div>
                         </div>
                         <div className="text-start ml-2">
                             <label className="font-semibold text-sm">Cargo</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] ">{cargoAsignado.cargo}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.cargo}</div>
                         </div>
                         <div className="text-start ml-2">
                             <label className="font-semibold text-sm">Modalidad</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] ">{cargoAsignado.modalidad}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.modalidad}</div>
                         </div>
                     </div>    
                     <div className="flex flex-row">
                         <div className="text-start ml-2">
                             <label className="font-semibold text-sm">Turno</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[8vw] h-[4vh] pl-[4px]">{cargoAsignado.turno}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[8vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.turno}</div>
                         </div>
                         <div className="text-start ml-2">
                             <label className="font-semibold text-sm">Region</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[4vw] h-[4vh] pl-[4px] ">{cargoAsignado.region}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[11vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.region}</div>
                         </div>
                         <div className="text-start ml-2">
                             <label className="font-semibold text-sm">Localidad</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[17vw] h-[4vh] pl-[4px] ">{cargoAsignado.localidad}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[17vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.localidad}</div>
                         </div>
                         <div className="text-start ml-2">
                             <label className="font-semibold text-sm">Zona</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] ">{cargoAsignado.zona}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.zona}</div>
                         </div>
-                    </div> 
+                    </div>
                 </div>
                 }
 

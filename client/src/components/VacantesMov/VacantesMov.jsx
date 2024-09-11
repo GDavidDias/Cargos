@@ -252,7 +252,7 @@ const VacantesMov = () =>{
                         setMensajeModalConfirm('¿Seguro Elimina la Vacante?');
                         openModalConfirm();
                     }else{
-                        setMensajeModalInfo(`Para eliminar la Vacante generada del Movimiento de: ${res.data[0].apellido}, ${res.data[0].nombre} (DNI: ${res.data[0].dni}), dirigase a Inscriptos`);
+                        setMensajeModalInfo(`Para eliminar la Vacante generada del Movimiento de: ${res.data[0].apellido}, ${res.data[0].nombre} (DNI: ${res.data[0].dni}), dirijase a Inscriptos`);
                         openModal();
                     }
                 })
@@ -548,7 +548,7 @@ const VacantesMov = () =>{
 
                                 {
                                     filterListadoVacantesMov?.map((vacante, index)=>{
-                                        const colorFila = vacante.datetime_asignacion ?`bg-red-200` :``
+                                        const colorFila = vacante.datetime_asignacion ?`bg-red-200` :(((vacante.id_vacante_mov %2)===0) ?'bg-zinc-200' :'')
                                         return(
                                             <tr 
                                                 className={`text-lg font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 ${colorFila}`}
@@ -559,9 +559,9 @@ const VacantesMov = () =>{
                                                 <td className="text-center">{vacante.establecimiento} {vacante.obs_establecimiento}</td>
                                                 <td className="text-center">{vacante.cargo}</td>
                                                 <td className="text-center">{vacante.modalidad}</td>
-                                                <td>{vacante.turno}</td>
-                                                <td className="text-center">{vacante.region}</td>
-                                                <td>{vacante.localidad}</td>
+                                                <td className="text-center">{vacante.turno}</td>
+                                                <td className="text-center w-[10vw]">{vacante.region}</td>
+                                                <td className="text-center">{vacante.localidad}</td>
                                                 <td className="text-center">{vacante.zona}</td>
                                                 <td>
                                                     <div className="flex flex-row items-center justify-center  ">
