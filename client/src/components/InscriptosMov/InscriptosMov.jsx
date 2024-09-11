@@ -149,13 +149,13 @@ const InscriptosMov = ()=>{
     };
 
     //Este Proc carga el listado de inscriptos_mov al E.L
-    const getInscriptosMov = async(id_listado,page,idTipoInscripto,filtroAsignacion) =>{
+    const getInscriptosMov = async(id_listado,page,idTipoInscripto,filtroAsignacion,valorBusqueda) =>{
         let data;
         const limit=10;
         console.log('que trae id_listado getInscriptosMovListado: ', id_listado);
         if(id_listado){
             //paso id_listado, limit y page
-            data = await fetchAllInscriptosMov(id_listado, limit, page,idTipoInscripto,filtroAsignacion);
+            data = await fetchAllInscriptosMov(id_listado, limit, page,idTipoInscripto,filtroAsignacion, valorBusqueda);
             //console.log('que trae data de fetchAllInscriptosMov: ', data);
 
             if(data.result?.length!=0){
@@ -288,7 +288,8 @@ const InscriptosMov = ()=>{
         setDatosVacanteSelect('');
         //Cargo de nuevo listado de inscriptos con datos actualizados,
         //aplico los filtros y traigo dato si fue asignado o no
-        recargaListadoInscriptos();
+        //recargaListadoInscriptos();
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch);
     };
 
     
@@ -374,17 +375,21 @@ const InscriptosMov = ()=>{
     const handleCancelSearch=async()=>{
         //seteoFiltrosBusquedaInicio();
         setInputSearch('')
+        setCurrentPage(1);
         //setDocRecFilter(docrecSG);
-        aplicoFiltrosListado(listadoInscriptosMov);
+        //aplicoFiltrosListado(listadoInscriptosMov);
+        //await getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,'');
     };
     
     //Proc: ejecuta la busqueda, filtrando datos de input busqueda en los campos
     //del listado de inscriptos filtrado
     const submitSearch = async()=>{
-        //console.log('presiono buscar con este input: ', inputSearch);
-        let searchDoc;
-        searchDoc = await filterListadoInscriptosMov.filter(inscripto=>inscripto.nombre.toLowerCase().includes(inputSearch.toLowerCase()) || inscripto.apellido.toLowerCase().includes(inputSearch.toLowerCase()) || inscripto.nro_escuela.toLowerCase().includes(inputSearch.toLowerCase()) || inscripto.dni.includes(inputSearch));
-        setFilterListadoInscriptosMov(searchDoc);
+        console.log('presiono buscar con este input: ', inputSearch);
+        const valorBusqueda = inputSearch;
+        // let searchDoc;
+        // searchDoc = await filterListadoInscriptosMov.filter(inscripto=>inscripto.nombre.toLowerCase().includes(inputSearch.toLowerCase()) || inscripto.apellido.toLowerCase().includes(inputSearch.toLowerCase()) || inscripto.nro_escuela.toLowerCase().includes(inputSearch.toLowerCase()) || inscripto.dni.includes(inputSearch));
+        // setFilterListadoInscriptosMov(searchDoc);
+        //await getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,valorBusqueda);
     };    
     //-------------------------------------------------------------------
 
@@ -664,7 +669,7 @@ const InscriptosMov = ()=>{
 
     useEffect(()=>{
         //recargo listado de inscriptos con la nueva pagina
-        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto);
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch);
     },[currentPage])
 
     //A medida que se escribe en el Input de BUsqueda de Vacantes Disponibles se ejecuta
@@ -673,9 +678,9 @@ const InscriptosMov = ()=>{
         busquedaDinamica();
     },[inputSearchVac])
 
-    useEffect(()=>{
-        console.log('que tiene campo inputSearch: ', inputSearch);
-    },[inputSearch])
+    // useEffect(()=>{
+    //     console.log('que tiene campo inputSearch: ', inputSearch);
+    // },[inputSearch])
 
     //Al setear en E.L los datos del inscripto seleccionado
     useEffect(()=>{
@@ -688,19 +693,20 @@ const InscriptosMov = ()=>{
     },[filterListadoInscriptosMov])
 
     //Al setear algun FILTRO o si listadoInscripto se recarga por modificacion de datos
+    // useEffect(()=>{
+    //     console.log('APLICO FILTRO')
+    //     console.log('que tiene estado local tipoInscripto: ', tipoInscripto);
+    //     console.log('que tiene estado local estadoInscripto: ', estadoInscripto);
+
+    //     //aplicoFiltrosListado(listadoInscriptosMov);
+
+    // },[listadoInscriptosMov,tipoInscripto, estadoInscripto]);
+
+    //APLICO FILTROS de tipoInscripto (Activos / Disponibilidad), estadoInscripto(todos/sinasignar/asignados) y busquedadinamica(inputSearch)
     useEffect(()=>{
         console.log('APLICO FILTRO')
-        console.log('que tiene estado local tipoInscripto: ', tipoInscripto);
-        console.log('que tiene estado local estadoInscripto: ', estadoInscripto);
-
-        //aplicoFiltrosListado(listadoInscriptosMov);
-        //getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto);
-
-    },[listadoInscriptosMov,tipoInscripto, estadoInscripto]);
-
-    useEffect(()=>{
-        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto);
-    },[tipoInscripto,estadoInscripto])
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch);
+    },[tipoInscripto,estadoInscripto,inputSearch])
 
 
     useEffect(()=>{

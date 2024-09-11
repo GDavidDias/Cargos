@@ -4,13 +4,14 @@ module.exports = async(req,res)=>{
     //TRAE TODOS LOS INSCRIPTOS DE LA TABLA inscriptos_mov
     //QUE SEAN DEL NIVEL INDICADO EN EL LISTADO id_listado_inscriptos
     console.log('ingresa a getAllInscriptosMov');
-    const {id_listado_inscriptos,limit,page,idTipoInscripto,filtroAsignacion} = req.body;
+    const {id_listado_inscriptos,limit,page,idTipoInscripto,filtroAsignacion,filtroBusqueda} = req.body;
 
     console.log('que trae id_listado_inscriptos: ', id_listado_inscriptos);
     console.log('que trae limit: ', limit);
     console.log('que trae page: ', page);
     console.log('que trae idTipoInscripto: ', idTipoInscripto);
     console.log('que trae filtroAsignacion: ', filtroAsignacion);
+    console.log('que trae filtroBusqueda: ', filtroBusqueda);
 
     const offset = (page-1)*limit;
 
@@ -27,9 +28,19 @@ module.exports = async(req,res)=>{
             `;
 
     if(filtroAsignacion==='asignados'){
-        armaquery+=` AND am2.id_vacante_mov IS NOT NULL`;
+        armaquery+=` AND am2.id_vacante_mov IS NOT NULL `;
     }else if(filtroAsignacion==='sinasignar'){
-        armaquery+=` AND am2.id_vacante_mov IS NULL`;
+        armaquery+=` AND am2.id_vacante_mov IS NULL `;
+    }
+
+    if(filtroBusqueda && filtroBusqueda!=''){
+        armaquery+=` AND (LOWER(im.apellido) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                        OR LOWER(im.nombre) LIKE '%${filtroBusqueda.toLowerCase()}%'
+                        OR LOWER(im.dni) LIKE '%${filtroBusqueda.toLowerCase()}%'
+                        OR LOWER(im.cargo_actual) LIKE '%${filtroBusqueda.toLowerCase()}%'
+                        OR LOWER(im.cargo_solicitado) LIKE '%${filtroBusqueda.toLowerCase()}%'
+                        OR LOWER(im.nro_escuela) LIKE '%${filtroBusqueda.toLowerCase()}%'
+                        )`
     }
 
     try{
