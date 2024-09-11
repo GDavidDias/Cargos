@@ -18,6 +18,7 @@ import ContentModalVerVacante from "../ContentModalVerDatos/ContentModalVerVacan
 import Modal from "../Modal/Modal";
 import axios from "axios";
 import ContentModalNuevaVacante from "../ContentModalNuevaVacante/ContentModalNuevaVacante";
+import Paginador from "../Paginador/Paginador.jsx";
 
 
 
@@ -99,6 +100,11 @@ const VacantesMov = () =>{
     //E.L. para guardar los datos del inscripto al que se asigno vacante
     const[inscriptoAsignado, setInscriptoAsignado]=useState([]);
 
+    //E.L. para guardar datos de paginacion
+    const[paginacion, setPaginacion]=useState('');
+
+    //pagina actual
+    const[currentPage, setCurrentPage]=useState(1);
 
     //-----------PROCESOS Y FUNCIONES-----------
 
@@ -144,23 +150,28 @@ const VacantesMov = () =>{
         setIdListVacMov(idFilterListado);
 
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE VACANTES
-        await getVacantesMov(idFilterListado)
+        await getVacantesMov(idFilterListado,currentPage,estadoVacantes,inputSearch)
     };
 
     //Este Proc carga el listado de VACANTES al E.L
-    const getVacantesMov = async(id_listado) =>{
+    const getVacantesMov = async(id_listado,page,filtroAsignacion,valorBusqueda) =>{
         let data;
+        const limit=10;
         console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
-
-            data = await fetchAllVacantesMov(id_listado);
+            //paso idListado, limit y page
+            data = await fetchAllVacantesMov(id_listado,limit,page,filtroAsignacion,valorBusqueda);
 
             console.log('que trae data de fetchVacantesDispMov: ', data);
 
-            if(data?.length!=0){
-                setListadoVacantesMov(data); 
-                setFilterListadoVacantesMov(data);
-            };
+            if(data.result?.length!=0){
+                setListadoVacantesMov(data.result); 
+                setPaginacion(data.paginacion);
+                //setFilterListadoVacantesMov(data);
+            }else{
+                setListadoVacantesMov([]);
+                setPaginacion(data.paginacion)
+            }
         };
     };  
 
@@ -371,34 +382,43 @@ const VacantesMov = () =>{
         setInputSearch(value);
     };
 
-    const busquedaDinamica=()=>{
-        if(inputSearch!=''){
-            searchVacante();
-        }else{
-            aplicoFiltroListadoVacantes(listadoVacantesMov);
-        }
-    };
+    // const busquedaDinamica=()=>{
+    //     if(inputSearch!=''){
+    //         searchVacante();
+    //     }else{
+    //         aplicoFiltroListadoVacantes(listadoVacantesMov);
+    //     }
+    // };
 
-    const searchVacante=async()=>{
-        const searchVac = await filterListadoVacantesMov.filter(vacante=>vacante.establecimiento.toLowerCase().includes(inputSearch.toLocaleLowerCase()) || vacante.cargo.toLowerCase().includes(inputSearch.toLowerCase()) || vacante.modalidad.toLowerCase().includes(inputSearch.toLowerCase()) || vacante.turno.toLowerCase().includes(inputSearch) || vacante.region.toLowerCase().includes(inputSearch) || vacante.localidad.toLowerCase().includes(inputSearch));
-        setFilterListadoVacantesMov(searchVac);
-    };
+    // const searchVacante=async()=>{
+    //     const searchVac = await filterListadoVacantesMov.filter(vacante=>vacante.establecimiento.toLowerCase().includes(inputSearch.toLocaleLowerCase()) || vacante.cargo.toLowerCase().includes(inputSearch.toLowerCase()) || vacante.modalidad.toLowerCase().includes(inputSearch.toLowerCase()) || vacante.turno.toLowerCase().includes(inputSearch) || vacante.region.toLowerCase().includes(inputSearch) || vacante.localidad.toLowerCase().includes(inputSearch));
+    //     setFilterListadoVacantesMov(searchVac);
+    // };
 
     const handleCancelSearch =()=>{
         setInputSearch('');
-        aplicoFiltroListadoVacantes(listadoVacantesMov);
+        //aplicoFiltroListadoVacantes(listadoVacantesMov);
     };
 
 
     //---------------------
 
+
+    const handlePageChange = (nuevaPagina)=>{
+        if(nuevaPagina>0 && nuevaPagina<=paginacion?.totalPages){
+            setCurrentPage(nuevaPagina);
+        };
+    };
+
+
+
     useEffect(()=>{
         console.log('que tiene inscriptoAsignado: ', inscriptoAsignado);
     },[inscriptoAsignado])
 
-    useEffect(()=>{
-        busquedaDinamica();
-    },[inputSearch]);
+    // useEffect(()=>{
+    //     busquedaDinamica();
+    // },[inputSearch]);
 
     useEffect(()=>{
         if(formNuevaVacante.establecimiento!='' && formNuevaVacante.cargo!='' ){
@@ -415,10 +435,10 @@ const VacantesMov = () =>{
     //cada vez que aplco filtro, 
     useEffect(()=>{
         console.log('APLICO FILTRO');
-        console.log('que tiene estado local estadoVacantes: ', estadoVacantes);
-        aplicoFiltroListadoVacantes(listadoVacantesMov);
-
-    },[listadoVacantesMov,estadoVacantes])
+        //console.log('que tiene estado local estadoVacantes: ', estadoVacantes);
+        //aplicoFiltroListadoVacantes(listadoVacantesMov);
+        getVacantesMov(idListVacMov,currentPage,estadoVacantes,inputSearch)
+    },[estadoVacantes,currentPage,estadoVacantes,inputSearch])
 
     useEffect(()=>{
         seteoDatosInicialesFormVacante()
@@ -468,7 +488,7 @@ const VacantesMov = () =>{
             </div>
             {/* CONTENIDO DE PAGINA */}
             <div className="h-[87vh]">
-                <div className="m-2 border-[1px] border-[#758C51] rounded h-[83vh] ">
+                <div className="m-2 border-[1px] border-[#758C51] rounded h-[77vh] ">
                     {/* PARTE SUPERIOR DE TABLA */}
                     <div className="border-b-[1px] border-slate-300 h-[6vh] flex flex-row items-center">
                         {/* Filtros */}
@@ -529,7 +549,7 @@ const VacantesMov = () =>{
                     </div>
 
                     {/* PARTE INFERIOR DE DATOS DE TABLA */}
-                    <div className=" h-[80vh] overflow-y-auto">
+                    <div className=" h-[70vh] overflow-y-auto">
                         <table className="border-[1px] bg-slate-50 w-full">
                             <thead>
                                 <tr className="sticky top-0 text-sm border-b-[2px] border-zinc-300 bg-zinc-200">
@@ -547,7 +567,8 @@ const VacantesMov = () =>{
                             <tbody>
 
                                 {
-                                    filterListadoVacantesMov?.map((vacante, index)=>{
+                                    // filterListadoVacantesMov?.map((vacante, index)=>{
+                                    listadoVacantesMov?.map((vacante, index)=>{
                                         const colorFila = vacante.datetime_asignacion ?`bg-red-200` :(((vacante.id_vacante_mov %2)===0) ?'bg-zinc-200' :'')
                                         return(
                                             <tr 
@@ -589,6 +610,17 @@ const VacantesMov = () =>{
                         </table>
                     </div>
                     
+                </div>
+
+                {/* SECCION PAGINACION */}
+                <div className="flex justify-center">
+                    <Paginador
+                        currentpage={paginacion.page}
+                        totalpage={paginacion.totalPages}
+                        onPageChange={handlePageChange}
+                        totalItems={paginacion.totalItems}
+                    />
+
                 </div>
             </div>
 
