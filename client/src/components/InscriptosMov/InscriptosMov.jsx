@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { fetchAllInscriptosMov } from "../../utils/fetchAllInscriptosMov";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +14,8 @@ import { fetchAsignacionByVacante } from "../../utils/fetchAsignacionByVacante";
 import { updateIdVacanteGenerada } from "../../utils/updateIdVacanteGenerada";
 import './InscriptosMov.modules.css';
 
+import { useReactToPrint } from 'react-to-print';
+
 //-------ICONOS--------
 import { FaRegUserCircle, FaPowerOff  } from "react-icons/fa";
 import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit} from "react-icons/fa";
@@ -24,6 +26,7 @@ import { FiAlertTriangle } from "react-icons/fi";
 import { deleteVacanteMov } from "../../utils/deleteVacanteMov";
 import { MdOutlineDoubleArrow } from "react-icons/md";
 import Paginador from "../Paginador/Paginador";
+import PaginaDesignacion from "../PaginaDesignacion/PaginaDesignacion";
 
 
 
@@ -36,11 +39,13 @@ const InscriptosMov = ()=>{
     const userSG = useSelector((state)=>state.user);
 
     //E.L. de Ventanas Modales
+    const[isOpenModalConfirm,openModalConfirm,closeModalConfirm]=useModal(false);
     const[isOpenModalAsign,openModalAsign,closeModalAsign]=useModal(false);
     const[isOpenModalVac,openModalVac,closeModalVac]=useModal(false);
     const[isOpenModalEdit,openModalEdit,closeModalEdit]=useModal(false);
     const[isOpenModal,openModal,closeModal]=useModal(false);
     const[mensajeModalInfo, setMensajeModalInfo]=useState('');
+    const[mensajeModalConfirm, setMensajeModalConfirm]=useState('');
 
     //E.L. para filtrar los listados, que se determinan por
     // disponibilidad -> 1  / activos -> 2
@@ -121,6 +126,8 @@ const InscriptosMov = ()=>{
 
     //pagina actual
     const[currentPage, setCurrentPage]=useState(1);
+
+    const componentRef = useRef(null);
 
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
@@ -521,16 +528,20 @@ const InscriptosMov = ()=>{
                     if(datosInscriptoSelect.id_tipo_inscripto===1){
                         //?INSCRIPTO EN DISPONIBILIDAD -> Solo Asigna Vacante a Inscripto
                         //Mostrar Notificacion de Movimiento realizado
-                        setMensajeModalInfo('Movimiento Asignado Correctamente')
-                        openModal();
+                        //setMensajeModalInfo('Movimiento Asignado Correctamente')
+                        //openModal();
+                        setMensajeModalConfirm('Movimiento Asignado Correctamente, ¿Imprime Designacion?');
+                        openModalConfirm();
                     }else{
                         //?INSCRIPTO ACTIVO -> Una vez asignada vacante, deebe Generar Nueva Vacante del cargo que deja el inscripto
                         //?SOLO CREA NUEVA VACANTE SI NO ESTA GENERADA -> id_vacante_generada_cargo_actual IS NULL
                         if(datosInscriptoSelect.id_vacante_generada_cargo_actual===null){
                             creaNuevaVacante();
                         }else{
-                            setMensajeModalInfo('Movimiento Asignado Correctamente')
-                            openModal();
+                            // setMensajeModalInfo('Movimiento Asignado Correctamente')
+                            // openModal();
+                            setMensajeModalConfirm('Movimiento Asignado Correctamente, ¿Imprime Designacion?');
+                            openModalConfirm();
                         }
     
                     }
@@ -576,8 +587,10 @@ const InscriptosMov = ()=>{
             const resUpdIdVacGen = await updateIdVacanteGenerada(datosInscriptoSelect.id_inscriptos_mov,idVacanteGenerada);
             console.log('que trae resUpdIdVacGen: ', resUpdIdVacGen);
 
-            setMensajeModalInfo('Movimiento Asignado Correctamente')
-            openModal();
+            // setMensajeModalInfo('Movimiento Asignado Correctamente')
+            // openModal();
+            setMensajeModalConfirm('Movimiento Asignado Correctamente, ¿Imprime Designacion?');
+            openModalConfirm();
         })
         .catch(error=>{
             console.log('que trae error createVacantesMov: ', error)
@@ -585,6 +598,13 @@ const InscriptosMov = ()=>{
         //Al final del Proceso de Asignacion recargo el listado de Vacantes Disponibles
         await buscoIDListadoVacantes(configSG.nivel.id_nivel);
     };
+
+    //Proceso para Imprimir la designacion
+    const procesoImpresion = async()=>{
+        console.log('ingresa a Impresion');
+        await handlePrint();
+    };
+
     //?---------------------------------------------------------------
 
 
@@ -666,6 +686,26 @@ const InscriptosMov = ()=>{
             setCurrentPage(nuevaPagina);
         };
     };
+
+
+    const handlePrint = useReactToPrint({
+        content:() => componentRef.current,
+        pageStyle:`
+        @page {
+          size: A4; /* Tamaño del papel */
+          orientation: portrait; /* Orientación vertical */
+        }
+      `,
+    });
+
+    const submitCloseModalConfirm = () =>{
+
+        closeModalConfirm();
+        closeModalAsign();
+        closeModalVac();
+    };
+
+
 
     useEffect(()=>{
         //recargo listado de inscriptos con la nueva pagina
@@ -1232,6 +1272,9 @@ const InscriptosMov = ()=>{
                         onClick={closeModalAsign}
                         translate='no'
                     >CANCELAR</button>
+                    <button
+                        onClick={()=>procesoImpresion()}
+                    >imprimir</button>
                 </div>                
             </div>
         </ModalEdit>
@@ -1503,6 +1546,28 @@ const InscriptosMov = ()=>{
             </div>
         </ModalEdit>
 
+        {/* MODAL DE NOTIFICACION Y CONFIRMACION DE IMPRESION DESIGNACION */}
+        <ModalEdit isOpen={isOpenModalConfirm} closeModal={closeModalConfirm}>
+            <div className="mt-10 w-[30vw] flex flex-col items-center">
+                <h1 className="text-xl text-center font-bold">{mensajeModalConfirm}</h1>
+                <div className="flex flex-row">
+                    <div className="flex justify-center mr-2">
+                        <button
+                            className="border-2 border-[#557CF2] mt-10 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
+                            onClick={()=>{procesoImpresion(); submitCloseModalConfirm()}}
+                        >ACEPTAR</button>
+                    </div>
+                    <div className="flex justify-center ml-2">
+                        <button
+                            className="border-2 border-[#557CF2] mt-10 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
+                            onClick={()=>submitCloseModalConfirm()}
+                        >CANCELAR</button>
+                    </div>
+                </div>    
+            </div>
+
+        </ModalEdit>
+
         {/* MODAL DE NOTIFICACIONES */}
         <Modal isOpen={isOpenModal} closeModal={closeModal}>
             <div className="mt-10 w-72">
@@ -1515,6 +1580,24 @@ const InscriptosMov = ()=>{
                 </div>
             </div>
         </Modal>
+
+        {/* PAGINA DE IMPRESION DESIGNACION */}
+        <div 
+            className="flex flex-col print:page-break-after"
+            ref={componentRef}
+        >
+            <PaginaDesignacion
+                datosInscripto={datosInscriptoSelect}
+                datosVacante={datosVacanteSelect}
+                id_nivel={configSG?.nivel.id_nivel}
+            />
+            <br/>
+            <PaginaDesignacion
+                datosInscripto={datosInscriptoSelect}
+                datosVacante={datosVacanteSelect}
+                id_nivel={configSG?.nivel.id_nivel}
+            />
+        </div>
 
         </div>
     )

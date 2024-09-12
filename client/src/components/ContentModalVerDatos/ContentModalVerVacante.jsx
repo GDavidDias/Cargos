@@ -4,17 +4,17 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
     return(
         <div className="h-100 w-100  flex flex-col items-center">
             <label 
-                className="text-xl text-center font-bold " 
+                className="text-xl text-center font-bold flex flex-row items-center" 
                 translate='no'
-            >Datos de la Vacante</label>
+            >Datos de la Vacante <p className="text-sm font-light ml-2">({idVacante})</p></label>
             <div>
                 <div className="min-h-[23vh]  mt-2 border-[2px] border-sky-500 rounded bg-sky-100">
                     <div className="flex flex-col ml-2 mt-2 items-end justify-end">
                         <div className="flex flex-row my-[4px] mx-2 items-center">
-                            <label className="text-sm mr-2">ID:</label>
+                            <label className="text-sm mr-2">Orden:</label>
                             <input 
                                 className="border-[1px] border-zinc-400 w-[60mm] text-start pl-2 bg-neutral-50"
-                                value={idVacante}
+                                value={datosVacante?.orden}
                                 disabled={true}
                             />
                         </div>

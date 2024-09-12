@@ -554,6 +554,7 @@ const VacantesMov = () =>{
                             <thead>
                                 <tr className="sticky top-0 text-sm border-b-[2px] border-zinc-300 bg-zinc-200">
                                     <th className="border-r-[1px] border-zinc-300">ID</th>
+                                    <th className="border-r-[1px] border-zinc-300">Orden</th>
                                     <th className="border-r-[1px] border-zinc-300">Establecimiento</th>
                                     <th className="border-r-[1px] border-zinc-300">Cargo</th>
                                     <th className="border-r-[1px] border-zinc-300">Modalidad</th>
@@ -575,8 +576,8 @@ const VacantesMov = () =>{
                                                 className={`text-lg font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 ${colorFila}`}
                                                 key={index}
                                             >
-                                                <td className="w-[2vw] pl-[4px] font-light">{vacante.id_vacante_mov
-                                                }</td>
+                                                <td className="w-[2vw] pl-[4px] font-light text-sm">{vacante.id_vacante_mov}</td>
+                                                <td className="text-center">{vacante.orden}</td>
                                                 <td className="text-center">{vacante.establecimiento} {vacante.obs_establecimiento}</td>
                                                 <td className="text-center">{vacante.cargo}</td>
                                                 <td className="text-center">{vacante.modalidad}</td>

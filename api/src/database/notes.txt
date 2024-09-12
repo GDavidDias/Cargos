@@ -12,7 +12,7 @@ CREATE TABLE asignacion_mov(id_asignacion_mov INT(11) NOT NULL AUTO_INCREMENT, i
 
 CREATE TABLE estado_asignacion(id_estado_asignacion INT(2) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_estado_asignacion));
 
-CREATE TABLE vacantes_mov(id_vacante_mov INT(11) NOT NULL AUTO_INCREMENT, id_listado_vac_mov INT(7) DEFAULT NULL, orden INT(7) DEFAULT NULL, establecimiento VARCHAR(255) DEFAULT NULL, obs_establecimiento VARCHAR(250) DEFAULT NULL, region VARCHAR(250) DEFAULT NULL, departamento VARCHAR(250) DEFAULT NULL, localidad VARCHAR(250) DEFAULT NULL, cargo VARCHAR(250) DEFAULT NULL, turno VARCHAR(50) DEFAULT NULL, modalidad VARCHAR(250) DEFAULT NULL, cupof VARCHAR(50) DEFAULT NULL, id_especialidad INT(11) DEFAULT NULL, datetime_creacion DATETIME DEFAULT NULL, obs_desactiva VARCHAR(250) DEFAULT NULL, zona VARCHAR(7) DEFAULT NULL, PRIMARY KEY(id_vacante_mov));
+CREATE TABLE vacantes_mov(id_vacante_mov INT(11) NOT NULL AUTO_INCREMENT, id_listado_vac_mov INT(7) DEFAULT NULL, orden INT(7) DEFAULT NULL, establecimiento VARCHAR(255) DEFAULT NULL, obs_establecimiento VARCHAR(250) DEFAULT NULL, region VARCHAR(250) DEFAULT NULL, departamento VARCHAR(250) DEFAULT NULL, localidad VARCHAR(250) DEFAULT NULL, cargo VARCHAR(250) DEFAULT NULL, turno VARCHAR(50) DEFAULT NULL, modalidad VARCHAR(250) DEFAULT NULL, cupof VARCHAR(50) DEFAULT NULL, id_especialidad INT(11) DEFAULT NULL, datetime_creacion DATETIME DEFAULT NULL, obs_desactiva VARCHAR(250) DEFAULT NULL, zona VARCHAR(7) DEFAULT NULL, resolucion VARCHAR(250) DEFAULT NULL, PRIMARY KEY(id_vacante_mov));
 
 CREATE TABLE nivel(id_nivel INT(7) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_nivel));
 
