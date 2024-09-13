@@ -8,6 +8,7 @@ import { useModal } from "../../hooks/useModal";
 import { IoMdEyeOff } from "react-icons/io";
 import { conexion } from "../../utils/conexion";
 import { outUser, setUser } from "../../redux/userSlice";
+import logo from '../../assets/JUNTA-04-xs.png';
 
 const Landing = () => {
     
@@ -56,6 +57,29 @@ const Landing = () => {
         }
     };
 
+    const submitHandlerInvitado = async()=>{
+        let formInvitado = {
+            username:'',
+            password:''
+        };
+
+        if(configSG.nivel.id_nivel===1){
+            formInvitado.username='invitadoIni';
+            formInvitado.password='invitadoIni';
+        }else if(configSG.nivel.id_nivel===2){
+            formInvitado.username='invitadoPri';
+            formInvitado.password='invitadoPri';
+        }
+        
+        const datavalida = await conexion(formInvitado);
+        if(datavalida.length!=0){
+            dispatch(setUser(datavalida));
+            navigate('/home');
+        }else{
+            dispatch(outUser());
+        }
+    }
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -92,14 +116,14 @@ const Landing = () => {
     },[])
 
     return(
-        <div>
+        <div className="flex flex-col items-center">
             <div className="h-[15vh] flex flex-row justify-center items-center bg-[#729DA6] border border-b-slate-400 w-full shadow-md ">
                 <div className="desktop:w-[90px] desktop:h-[90px] movil:w-[80px] movil:h-[80px] flex justify-center ">
-                    <img className="desktop:w-[90px] desktop:h-[90px] movil:w-[80px] movil:h-[80px]" src=""/>
+                    <img className="desktop:w-[90px] desktop:h-[90px] movil:w-[80px] movil:h-[80px]" src={logo}/>
                 </div>
                 <div className="h-28  flex flex-col pl-4 justify-center items-center">
-                    <label className="text-[38px]  font-bold text-white" translate='no'>Sistema Entrega de Cargos</label>
-                    <label className="text-[25px] text-white font-semibold" translate='no'>Nivel {configSG.nivel?.descripcion}</label>
+                    <label className="desktop:text-[38px] movil:text-xl font-bold text-white" translate='no'>Sistema Entrega de Cargos</label>
+                    <label className="desktop:text-[25px] movil:text-lg text-white font-semibold mt-4" translate='no'>Nivel {configSG.nivel?.descripcion}</label>
                 </div>
             </div>
 
@@ -131,29 +155,35 @@ const Landing = () => {
                     </div>
                 </div>
                 </div>
-                <label
+                {/* <label
                     className="text-sky-500 hover:text-sky-800 hover:cursor-pointer"
                     //onClick={()=>ModalChangePass()}
-                >Cambiar Contraseña</label>
+                >Cambiar Contraseña</label> */}
                 <button
                     className="w-40 h-8 bg-[#729DA6] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#6A88F7] shadow-md rounded"
                     onClick={submitHandler}
                     translate='no'
                     id="botonEnter"
                 >Acceder</button>
+                <button
+                    className="w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded"
+                    onClick={submitHandlerInvitado}
+                    translate='no'
+                    id="botonEnter"
+                >Invitado</button>
             </div>
 
             {/* MODAL INICIAL SELECCION NIVEL */}
             <ModalEdit isOpen={isOpenModalNivel} closeModal={closeModalNivel}>
                 <div className="mt-10 w-72">
                     <h1 className="text-xl text-center font-bold">Seleccione el Nivel</h1>
-                    <div className="flex justify-center">
+                    <div className="flex movil:flex-col movil:items-center desktop:flex-row desktop:justify-center">
                         <button
-                            className="border-2 border-[#557CF2] mt-10 mr-2 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
+                            className="border-2 border-[#557CF2] mt-10 mx-2 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
                             onClick={()=>submitNivelInicial()}
                         >Inicial</button>
                         <button
-                            className="border-2 border-[#557CF2] mt-10 ml-2 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
+                            className="border-2 border-[#557CF2] mt-10 mx-2 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
                             onClick={()=>submitNivelPrimario()}
                         >Primario</button>
                     </div>

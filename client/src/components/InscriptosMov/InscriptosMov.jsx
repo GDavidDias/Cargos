@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchAllInscriptosMov } from "../../utils/fetchAllInscriptosMov";
 import { useNavigate } from "react-router-dom";
 import {useModal} from '../../hooks/useModal';
@@ -27,12 +27,14 @@ import { deleteVacanteMov } from "../../utils/deleteVacanteMov";
 import { MdOutlineDoubleArrow } from "react-icons/md";
 import Paginador from "../Paginador/Paginador";
 import PaginaDesignacion from "../PaginaDesignacion/PaginaDesignacion";
+import { outUser } from "../../redux/userSlice";
 
 
 
 const InscriptosMov = ()=>{
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     //E.G que trae la configuracion de sistema
     const configSG = useSelector((state)=>state.config);
@@ -134,6 +136,7 @@ const InscriptosMov = ()=>{
     //-------------------------------------
 
     const logOut = () =>{
+        dispatch(outUser());
         navigate('/')
     };
 

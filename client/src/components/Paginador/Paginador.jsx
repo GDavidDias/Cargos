@@ -24,7 +24,7 @@ const Paginador = ({currentpage,totalpage,onPageChange,totalItems}) =>{
     const getEndItem = Math.min(currentpage*10, totalItems);
 
     return(
-        <div className="notranslate flex flex-col items-center">
+        <div className="notranslate flex flex-col items-center ">
             <div className="flex flex-row">
                 <button
                     disabled={currentpage===1}
@@ -40,7 +40,7 @@ const Paginador = ({currentpage,totalpage,onPageChange,totalItems}) =>{
                 {pageNumbers?.map((page,index)=>(
                     <button 
                         key={index} 
-                        className={`px-3 py-1 rounded-2xl
+                        className={`desktop:px-3 movil:px-2 py-1 rounded-2xl
                             ${(currentpage===page)
                                 ?`bg-gray-700 text-white`
                                 :`bg-gray-100`

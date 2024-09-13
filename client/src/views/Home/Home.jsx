@@ -13,7 +13,7 @@ import Listados from "../../components/Listados/Listados";
 const Home = () =>{
     const dispatch = useDispatch();
 
-    
+    const userSG = useSelector((state)=>state.config.user);
     const pageSG = useSelector((state)=>state.config.page);
     const[content, setContent]=useState(null);
 
@@ -41,19 +41,29 @@ const Home = () =>{
         }
     },[pageSG]);
 
+    useEffect(()=>{
+        console.log('que tiene userSG: ', userSG);
+        // if(userSG && userSG.permiso===3){
+        //     //Si es un invitado
+        //     dispatch(setPage('VacantesMov'));
+        // }else{
+        //     dispatch(setPage('InscriptosMov'));
+        // }
+    },[userSG])
+    
     //AL RENDERIZAR AL INICIO
     useEffect(()=>{
-        dispatch(setPage('InscriptosMov'));
+        console.log('que tiene userSG Home al REnderizar: ', userSG);
     },[])
     return(
         <div className="h-full w-full fixed ">
             {/* CONTENEDOR SUPERIOR */}
-            <div className="w-full h-[95vh] flex flex-row">
-                <div className="w-[15vw] h-[95vh] ">
+            <div className="w-full h-[95vh] flex desktop:flex-row movil:flex-col">
+                <div className="desktop:w-[15vw] desktop:h-[95vh] movil:w-full movil:h-[6vh]">
                     {/* BARRA NAVEGACION */}
                     <SideBar/>
                 </div>
-                <div className="w-[85vw] h-[95vh]">
+                <div className="desktop:w-[85vw] desktop:h-[95vh] movil:w-full movil:h-[88vh]">
                     {/* PAGINAS DE CONTENIDOS */}
                     {content}
                 </div>

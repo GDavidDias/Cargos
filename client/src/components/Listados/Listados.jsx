@@ -236,7 +236,7 @@ const Listados = () => {
 
             {/* CONTENIDO DE PAGINA - DATOS */}
             <div 
-                className="h-[79vh] overflow-y-auto "
+                className="h-[79vh] overflow-y-auto m-2 border-[1px] border-[#7C8EA6] "
                 ref={componentRef}
             >
                 {(reporte==='vacantesDisponibles') &&

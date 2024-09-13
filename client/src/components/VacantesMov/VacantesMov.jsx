@@ -460,23 +460,22 @@ const VacantesMov = () =>{
     return(
         <div className=" notranslate h-full w-full">
             {/* ENCABEZADO DE PAGINA */}
-            <div className="bg-[#C9D991] h-[8vh] flex flex-row">
+            <div className="bg-[#C9D991] desktop:h-[8vh] movil:h[5vh] flex flex-row">
                 {/* TITULOS - BOTONES - NIVEL */}
-                <div className="w-[45vw] flex justify-center items-start flex-col">
+                <div className="desktop:w-[45vw] flex desktop:flex-col desktop:justify-center desktop:items-start  movil:flex-row movil:w-full movil:items-center movil:justify-center">
                     <label className="ml-4 text-base font-semibold">NIVEL {configSG.nivel.descripcion}</label>
                     <div className="flex flex-row">
                         <label className="ml-4 text-lg font-sans font-bold">VACANTES</label>
-                        <button 
-                            className="ml-2 px-[2px] border-[1px] border-[#73685F] rounded hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] shadow"
-                            onClick={submitNuevaVacante}
-                        >Nueva Vacante</button>
-                        {/* <button 
-                            className="ml-2 px-[2px] border-[1px] border-[#73685F] rounded hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] shadow"
-                        >Disponibilidad</button> */}
+                        {(userSG.permiso!=3) &&
+                            <button 
+                                className="ml-2 px-[2px] border-[1px] border-[#73685F] rounded hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] shadow"
+                                onClick={submitNuevaVacante}
+                            >Nueva Vacante</button>
+                        }
                     </div>
                 </div>
                 {/* SECCION DATOS USUARIO */}
-                <div className=" w-[40vw] flex items-center justify-end">
+                <div className="movil:hidden w-[40vw] desktop:flex items-center justify-end">
                     <label className="mr-2 italic text-sm">{userSG.nombre}</label>
                     <FaRegUserCircle className="mr-2 text-2xl text-[#73685F] " />
                     <FaPowerOff 
@@ -487,10 +486,10 @@ const VacantesMov = () =>{
                 </div>
             </div>
             {/* CONTENIDO DE PAGINA */}
-            <div className="h-[87vh]">
-                <div className="m-2 border-[1px] border-[#758C51] rounded h-[77vh] ">
+            <div className="h-[87vh] flex flex-col items-center">
+                <div className="desktop:h-[77vh] movil:h-[72vh] m-2 border-[1px] border-[#758C51] rounded desktop:w-[83vw] movil:w-[99vw]">
                     {/* PARTE SUPERIOR DE TABLA */}
-                    <div className="border-b-[1px] border-slate-300 h-[6vh] flex flex-row items-center">
+                    <div className="border-b-[1px] border-slate-300 desktop:h-[6vh] flex desktop:flex-row desktop:items-center movil:h-[9vh] movil:flex-col-reverse movil:items-start">
                         {/* Filtros */}
                         <div className="text-base w-[50%] ">
                             <label 
@@ -523,10 +522,10 @@ const VacantesMov = () =>{
                         </div>
 
                         {/* Campo de Busqueda */}
-                        <div className="w-[50%]  flex justify-end">
-                            <div className="border-[1px] border-zinc-400 w-[20vw] rounded flex flex-row items-center justify-between mr-2">
+                        <div className="desktop:w-[50%]  flex desktop:justify-end movil:w-full ">
+                            <div className="desktop:w-[20vw] movil:w-[90vw] border-[1px] border-zinc-400  rounded flex flex-row items-center justify-between mx-2">
                                 <input 
-                                    className="w-[15vw] focus:outline-none rounded"
+                                    className="desktop:w-[15vw] movil:w-[85vw] focus:outline-none rounded"
                                     placeholder="Buscar..."
                                     type="text"
                                     value={inputSearch}
@@ -549,7 +548,7 @@ const VacantesMov = () =>{
                     </div>
 
                     {/* PARTE INFERIOR DE DATOS DE TABLA */}
-                    <div className=" h-[70vh] overflow-y-auto">
+                    <div className=" desktop:h-[70vh] movil:h-[63vh] overflow-y-auto">
                         <table className="border-[1px] bg-slate-50 w-full">
                             <thead>
                                 <tr className="sticky top-0 text-sm border-b-[2px] border-zinc-300 bg-zinc-200">
@@ -593,7 +592,7 @@ const VacantesMov = () =>{
                                                             onClick={()=>submitVerDatosVacante(vacante)}
                                                         />
                                                         {
-                                                            (vacante.datetime_asignacion===null)
+                                                            (vacante.datetime_asignacion===null && userSG.permiso!=3)
                                                             ?<IoTrash 
                                                                 className="font-bold text-xl text-red-500 hover:scale-150 transition-all duration-500 cursor-pointer"
                                                                 title="Eliminar Vaante"
@@ -614,7 +613,7 @@ const VacantesMov = () =>{
                 </div>
 
                 {/* SECCION PAGINACION */}
-                <div className="flex justify-center">
+                <div className="flex justify-center w-[50%] ">
                     <Paginador
                         currentpage={paginacion.page}
                         totalpage={paginacion.totalPages}

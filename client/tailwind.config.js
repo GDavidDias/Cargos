@@ -5,6 +5,11 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    screens:{
+      'movil': '360px',
+      'tablet': '640px',
+      'desktop': '800px'
+    },
     extend: {
       boxShadow: {
         'right-only-xs': '2px 0 2px rgba(0, 0, 0, 0.15)', // sombra solo hacia la derecha
