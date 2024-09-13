@@ -692,7 +692,7 @@ const InscriptosMov = ()=>{
         content:() => componentRef.current,
         pageStyle:`
         @page {
-          size: A4; /* Tamaño del papel */
+          size: LEGAL; /* Tamaño del papel */
           orientation: portrait; /* Orientación vertical */
         }
       `,
@@ -703,6 +703,7 @@ const InscriptosMov = ()=>{
         closeModalConfirm();
         closeModalAsign();
         closeModalVac();
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch);
     };
 
 
@@ -787,7 +788,7 @@ const InscriptosMov = ()=>{
     },[]);
 
     return(
-        <div className="h-full w-full">
+        <div className=" notranslate h-full w-full">
             {/* ENCABEZADO DE PAGINA */}
             <div className="bg-[#C9D991] h-[12vh] flex flex-row">
                 {/* TITULOS - BOTONES - NIVEL */}
@@ -1274,7 +1275,7 @@ const InscriptosMov = ()=>{
                     >CANCELAR</button>
                     <button
                         onClick={()=>procesoImpresion()}
-                    >imprimir</button>
+                    >imprimir (test)</button>
                 </div>                
             </div>
         </ModalEdit>

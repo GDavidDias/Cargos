@@ -2,7 +2,7 @@ const ContentModalNuevaVacante = ({formNuevaVacante,closeModalNuevaVacante,handl
     //console.log('que tiene Valida: ', valida);
     console.log('ingresa a ContentModalNuevaVacante');
     return(
-        <div className="h-100 w-100  flex flex-col items-center">
+        <div className="notranslate h-100 w-100  flex flex-col items-center">
             <label 
                 className="text-xl text-center font-bold " 
                 translate='no'

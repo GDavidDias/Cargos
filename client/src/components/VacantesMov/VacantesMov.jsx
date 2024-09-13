@@ -458,7 +458,7 @@ const VacantesMov = () =>{
     },[])
 
     return(
-        <div className="h-full w-full">
+        <div className=" notranslate h-full w-full">
             {/* ENCABEZADO DE PAGINA */}
             <div className="bg-[#C9D991] h-[8vh] flex flex-row">
                 {/* TITULOS - BOTONES - NIVEL */}

@@ -24,7 +24,7 @@ const Paginador = ({currentpage,totalpage,onPageChange,totalItems}) =>{
     const getEndItem = Math.min(currentpage*10, totalItems);
 
     return(
-        <div className="flex flex-col items-center">
+        <div className="notranslate flex flex-col items-center">
             <div className="flex flex-row">
                 <button
                     disabled={currentpage===1}

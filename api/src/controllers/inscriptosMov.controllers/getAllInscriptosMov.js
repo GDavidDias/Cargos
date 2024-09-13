@@ -31,7 +31,7 @@ module.exports = async(req,res)=>{
         armaquery+=` AND am2.id_vacante_mov IS NOT NULL `;
     }else if(filtroAsignacion==='sinasignar'){
         armaquery+=` AND am2.id_vacante_mov IS NULL `;
-    }
+    };
 
     if(filtroBusqueda && filtroBusqueda!=''){
         armaquery+=` AND (LOWER(im.apellido) LIKE '%${filtroBusqueda.toLowerCase()}%' 
@@ -41,7 +41,9 @@ module.exports = async(req,res)=>{
                         OR LOWER(im.cargo_solicitado) LIKE '%${filtroBusqueda.toLowerCase()}%'
                         OR LOWER(im.nro_escuela) LIKE '%${filtroBusqueda.toLowerCase()}%'
                         )`
-    }
+    };
+
+    armaquery+=` ORDER BY im.id_inscriptos_mov ASC `
 
     try{
         const [result] = await pool.query(`${armaquery} LIMIT ${limit} OFFSET ${offset}`);

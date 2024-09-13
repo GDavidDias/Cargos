@@ -2,7 +2,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
     console.log('ingreso a ContentModalVerVacante')
     //console.log('datos completo de Vacante Seleccionada: ', datosVacante);
     return(
-        <div className="h-100 w-100  flex flex-col items-center">
+        <div className="notranslate h-100 w-100  flex flex-col items-center">
             <label 
                 className="text-xl text-center font-bold flex flex-row items-center" 
                 translate='no'
