@@ -8,6 +8,9 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { fetchVacantesDispMov } from "../../utils/fetchVacanteDispMov";
 import { SiMicrosoftexcel } from "react-icons/si";
+import ReporteVacantesDisponibles from "../ReporteVacantesDisponibles/ReporteVacantesDisponibles";
+import ReporteAsignacionesRealizadas from "../ReporteAsignacionesRealizadas/ReporteAsignacionesRealizadas";
+import { fetchRepoAsignacionesRealizadas } from "../../utils/fetchRepoAsignacionesRealizadas";
 
 const Listados = () => {
 
@@ -56,10 +59,17 @@ const Listados = () => {
         }
     };
 
-    const submitAsignacionesRealizadas=()=>{
+    const submitAsignacionesRealizadas=async()=>{
         console.log('presiono asignaciones realizadas')
         //traigo datos y guardo en store local
-        setlistado([])
+        //setlistado([])
+        //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE ASIGNACIONES REALIZADAS
+        const data = await fetchRepoAsignacionesRealizadas(idListVacMov);
+        console.log('que trae data de fetchRepoAsignacionesRealizadas: ', data);
+        if(data.length!=0){
+            setlistado(data);
+        }
+
     };
 
     const handlePrint = useReactToPrint({
@@ -85,20 +95,29 @@ const Listados = () => {
     // Función para exportar la tabla a un archivo Excel
     const handleExportToExcel = () => {
         // Crea una hoja de cálculo
-        const worksheet = XLSX.utils.json_to_sheet(formateaListado(listado));
+        let worksheet;
+        if(reporte==='asignacionesRealizadas'){
+            worksheet = XLSX.utils.json_to_sheet(formateaListadoAsignacionesRealizadas(listado));
+        }else if(reporte==='vacantesDisponibles'){
+            worksheet = XLSX.utils.json_to_sheet(formateaListadoVacantesDisponibles(listado));
+        }
+        
         const workbook = XLSX.utils.book_new();
     
         // Agrega la hoja de cálculo al libro
         XLSX.utils.book_append_sheet(workbook, worksheet, "Datos");
     
         // Genera el archivo Excel y descarga
-        XLSX.writeFile(workbook, "Vacantes_Disponibles.xlsx");
+        let nombreArchivo;
+        if(reporte==='asignacionesRealizadas'){
+            nombreArchivo='Asignaciones Realizadas'
+        }else if(reporte==='vacantesDisponibles'){
+            nombreArchivo='Vacantes Disponibles'
+        }
+        XLSX.writeFile(workbook, `${nombreArchivo}.xlsx`);
     }; 
 
-    function formateaListado (datos){
-        // const datosformat = datos.map(({orden, cargo, cupof, establecimiento, obs_establecimiento, turno, modalidad, region, departamento, localidad, zona, resolucion})=>({
-        //     orden, cargo, cupof, establecimiento, obs_establecimiento, turno, modalidad, region, departamento, localidad, zona, resolucion
-        // }));
+    function formateaListadoVacantesDisponibles (datos){
         const datosformat = datos.map(objeto=>({
             'Orden':objeto.orden, 
             'Cargo':objeto.cargo, 
@@ -116,8 +135,27 @@ const Listados = () => {
         return datosformat;
     };
 
-    useEffect(()=>{
+    function formateaListadoAsignacionesRealizadas (datos){
+        const datosformat = datos.map(objeto=>({
+            'Legajo':objeto.legajo, 
+            'Dni':objeto.dni, 
+            'Total':objeto.total, 
+            'Apellido': objeto.apellido, 
+            'Nombre':objeto.nombre, 
+            'Observacion':objeto.observacion, 
+            'N° Escuela Actual':objeto.nro_escuela_actual, 
+            'Cargo Actual':objeto.cargo_actual, 
+            'Cargo Solicitado':objeto.cargo_solicitado, 
+            'Cargo que Toma':objeto.cargo_toma, 
+            'N° Escuela que Toma':objeto.nro_escuela_toma, 
+            'Resolucion':objeto.resolucion
+        }));
+        return datosformat;
+    };
 
+
+    useEffect(()=>{
+        setlistado([]);
         if(reporte==='asignacionesRealizadas'){
             submitAsignacionesRealizadas();
         }else if(reporte==='vacantesDisponibles'){
@@ -201,44 +239,17 @@ const Listados = () => {
                 className="h-[79vh] overflow-y-auto "
                 ref={componentRef}
             >
-                <table className="border-[1px] bg-slate-50 w-full page-break-after border">
-                    <thead>
-                        <tr className="sticky top-0 text-sm border-b-[1px] border-gray-500 bg-zinc-200">
-                            <th className="border-x-[1px] border-gray-500">Orden</th>
-                            <th className="border-x-[1px] border-gray-500">Cargo</th>
-                            <th className="border-x-[1px] border-gray-500">Cupof</th>
-                            <th className="border-x-[1px] border-gray-500">N°Escuela</th>
-                            <th className="border-x-[1px] border-gray-500">Nombre Escuela</th>
-                            <th className="border-x-[1px] border-gray-500">Turno</th>
-                            <th className="border-x-[1px] border-gray-500">Modalidad</th>
-                            <th className="border-x-[1px] border-gray-500">Region</th>
-                            <th className="border-x-[1px] border-gray-500">Departamento</th>
-                            <th className="border-x-[1px] border-gray-500">Localidad</th>
-                            <th className="border-x-[1px] border-gray-500">Zona</th>
-                            <th className="border-x-[1px] border-gray-500">Resolucion</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            listado?.map((item,index)=>(
-                                <tr key={index} className="border-[1px] border-gray-500 bg-white text-sm text-center break-inside-avoid">
-                                    <td className="border-x-[1px] border-gray-500">{item.orden}</td>
-                                    <td className="border-x-[1px] border-gray-500">{item.cargo}</td>
-                                    <td className="border-x-[1px] border-gray-500">{item.cupof}</td>
-                                    <td className="border-x-[1px] border-gray-500">{item.establecimiento}</td>
-                                    <td className="border-x-[1px] border-gray-500">{item.obs_establecimiento}</td>
-                                    <td className="border-x-[1px] border-gray-500">{item.turno}</td>
-                                    <td className="border-x-[1px] border-gray-500">{item.modalidad}</td>
-                                    <td className="border-x-[1px] border-gray-500">{item.region}</td>
-                                    <td className="border-x-[1px] border-gray-500">{item.departamento}</td>
-                                    <td className="border-x-[1px] border-gray-500">{item.localidad}</td>
-                                    <td className="border-x-[1px] border-gray-500">{item.zona}</td>
-                                    <td className="border-x-[1px] border-gray-500">{item.resolucion}</td>
-                                </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
+                {(reporte==='vacantesDisponibles') &&
+                    <ReporteVacantesDisponibles
+                        listado={listado}
+                    />
+                }
+                {(reporte==='asignacionesRealizadas') &&
+                    <ReporteAsignacionesRealizadas
+                        listado={listado}
+                    />
+                }
+                
             </div>
         </div>
     )

@@ -10,7 +10,8 @@ const {
     getVacanteMovAsignada,
     getVacanteMovInscripto,
     getVacanteMovAsignadaInscripto,
-    getAllVacantesMovAsignadas
+    getAllVacantesMovAsignadas,
+    getRepoASignacionesRealizadas
 } = require('../controllers/vacantesMov.controllers');
 
 const router = Router();
@@ -46,5 +47,8 @@ router.post('/vacanteasignadainscripto/:idVacanteMov', getVacanteMovAsignadaInsc
 
 //Trae todas las vacantes que fueron asignadas
 router.post('/vacantesasignadas', getAllVacantesMovAsignadas);
+
+//Trae los datos para el Reporte de Asignaciones Realizadas
+router.post('/repoasignacionesrealizadas', getRepoASignacionesRealizadas);
 
 module.exports = router;
