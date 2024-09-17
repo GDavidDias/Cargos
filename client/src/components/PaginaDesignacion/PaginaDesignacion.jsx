@@ -15,6 +15,19 @@ console.log('que tiene id_nivel en PaginaDesignacion: ', id_nivel);
         second:'2-digit',
     });
 
+    function leyendaMovimiento(tipoMovimiento){
+        let datamov='';
+        if(tipoMovimiento===1){
+            datamov='Disponibilidad';
+        }else if(tipoMovimiento===2){
+            datamov='Traslado';
+        }else if(tipoMovimiento===3){
+            datamov='Cambio de Funcion'
+        }
+
+        return datamov;
+    };
+
     
     return(
         <div className='notranslate border-2 border-zinc-300 p-4'>
@@ -79,7 +92,7 @@ console.log('que tiene id_nivel en PaginaDesignacion: ', id_nivel);
                         <p>NUMERO DE CARGO: </p>
                         <p className='border-b-[1px] border-black w-[100px] text-center'>{datosVacante.orden}</p>
                         <p>MOVIMIENTO:</p>
-                        <p className='border-b-[1px] border-black w-[200px] text-center'>{datosInscripto.tipoinscripto}</p>
+                        <p className='border-b-[1px] border-black w-[200px] text-center'>{leyendaMovimiento(datosInscripto.id_tipo_inscripto)}</p>
                     </div>
                     <div className='flex flex-row mt-[2px]'>
                     </div>

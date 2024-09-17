@@ -9,6 +9,7 @@ import AsignacionesMov from "../../components/AsignacionesMov/AsignacionesMov";
 import InscriptosTit from "../../components/InscriptosTit/InscriptosTit";
 import VacantesTit from "../../components/VacantesTit/VacantesTit";
 import Listados from "../../components/Listados/Listados";
+import InscriptosPyR from "../../components/InscriptosPyR/InscriptosPyR";
 
 const Home = () =>{
     const dispatch = useDispatch();
@@ -37,6 +38,9 @@ const Home = () =>{
                 break;
             case 'Listados': //Pantalla de Listados
                 setContent(<Listados/>);
+                break;
+            case 'InscriptosPyR':
+                setContent(<InscriptosPyR/>);
                 break;
         }
     },[pageSG]);

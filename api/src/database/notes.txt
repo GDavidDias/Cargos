@@ -23,6 +23,14 @@ CREATE TABLE listado_inscriptos(id_listado_inscriptos INT(7) NOT NULL AUTO_INCRE
 CREATE TABLE configuracion(id_configuracion INT(7) NOT NULL AUTO_INCREMENT, id_nivel INT(7) DEFAULT NULL, id_listado_inscriptos_mov INT(7) DEFAULT NULL, id_listado_vacantes_mov INT(7) DEFAULT NULL, id_listado_inscriptos_tit INT(7) DEFAULT NULL, id_listado_vacantes_tit INT(7) DEFAULT NULL, PRIMARY KEY(id_configuracion));
 
 CREATE TABLE usuarios (id_usuario INT(7) NOT NULL AUTO_INCREMENT, nombre VARCHAR(50) DEFAULT NULL, username VARCHAR(50) DEFAULT NULL, password VARCHAR(50) DEFAULT NULL, permiso INT(2) DEFAULT NULL, nivel INT(2) DEFAULT NULL, obs_desactiva VARCHAR(250) DEFAULT NULL,PRIMARY KEY(id_usuario));
+
+
+-tablas de Titularizaciones
+CREATE TABLE inscriptos_tit(id_inscriptos_tit INT(11) NOT NULL AUTO_INCREMENT, dni VARCHAR(50) DEFAULT NULL, apellido VARCHAR(250) DEFAULT NULL, nombre VARCHAR(250) DEFAULT NULL, total VARCHAR(50) DEFAULT NULL, orden INT(11) DEFAULT NULL, id_especialidad INT(7) DEFAULT NULL, id_listado_inscriptos INT(7) DEFAULT NULL,  PRIMARY KEY(id_inscriptos_tit));
+
+CREATE TABLE vacantes_tit(id_vacante_tit INT(11) NOT NULL AUTO_INCREMENT, id_listado_vac_tit INT(7) DEFAULT NULL, orden INT(7) DEFAULT NULL, nro_establecimiento VARCHAR(255) DEFAULT NULL, nombre_establecimiento VARCHAR(250) DEFAULT NULL, region VARCHAR(250) DEFAULT NULL, departamento VARCHAR(250) DEFAULT NULL, localidad VARCHAR(250) DEFAULT NULL, cargo VARCHAR(250) DEFAULT NULL, turno VARCHAR(50) DEFAULT NULL, modalidad VARCHAR(250) DEFAULT NULL, cupof VARCHAR(50) DEFAULT NULL, id_especialidad INT(11) DEFAULT NULL, datetime_creacion DATETIME DEFAULT NULL, obs_desactiva VARCHAR(250) DEFAULT NULL, zona VARCHAR(7) DEFAULT NULL, resolucion VARCHAR(250) DEFAULT NULL, PRIMARY KEY(id_vacante_tit));
+
+CREATE TABLE asignacion_tit(id_asignacion_tit INT(11) NOT NULL AUTO_INCREMENT, id_vacante_tit INT(11) DEFAULT NULL, id_inscripto_tit INT(11) DEFAULT NULL, datetime_asignacion DATETIME DEFAULT NULL, id_estado_asignacion INT(2) DEFAULT NULL, observaciones VARCHAR(250) DEFAULT NULL, datetime_actualizacion DATETIME DEFAULT NULL, obs_desactiva VARCHAR(250) DEFAULT NULL, PRIMARY KEY(id_asignacion_tit));
 -----------------------------------------
 PERMISOS:
 1 - administrador

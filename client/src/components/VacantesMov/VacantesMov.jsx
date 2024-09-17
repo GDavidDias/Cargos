@@ -493,7 +493,7 @@ const VacantesMov = () =>{
                         {/* Filtros */}
                         <div className="text-base w-[50%] ">
                             <label 
-                                className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
+                                className={`font-semibold border-b-2 px-2 cursor-pointer transition-all duration-500 
                                     ${(estadoVacantes==='todas')
                                         ?`border-sky-500 text-sky-500`
                                         :`border-zinc-300 text-black`
@@ -502,22 +502,22 @@ const VacantesMov = () =>{
                                 onClick={()=>setEstadoVacantes('todas')}
                             >Todas</label>
                             <label 
-                                className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
+                                className={`font-semibold border-b-2 px-2 cursor-pointer transition-all duration-500 
                                     ${(estadoVacantes==='disponibles')
                                         ?`border-sky-500 text-sky-500`
                                         :`border-zinc-300 text-black`
                                     }
                                     `}
-                                onClick={()=>setEstadoVacantes('disponibles')}
+                                onClick={()=>{setEstadoVacantes('disponibles');setCurrentPage(1)}}
                             >Disponibles</label>
                             <label 
-                                className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
+                                className={`font-semibold border-b-2 px-2 cursor-pointer transition-all duration-500 
                                     ${(estadoVacantes==='asignadas')
                                         ?`border-sky-500 text-sky-500`
                                         :`border-zinc-300 text-black`
                                     }
                                     `}
-                                onClick={()=>setEstadoVacantes('asignadas')}
+                                onClick={()=>{setEstadoVacantes('asignadas');setCurrentPage(1)}}
                             >Asignadas</label>
                         </div>
 

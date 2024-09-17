@@ -61,17 +61,18 @@ const SideBar = () => {
         dispatch(setPage('Listados'))
     };
 
-    // const submitNivelInicial = () =>{
-    //     console.log('Presiono Nivel Inicial');
-    //     const datosNivel=[{id_nivel:1, descripcion:'INICIAL'}];
-    //     dispatch(setNivel(datosNivel));
-    // };
+    const submitInscriptosPyR = () =>{
+        //
+        console.log('Presiona sobre Inscriptos Provisionales y Reemplazantes');
+        dispatch(setPage('InscriptosPyR'))
+    };
 
-    // const submitNivelPrimario = ()=>{
-    //     console.log('Presiono Nivel Primario');
-    //     const datosNivel=[{id_nivel:2, descripcion:'PRIMARIO'}];
-    //     dispatch(setNivel(datosNivel));
-    // };
+    const submitVacantesPyR = () =>{
+        //
+        console.log('Presiona sobre Vacantes Provisionales y Reemplazantes');
+        dispatch(setPage('VacantesPyR'))
+    };
+
 
     useEffect(()=>{
         console.log('que tiene pageSG: ', pageSG);
@@ -153,20 +154,21 @@ const SideBar = () => {
             {/* MENU ESCRITORIO */}
             <div className="notranslate movil:hidden desktop:flex flex-col bg-[#7C8EA6] w-full h-[95vh] shadow-right-only-md">
                 {/* LOGO Y TITULO APP */}
-                <div className="h-[8vh] p-[4px] flex flex-row items-center" >
-                    <div className="flex w-[5vw] ">
-                        <img src={logo}/>
+                <div className="h-[8vh] p-[4px] flex flex-row items-center mt-[4px] ml-[4px] " >
+                    <div className="flex h-[8vh] w-[30%]">
+                        <img src={logo} className="max-w-full max-h-full object-contain"/>
                     </div>
-                    <div className="flex flex-col ml-[2px] text-white">
-                        <label className="">Sistema </label>
+                    <div className="w-[70%] flex flex-col ml-[5px] text-white ">
+                        <p style={{lineHeight: '1'}} className="leading-none desktop:text-xs desktop-md:text-base desktop-lg:text-lg " >Sistema Entrega de Cargos</p>
+                        {/* <label className="">Sistema </label>
                         <label className="mt-[-8px]">Entrega de </label>
-                        <label className="mt-[-6px] font-semibold ">CARGOS</label>
+                        <label className="mt-[-6px] font-semibold ">CARGOS</label> */}
                     </div>
                 </div>
 
                 {/* MENU MOVIMIENTOS */}
                 <div className="ml-2 mt-2 text-white text-base">
-                    <label >Movimientos</label>
+                    <label className="font-normal">Traslados y Cambio de Funcion</label>
                     {(userSG.permiso!=3) &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
@@ -178,7 +180,7 @@ const SideBar = () => {
                             onClick={()=>submitInscriptosMov()}
                         >
                             <PiUserListBold className="text-xl font-bold mr-2"/>
-                            <label className="">Inscriptos</label>
+                            <label className="font-light">Inscriptos</label>
                         </div>
                     }
 
@@ -192,7 +194,7 @@ const SideBar = () => {
                         onClick={()=>submitVacantesMov()}
                     >
                         <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
-                        <label className="">Vacantes</label>
+                        <label className="font-light">Vacantes</label>
                     </div>
 
                     {(userSG.permiso!=3) &&
@@ -206,14 +208,14 @@ const SideBar = () => {
                             onClick={()=>submitListados()}
                         >
                             <CgList className="text-xl font-bold mr-2"/>
-                            <label className="">Listados</label>
+                            <label className="font-light">Listados</label>
                         </div>
                     }
                 </div>
 
                 {/* MENU TITULARIZACION */}
                 <div className="ml-2 mt-6 text-white text-base">
-                    <label >Titularizacion</label>
+                    <label className="font-normal">Titularizacion</label>
                     {(userSG.permiso!=3) &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
@@ -225,7 +227,7 @@ const SideBar = () => {
                             onClick={()=>submitInscriptosTit()}
                         >
                             <PiUserListBold className="text-xl font-bold mr-2"/>
-                            <label className="">Inscriptos</label>
+                            <label className="font-light">Inscriptos</label>
                         </div>
                     }
                     <div 
@@ -238,7 +240,39 @@ const SideBar = () => {
                         onClick={()=>submitVacantesTit()}
                     >
                         <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
-                        <label className="">Vacantes</label>
+                        <label className="font-light">Vacantes</label>
+                    </div>
+                </div>
+
+
+                {/* MENU PROVISIONALES Y REEMPLAZANTES */}
+                <div className="ml-2 mt-6 text-white text-base">
+                    <label className="font-normal">Provisionales y Reemplazantes</label>
+                    {(userSG.permiso!=3) &&
+                        <div 
+                            className={` rounded p-[4px] flex flex-row justify-start items-center
+                                ${(pageSG==='InscriptosPyR')
+                                ?'bg-[#C9D991]'
+                                :'hover:bg-[#C9D991]'
+                            }
+                                `}
+                            onClick={()=>submitInscriptosPyR()}
+                        >
+                            <PiUserListBold className="text-xl font-bold mr-2"/>
+                            <label className="font-light">Inscriptos</label>
+                        </div>
+                    }
+                    <div 
+                        className={` rounded p-[4px] flex flex-row justify-start items-center
+                            ${(pageSG==='VacantesPyR')
+                            ?'bg-[#C9D991]'
+                            :'hover:bg-[#C9D991]'
+                        }
+                            `}
+                        onClick={()=>submitVacantesPyR()}
+                    >
+                        <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
+                        <label className="font-light">Vacantes</label>
                     </div>
                 </div>
 

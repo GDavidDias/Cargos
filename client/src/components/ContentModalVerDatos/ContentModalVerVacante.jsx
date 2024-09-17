@@ -8,9 +8,9 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                 translate='no'
             >Datos de la Vacante <p className="text-sm font-light ml-2">({idVacante})</p></label>
             <div>
-                <div className="min-h-[23vh]  mt-2 border-[2px] border-sky-500 rounded bg-sky-100">
-                    <div className="flex flex-col ml-2 mt-2 items-end justify-end">
-                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                <div className="min-h-[23vh]  mt-[4px] border-[2px] border-sky-500 rounded bg-sky-100">
+                    <div className="flex flex-col ml-2 mt-[2px] items-end justify-end">
+                        <div className="flex flex-row my-[2px] mx-2 items-center">
                             <label className="text-sm mr-2">Orden:</label>
                             <input 
                                 className="border-[1px] border-zinc-400 w-[60mm] text-start pl-2 bg-neutral-50"
@@ -19,7 +19,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                             />
                         </div>
 
-                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                        <div className="flex flex-row my-[2px] mx-2 items-center">
                             <label className="text-sm mr-2">N° Est:</label>
                             <input 
                                 name="establecimiento"
@@ -30,7 +30,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                             />
                         </div>
 
-                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                        <div className="flex flex-row my-[2px] mx-2 items-center">
                             <label className="text-sm mr-2">Nombre Est:</label>
                             <input 
                                 name="obs_establecimiento"
@@ -44,7 +44,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
 
                     </div>
                     <div className="flex flex-col ml-2  items-end justify-end">
-                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                        <div className="flex flex-row my-[2px] mx-2 items-center">
                             <label className="text-sm mr-2">Cargo:</label>
                             <input 
                                 name="cargo"
@@ -54,7 +54,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
                             />
                         </div>
-                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                        <div className="flex flex-row my-[2px] mx-2 items-center">
                             <label className="text-sm mr-2">Modalidad:</label>
                             <input 
                                 name="modalidad"
@@ -64,7 +64,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
                             />
                         </div>
-                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                        <div className="flex flex-row my-[2px] mx-2 items-center">
                             <label className="text-sm mr-2">Turno:</label>
                             <input 
                                 name="turno"
@@ -74,7 +74,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
                             />
                         </div>
-                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                        <div className="flex flex-row my-[2px] mx-2 items-center">
                             <label className="text-sm mr-2">Cupof:</label>
                             <input 
                                 name="cupof"
@@ -88,7 +88,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                     </div>
 
                     <div className="flex flex-col ml-2 items-end justify-end">
-                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                        <div className="flex flex-row my-[2px] mx-2 items-center">
                             <label className="text-sm mr-2">Region:</label>
                             <input 
                                 name="region"
@@ -98,7 +98,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
                             />
                         </div>
-                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                        <div className="flex flex-row my-[2px] mx-2 items-center">
                             <label className="text-sm mr-2">Departamento:</label>
                             <input 
                                 name="departamento"
@@ -108,7 +108,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
                             />
                         </div>
-                        <div className="flex flex-row my-[4px] mx-2 items-center">
+                        <div className="flex flex-row my-[2px] mx-2 items-center">
                             <label className="text-sm mr-2">Localidad:</label>
                             <input 
                                 name="localidad"
@@ -118,7 +118,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                                 disabled={(datosVacante?.datetime_asignacion!=null)}
                             />
                         </div>
-                        <div className="flex flex-row mt-[4px] mb-4 mx-2 items-center justify-end">
+                        <div className="flex flex-row my-[2px] mx-2 items-center justify-end">
                             <label className="text-sm mr-2">Zona:</label>
                             <input 
                                 name="zona"
@@ -138,7 +138,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                         className="ml-2 font-semibold"
                     >Asignado a:</label>
                     <div className="flex flex-col">
-                        <div className="flex flex-row my-[4px] mx-2 items-center justify-end">
+                        <div className="flex flex-row my-[2px] mx-2 items-center justify-end">
                             <label className="text-sm mr-2">Apellido</label>
                             <input 
                                 name="apellido"
@@ -148,7 +148,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                                 disabled={true}
                             />
                         </div>
-                        <div className="flex flex-row my-[4px] mx-2 items-center justify-end">
+                        <div className="flex flex-row my-[2px] mx-2 items-center justify-end">
                             <label className="text-sm mr-2">Nombre</label>
                             <input 
                                 name="nombre"
@@ -158,7 +158,7 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                                 disabled={true}
                             />
                         </div>
-                        <div className="flex flex-row mt-[4px] mb-2 mx-2 items-center justify-end">
+                        <div className="flex flex-row mt-[2px] mb-2 mx-2 items-center justify-end">
                             <label className="text-sm mr-2">DNI</label>
                             <input 
                                 name="dni"

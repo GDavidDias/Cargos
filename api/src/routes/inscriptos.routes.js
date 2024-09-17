@@ -8,6 +8,7 @@ const {
 
 const router = Router();
 
+
 //Traer todos los inscriptos.
 router.post('/inscriptosmov', getAllInscriptosMov);
 

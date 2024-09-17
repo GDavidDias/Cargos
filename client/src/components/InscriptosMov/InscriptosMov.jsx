@@ -28,6 +28,7 @@ import { MdOutlineDoubleArrow } from "react-icons/md";
 import Paginador from "../Paginador/Paginador";
 import PaginaDesignacion from "../PaginaDesignacion/PaginaDesignacion";
 import { outUser } from "../../redux/userSlice";
+import { IoMdPrint } from "react-icons/io";
 
 
 
@@ -221,6 +222,7 @@ const InscriptosMov = ()=>{
             const data = await fetchVacantesAsignadaMov(datos.vacante_asignada);
             console.log('que trae data de fetchVacantesAsignadaMov: ', data[0]);
             setCargoAsignado(data[0]);
+            setDatosVacanteSelect(data[0]);
         }else{
             setCargoAsignado('');
         }
@@ -1188,7 +1190,7 @@ const InscriptosMov = ()=>{
                     ${datosInscriptoSelect.tipoinscripto} ) `}
                 </label>
                 {/* DATOS DEL INSCRIPTO */}
-                <div className="border-[1px] border-purple-400  flex flex-col justify-center rounded-md shadow font-semibold text-lg bg-purple-100 mb-2">
+                <div className="border-[1px] border-purple-400 flex flex-col justify-center rounded-md shadow font-semibold text-lg bg-purple-100 mb-2">
                     <div className="flex flex-row">
                         <label className="mx-4 text-zinc-800">Docente: {datosInscriptoSelect.apellido} {datosInscriptoSelect.nombre}</label>
                         <label className="mr-4 text-zinc-800">DNI: {datosInscriptoSelect.dni}</label>
@@ -1286,9 +1288,9 @@ const InscriptosMov = ()=>{
         
         {/* MODAL DE DATOS DEL INSCRIPTO */}
         <ModalEdit isOpen={isOpenModalEdit} closeModal={closeModalEdit}>
-            <div className="h-100 w-100  flex flex-col">
+            <div className="h-100 w-100  flex flex-col items-center">
                 <label className="text-xl text-center font-semibold " translate='no'>DATOS DEL INSCRIPTO</label>
-                <div className="min-h-[32vh] w-[50vw] mt-2 border-[1px] border-sky-800 rounded">
+                <div className="min-h-[32vh] min-w-[50vw] mt-2 border-[1px] border-sky-800 rounded">
                     <div className="flex flex-row ml-2 mt-2">
                         <div className="flex flex-col mr-2">
                             <label className="text-sm">N°Orden</label>
@@ -1432,19 +1434,19 @@ const InscriptosMov = ()=>{
 
                 {/* DATOS DE CARGO TOMADO - SI SE LE ASIGNO VACANTE */}
                 {(datosInscriptoSelect.vacante_asignada!=null && datosInscriptoSelect.vacante_asignada!='') &&
-                <div className="h-[19vh] w-[50vw] mt-5 border-[1px] border-emerald-500 text-center rounded bg-emerald-50">
+                <div className="h-[19vh] min-w-[50vw] mt-5 border-[1px] border-emerald-500 text-center rounded bg-emerald-50">
                 <div className="flex flex-row ">
                     <div className="w-[20%] "></div>
                     <div className="w-[60%] ">
                         <label className="text-xl text-center font-bold text-green-700" translate='no'>Cargo que tomó</label>
                     </div>
                     <div className="flex flex-row w-[20%] justify-end">
-                        {/* <button className="font-bold text-lg mr-2 hover:text-green-500 hover:scale-150 transition-all duration-500">
-                            <FaEdit 
-                                title="EDITAR"
-                                //onClick={}
+                        <button className="font-bold text-xl mr-2 hover:text-sky-500 hover:scale-150 transition-all duration-500">
+                            <IoMdPrint 
+                                title="IMPRIMIR DESIGNACION"
+                                onClick={()=>procesoImpresion()}
                             />
-                        </button> */}
+                        </button>
                         <button className="font-bold text-lg mr-4 hover:text-red-500 hover:scale-150 transition-all duration-500">
                             <IoTrash 
                                 title="ELIMINAR"
@@ -1467,7 +1469,7 @@ const InscriptosMov = ()=>{
                             <label className="font-semibold text-sm">Cargo</label>
                             <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.cargo}</div>
                         </div>
-                        <div className="text-start ml-2">
+                        <div className="text-start mx-2">
                             <label className="font-semibold text-sm">Modalidad</label>
                             <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.modalidad}</div>
                         </div>
@@ -1496,7 +1498,7 @@ const InscriptosMov = ()=>{
                 {/* DATOS DE CARGO ORIGINAL TOMADO POR OTRO DOCENTE */}
                 {/* Solo se muestra si su cargo original fue tomado por otro docente */}
                 {(datosInscriptoSelect.id_tipo_inscripto!=1 && asignacionCargoOriginal.length!=0) &&
-                <div className="h[10vh] w-[50vw] mt-5 border-[2px] border-orange-500 text-center rounded">
+                <div className="h[10vh] min-w-[50vw] mt-5 border-[2px] border-orange-500 text-center rounded">
                 <label className="text-xl text-center font-semibold " translate='no'>Docente que tomo su Cargo Original</label>
                 
                 {/* datos a mostrar: id vacante creada, id_inscripto que tomo su cargo, apellido, nombre, dni */}
@@ -1513,7 +1515,7 @@ const InscriptosMov = ()=>{
                             <label className="font-semibold text-sm">Nombre</label>
                             <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[15vw] h-[4vh] pl-[4px] ">{asignacionCargoOriginal[0].nombre}</div>
                         </div>
-                        <div className="text-start ml-2">
+                        <div className="text-start mx-2">
                             <label className="font-semibold text-sm">Dni</label>
                             <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] ">{asignacionCargoOriginal[0].dni}</div>
                         </div>
