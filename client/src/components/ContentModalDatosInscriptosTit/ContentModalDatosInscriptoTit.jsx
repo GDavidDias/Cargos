@@ -1,4 +1,4 @@
-const ContentModalDatosInscriptoTit =({datosFormInscripto,idInscriptoSelect,closeModal,handleChangeFormInscripto,formEstadoInscripto,submitGuardarFormInscripto})=>{
+const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,idInscriptoSelect,closeModal,handleChangeFormInscripto,formEstadoInscripto,submitGuardarFormInscripto})=>{
     console.log('ingreso a ContentModalDatosInscriptoTit');
     return(
         <div className="notranslate h-100 w-100 flex flex-col items-center">
@@ -69,9 +69,67 @@ const ContentModalDatosInscriptoTit =({datosFormInscripto,idInscriptoSelect,clos
                 </div>
 
                 {/* DATOS DE SU ASIGNACION */}
-                <div>
-
+                {(datosInscriptoSelect.vacante_asignada!=null && datosInscriptoSelect.vacante_asignada!='')  &&
+                <div className="h-[19vh] min-w-[50vw] mt-5 border-[1px] border-emerald-500 text-center rounded bg-emerald-50">
+                    <div className="flex flex-row ">
+                        <div className="w-[20%] "></div>
+                        <div className="w-[60%] ">
+                            <label className="text-xl text-center font-bold text-green-700" translate='no'>Cargo que tomó</label>
+                        </div>
+                        <div className="flex flex-row w-[20%] justify-end">
+                            {/* <button className="font-bold text-xl mr-2 hover:text-sky-500 hover:scale-150 transition-all duration-500">
+                                <IoMdPrint 
+                                    title="IMPRIMIR DESIGNACION"
+                                    onClick={()=>procesoImpresion()}
+                                />
+                            </button>
+                            <button className="font-bold text-lg mr-4 hover:text-red-500 hover:scale-150 transition-all duration-500">
+                                <IoTrash 
+                                    title="ELIMINAR"
+                                    onClick={()=>submitEliminarTomaCargo(cargoAsignado.id_asignacion_mov)}
+                                />
+                            </button> */}
+                        </div>
+                    </div>
+                    {/* Datos a mostrar: Escuela, cargo, modalidad, turno, region, localidad, zona */}
+                    <div className="flex flex-row">
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">ID Vacante</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[6vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.id_vacante_mov}</div>
+                        </div>
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Escuela</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.establecimiento} {cargoAsignado.obs_establecimiento}</div>
+                        </div>
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Cargo</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.cargo}</div>
+                        </div>
+                        <div className="text-start mx-2">
+                            <label className="font-semibold text-sm">Modalidad</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.modalidad}</div>
+                        </div>
+                    </div>    
+                    <div className="flex flex-row">
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Turno</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[8vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.turno}</div>
+                        </div>
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Region</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[11vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.region}</div>
+                                </div>
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Localidad</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[17vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.localidad}</div>
+                        </div>
+                        <div className="text-start ml-2">
+                            <label className="font-semibold text-sm">Zona</label>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.zona}</div>
+                        </div>
+                    </div>  
                 </div>
+                }
 
                 {/* VISIBILIDAD DE BOTONES */}
                 <div className="flex justify-center">

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { outUser } from "../../redux/userSlice";
 import { fetchAllInscriptosTit } from "../../utils/fetchAllInscriptosTit";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit} from "react-icons/fa";
 import Paginador from "../Paginador/Paginador";
 import ModalEdit from "../ModalEdit/ModalEdit";
@@ -13,6 +13,14 @@ import {URL} from '../../../varGlobal';
 import axios from "axios";
 import Modal from "../Modal/Modal";
 import { fetchAllEspecialidades } from "../../utils/fetchAllEspecialidades";
+import { BiTransferAlt } from "react-icons/bi";
+import ContentModalVacantesDispTit from "../ContentModalVacantesDispTit/ContentModalVacantesDispTit";
+import { fetchAllVacantesTit } from "../../utils/fetchAllVacantesTit";
+import ContentModalAsignacionTit from "../ContentModalAsignacionTit/ContentModalAsignacionTit";
+
+import { useReactToPrint } from 'react-to-print';
+import PaginaDesignacion from "../PaginaDesignacion/PaginaDesignacion";
+import PaginaDesignacionTitular from "../PaginaDesignacionTitular/PaginaDesignacionTitular";
 
 const InscriptosTit = () =>{
     
@@ -24,20 +32,28 @@ const InscriptosTit = () =>{
     const userSG = useSelector((state)=>state.user);
     
     //E.L. de ventanas modales
+    const[isOpenModalConfirm,openModalConfirm,closeModalConfirm]=useModal(false);
+    const[isOpenModalAsign,openModalAsign,closeModalAsign]=useModal(false);
+    const[isOpenModalVac,openModalVac,closeModalVac]=useModal(false);
     const[isOpenModalEdit,openModalEdit,closeModalEdit]=useModal(false);
     const[isOpenModal, openModal, closeModal]=useModal(false);
 
     //E.L. para Mensaje en Modal de Notificaciones
     const[mensajeModalInfo, setMensajeModalInfo]=useState('');
+    const[mensajeModalConfirm, setMensajeModalConfirm]=useState('');
 
     //EL guardo el id del listado de inscriptos de titularizacion
     const[idListadoInscriptosTit, setIdListadoInscriptosTit]=useState('');
 
-    //E.L. guarda la pagina actual
+    //E.L. guarda la pagina actual de listado Inscriptos
     const[currentPage, setCurrentPage]=useState(1);
-
-    //E.L. para guardar datos de paginacion
+    //E.L. para guardar datos de paginacion de listado Inscriptos
     const[paginacion, setPaginacion]=useState('');
+
+    //E.L. guarda la pagina actual de listado Vacantes
+    const[currentPageVac, setCurrentPageVac]=useState(1);
+    //E.L. para guardar datos de paginacion de listado Vacantes
+    const[paginacionVac, setPaginacionVac]=useState('');
 
     //E.L. para filtro de estado de los incriptos
     //puede ser: "todos", "sinasignar" o "asignados"
@@ -47,11 +63,20 @@ const InscriptosTit = () =>{
     //y segun el tipo de listado segun configuracion
     const[listadoInscriptosTit, setListadoInscriptosTit]=useState([]);
 
+    //E.L donde se almacena listado de vacants disponibles
+    const[listadoVacantesDispTit,setListadoVacantesDispTit]=useState([]);
+
+    //E.L. guardo el id del lsitado de vacantes de titularizacion
+    const[idListadoVacantesTit, setIdListadoVacantesTit]=useState('');
+
     //E.L. donde se almacena el listado de especialidades
     const[listadoEspecialidades, setListadoEspecialidades]=useState([]);
 
-    //E.L. para input busqueda
+    //E.L. para input busqueda Inscriptos
     const[inputSearch, setInputSearch]=useState('');
+
+    //E.L. para input busqueda Vacantes
+    const[inputSearchVac, setInputSearchVac]=useState('');
 
     const[datosInscriptoSelect, setDatosInscriptoSelect]=useState({})
 
@@ -69,6 +94,12 @@ const InscriptosTit = () =>{
     const[formEstado, setFormEstado]=useState('ver');
 
     const[selectFiltroEspecialidad, setSelectFiltroEspecialidad]=useState("");
+
+    const[filtroEspecialidadVac, setFiltroEspecialidadVac]=useState("");
+
+    const[datosVacante, setDatosVacante]=useState({});
+
+    const componentRef = useRef(null);
 
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
@@ -106,7 +137,7 @@ const InscriptosTit = () =>{
         if(id_listado){
             //paso id_listado, limit y page
             data = await fetchAllInscriptosTit(id_listado, limit, page,filtroAsignacion, valorBusqueda,filtroEspecialidad);
-            console.log('que trae data de fetchAllInscriptosMov: ', data);
+            console.log('que trae data de fetchAllInscriptosTit: ', data);
 
             if(data.result?.length!=0){
                 setListadoInscriptosTit(data.result); 
@@ -125,7 +156,46 @@ const InscriptosTit = () =>{
         if(data?.length!=0){
             setListadoEspecialidades(data);
         }
-    }
+    };
+
+    //Proc: traigo el ID del listado de Vacantes configurado
+    const buscoIDListadoVacantes = async(id_nivel) =>{
+        //Filtro configuracion para el nivel
+        const configFilterNivel = await configSG.config.filter((configNivel)=>configNivel.id_nivel==id_nivel);
+        console.log('que trae configFilterNivel: ', configFilterNivel);
+
+        //Traigo el id del listado cargado en configuracion para:
+        //LISTADO DE VACANTES DE TITULARIZACION -> id_listado_vacantes_tit
+        const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_tit;
+        console.log('que tiene idFilterListado: ',idFilterListado);
+
+        //Guardo id_listado_vacantes_tit para usarlo despues
+        setIdListadoVacantesTit(idFilterListado);
+
+        //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE VACANTES DISPONIBLES
+        await getVacantesDisponiblesTit(idFilterListado, currentPageVac,'disponibles',filtroEspecialidadVac,inputSearchVac)
+    };
+
+    //Este Proc carga el listado de VACANTES Disponibles al E.L
+    const getVacantesDisponiblesTit = async(id_listado,page,filtroAsignacion,filtroEspecialidad,valorBusqueda) =>{
+        let data;
+        const limit=10;
+        //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
+        if(id_listado){
+            data = await fetchAllVacantesTit(id_listado,limit,page, filtroAsignacion, filtroEspecialidad, valorBusqueda);
+            console.log('que trae data de fetchAllVacantesTit: ', data);
+
+            if(data.result?.length!=0){
+                setListadoVacantesDispTit(data.result); 
+                setPaginacionVac(data.paginacion);
+            }else{
+                setListadoVacantesDispTit([]);
+                setPaginacionVac(data.paginacion);
+            }
+        };
+    };  
+
+
 
     //-----------PROCESOS DE BUSQUEDA EN LISTADO INSCRIPTOS------------
     //Escribir dentro del input de busqueda
@@ -145,6 +215,12 @@ const InscriptosTit = () =>{
     const handlePageChange = (nuevaPagina)=>{
         if(nuevaPagina>0 && nuevaPagina<=paginacion?.totalPages){
             setCurrentPage(nuevaPagina);
+        };
+    };
+
+    const handlePageChangeVac = (nuevaPagina)=>{
+        if(nuevaPagina>0 && nuevaPagina<=paginacionVac?.totalPages){
+            setCurrentPageVac(nuevaPagina);
         };
     };
 
@@ -204,21 +280,117 @@ const InscriptosTit = () =>{
         const{value} = event.target;
         console.log('que tiene filtroEspecialidad: ', value);
         setSelectFiltroEspecialidad(value);
+        setFiltroEspecialidadVac(value);
+        setCurrentPageVac(1);
         //al seleccionar una especialidad, regrso a la primer pagina, por si no hay tantos inscriptos
         setCurrentPage(1);
         //getInscriptosTit(idListadoInscriptosTit,currentPage,estadoInscripto,inputSearch,value);
     };
 
+    const submitVerVacantes = (datosInscripto) =>{
+        //setCurrentPageVac(1);
+        setDatosInscriptoSelect(datosInscripto);
+        //cargo listado de vacantes disponibles
+        getVacantesDisponiblesTit(idListadoVacantesTit, currentPageVac,'disponibles',filtroEspecialidadVac,inputSearchVac)
+        //llamo a modal de vacantes
+        openModalVac();
+    };
+
+    const submitCloseModalVac = ()=>{
+        closeModalVac();
+        setCurrentPageVac(1);
+        setInputSearchVac('');
+    };
+
+    const handleInputSearchVacChange = (event)=>{
+        const {value}=event.target;
+        setInputSearchVac(value);
+    };
+
+    //?-------------------------------------
+    //?--------PROCESO ASIGNACION-----------
+    const submitVerAsignacion = async(datosVacanteSeleccionada)=>{
+        console.log('presiono ver la asignacion');
+        setDatosVacante(datosVacanteSeleccionada);
+        openModalAsign();
+    };
+
+    const submitAsignarVacante = async() =>{
+        const fechaHoraActual = await traeFechaHoraActual();
+        const formAsignacionTit={
+            id_vacante_tit:datosVacante.id_vacante_tit,
+            id_inscripto_tit:datosInscriptoSelect.id_inscriptos_tit,
+            datetime_asignacion:fechaHoraActual
+        };
+        console.log('como queda body a enviar createasignaciontit: ', formAsignacionTit);
+
+        //ASIGNACION
+        await axios.post(`${URL}/api/createasignaciontit`,formAsignacionTit)
+            .then(async res=>{
+                console.log('que trae res de createasignaciontit: ', res);
+                setMensajeModalConfirm('Asignacion Realizada, ¿imprime designacion?')
+                openModalConfirm();
+            })
+            .catch(error=>{
+                console.log('que tiene error createasignaciontit: ', error);
+            })
+    };
+
+    const traeFechaHoraActual = () => {
+        const now = new Date();
+        
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Meses van de 0 a 11, por eso se suma 1
+        const day = String(now.getDate()).padStart(2, '0');
+    
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
+
+    //Proceso para Imprimir la designacion
+    const procesoImpresion = async()=>{
+        console.log('ingresa a Impresion');
+        await handlePrint();
+    };
+
+    const handlePrint = useReactToPrint({
+        content:() => componentRef.current,
+        pageStyle:`
+        @page {
+          size: LEGAL; /* Tamaño del papel */
+          orientation: portrait; /* Orientación vertical */
+        }
+      `,
+    });
+
+    //-------------------------------------
+
+    const submitCloseModalConfirm = () =>{
+        closeModalConfirm();
+        closeModalAsign();
+        closeModalVac();
+        setDatosVacante({});
+        setDatosInscriptoSelect({});
+        //Recargo lista de inscriptos 
+        getInscriptosTit(idListadoInscriptosTit,currentPage,estadoInscripto,inputSearch,selectFiltroEspecialidad);
+    };
+    
+
+
     useEffect(()=>{
         seteoDatosInicialesFormInscripto();
+        console.log('que tiene datosInscriptoSelect: ', datosInscriptoSelect);
     },[datosInscriptoSelect])
 
-    // useEffect(()=>{
-    //     getInscriptosTit(idListadoInscriptosTit,currentPage,estadoInscripto,inputSearch,selectFiltroEspecialidad);
-    // },[selectFiltroEspecialidad])
+    useEffect(()=>{
+        console.log('que tiene datos de Vacantes seleccionada: ', datosVacante);
+    },[datosVacante])
 
     useEffect(()=>{
-        console.log('APLICO FILTRO');
+        console.log('APLICO FILTRO LISTADO INSCRIPTOS');
         getInscriptosTit(idListadoInscriptosTit,currentPage,estadoInscripto,inputSearch,selectFiltroEspecialidad);
     },[estadoInscripto,inputSearch,selectFiltroEspecialidad])
 
@@ -228,18 +400,30 @@ const InscriptosTit = () =>{
     },[currentPage])
 
 
+    //------------Estados desde Modal Vacantes
+    useEffect(()=>{
+        console.log('APLICO FILTRO LISTADO VACANTES');
+        getVacantesDisponiblesTit(idListadoVacantesTit, currentPageVac,'disponibles',filtroEspecialidadVac,inputSearchVac)
+    },[filtroEspecialidadVac,inputSearchVac])
+
+    useEffect(()=>{
+        //Al cambiar de pagina en Vacantes Disponibles
+        getVacantesDisponiblesTit(idListadoVacantesTit, currentPageVac,'disponibles',filtroEspecialidadVac,inputSearchVac)
+    },[currentPageVac])
+
+
+
     //AL INGRESAR SE CARGA EL LISTADO DE INSCRIPTOS
     useEffect(()=>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
         //LLAMO AL PROCEDIMIENTO buscoIdlistadoInscrip Y PASO EL NIVEL CARGADO EN STORE GLOBAL
         buscoIdlistadoInscrip(configSG.nivel.id_nivel);
 
-
         //Cargo las especialidades
         cargaEspecidalidades();
 
         //LLAMO AL PROCEDIMIENTO buscoIDListadoVacantes Y PASO EL NIVEL CARGADO EN STORE GLOBAL
-        //buscoIDListadoVacantes(configSG.nivel.id_nivel);
+        buscoIDListadoVacantes(configSG.nivel.id_nivel);
 
     },[]);
     
@@ -387,7 +571,7 @@ const InscriptosTit = () =>{
                                                             title="Ver Datos"
                                                             onClick={()=>submitVerDatosInscripto(inscripto)}
                                                         />
-                                                        {/* {
+                                                        {
                                                             (inscripto.vacante_asignada===null || inscripto.vacante_asignada==='')
                                                             ?<BiTransferAlt 
                                                                 className="text-2xl hover:cursor-pointer hover:text-[#83F272] ml-2"      
@@ -395,7 +579,7 @@ const InscriptosTit = () =>{
                                                                 onClick={()=>submitVerVacantes(inscripto)}
                                                             />
                                                             :``
-                                                        } */}
+                                                        }
                                                         
                                                     </div>
                                                 </td>
@@ -424,14 +608,77 @@ const InscriptosTit = () =>{
             <ModalEdit isOpen={isOpenModalEdit} closeModal={closeModalEdit}>
                 <ContentModalDatosInscriptoTit
                     datosFormInscripto = {formInscripto}
+                    datosInscriptoSelect={datosInscriptoSelect}
                     idInscriptoSelect={idInscriptoSelect}
                     closeModal={closeModalEdit}
                     handleChangeFormInscripto={handleChangeFormInscripto}
                     formEstadoInscripto={formEstado}
                     submitGuardarFormInscripto={submitGuardarFormInscripto}
                 />
+            </ModalEdit>
+
+            {/* MODAL DE VACANTES DISPONIBLES */}
+            <ModalEdit isOpen={isOpenModalVac} closeModal={closeModalVac}>
+                <ContentModalVacantesDispTit
+                    datosInscriptoSelect={datosInscriptoSelect}
+                    submitCloseModalVac={submitCloseModalVac}
+                    listadoVacantesDispTit={listadoVacantesDispTit}
+                    currentPageVac={currentPageVac}
+                    paginacionVac={paginacionVac}
+                    handlePageChangeVac={handlePageChangeVac}
+                    inputSearchVac={inputSearchVac}
+                    handleInputSearchVacChange={handleInputSearchVacChange}
+                    submitVerAsignacion={submitVerAsignacion}
+                />
+            </ModalEdit>
+
+            {/* MODAL DE ASIGNACION VACANTE */}
+            <ModalEdit isOpen={isOpenModalAsign} closeModal={closeModalAsign}>
+                <ContentModalAsignacionTit
+                    closeModalAsign={closeModalAsign}
+                    datosInscriptoSelect={datosInscriptoSelect}
+                    datosVacanteSelect={datosVacante}
+                    procesoImpresion={procesoImpresion}
+                    submitAsignarVacante={submitAsignarVacante}
+                />
+            </ModalEdit>
+
+            {/* PAGINA DE IMPRESION DESIGNACION */}
+            <div 
+                className="flex flex-col print:page-break-after"
+                ref={componentRef}
+            >
+                <PaginaDesignacionTitular
+                    datosInscripto={datosInscriptoSelect}
+                    datosVacante={datosVacante}
+                    id_nivel={configSG?.nivel.id_nivel}
+                />
+            </div>
+
+            {/* MODAL DE NOTIFICACION Y CONFIRMACION DE IMPRESION DESIGNACION */}
+            <ModalEdit isOpen={isOpenModalConfirm} closeModal={closeModalConfirm}>
+                <div className="mt-10 w-[30vw] flex flex-col items-center">
+                    <h1 className="text-xl text-center font-bold">{mensajeModalConfirm}</h1>
+                    <div className="flex flex-row">
+                        <div className="flex justify-center mr-2">
+                            <button
+                                className="border-2 border-[#557CF2] mt-10 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
+                                onClick={()=>{procesoImpresion(); 
+                                    submitCloseModalConfirm()}}
+                            >ACEPTAR</button>
+                        </div>
+                        <div className="flex justify-center ml-2">
+                            <button
+                                className="border-2 border-[#557CF2] mt-10 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
+                                onClick={()=>submitCloseModalConfirm()}
+                            >CANCELAR</button>
+                        </div>
+                    </div>    
+                </div>
 
             </ModalEdit>
+
+
             {/* MODAL DE NOTIFICACIONES */}
             <Modal isOpen={isOpenModal} closeModal={closeModal}>
                 <div className="mt-10 w-72">

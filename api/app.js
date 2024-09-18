@@ -9,6 +9,8 @@ const asignacionMovRoutes = require('./src/routes/asignacion.routes.js');
 const configuracionRoutes = require('./src/routes/configuracion.routes.js');
 const userRoutes = require('./src/routes/user.routes.js');
 const inscriptosTitRoutes = require('./src/routes/inscriptosTit.routes.js');
+const vacantesTitRoutes = require('./src/routes/vacantesTit.routes.js');
+const asignacionTitRoutes = require('./src/routes/asignacionTit.routes.js');
 
 const app = express();
 
@@ -28,7 +30,10 @@ app.use('/api', asignacionMovRoutes);
 app.use('/api', configuracionRoutes);
 app.use('/api', userRoutes);
 
+//Rutas Modulo Titularizaciones
 app.use('/api', inscriptosTitRoutes);
+app.use('/api', vacantesTitRoutes);
+app.use('/api', asignacionTitRoutes);
 
 
 module.exports = app;

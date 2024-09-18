@@ -1435,26 +1435,26 @@ const InscriptosMov = ()=>{
                 {/* DATOS DE CARGO TOMADO - SI SE LE ASIGNO VACANTE */}
                 {(datosInscriptoSelect.vacante_asignada!=null && datosInscriptoSelect.vacante_asignada!='') &&
                 <div className="h-[19vh] min-w-[50vw] mt-5 border-[1px] border-emerald-500 text-center rounded bg-emerald-50">
-                <div className="flex flex-row ">
-                    <div className="w-[20%] "></div>
-                    <div className="w-[60%] ">
-                        <label className="text-xl text-center font-bold text-green-700" translate='no'>Cargo que tomó</label>
+                    <div className="flex flex-row ">
+                        <div className="w-[20%] "></div>
+                        <div className="w-[60%] ">
+                            <label className="text-xl text-center font-bold text-green-700" translate='no'>Cargo que tomó</label>
+                        </div>
+                        <div className="flex flex-row w-[20%] justify-end">
+                            <button className="font-bold text-xl mr-2 hover:text-sky-500 hover:scale-150 transition-all duration-500">
+                                <IoMdPrint 
+                                    title="IMPRIMIR DESIGNACION"
+                                    onClick={()=>procesoImpresion()}
+                                />
+                            </button>
+                            <button className="font-bold text-lg mr-4 hover:text-red-500 hover:scale-150 transition-all duration-500">
+                                <IoTrash 
+                                    title="ELIMINAR"
+                                    onClick={()=>submitEliminarTomaCargo(cargoAsignado.id_asignacion_mov)}
+                                />
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex flex-row w-[20%] justify-end">
-                        <button className="font-bold text-xl mr-2 hover:text-sky-500 hover:scale-150 transition-all duration-500">
-                            <IoMdPrint 
-                                title="IMPRIMIR DESIGNACION"
-                                onClick={()=>procesoImpresion()}
-                            />
-                        </button>
-                        <button className="font-bold text-lg mr-4 hover:text-red-500 hover:scale-150 transition-all duration-500">
-                            <IoTrash 
-                                title="ELIMINAR"
-                                onClick={()=>submitEliminarTomaCargo(cargoAsignado.id_asignacion_mov)}
-                            />
-                        </button>
-                    </div>
-                </div>
                     {/* Datos a mostrar: Escuela, cargo, modalidad, turno, region, localidad, zona */}
                     <div className="flex flex-row">
                         <div className="text-start ml-2">
