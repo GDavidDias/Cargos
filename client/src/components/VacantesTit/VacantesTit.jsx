@@ -27,9 +27,12 @@ const VacantesTit = () => {
     //E.L. para Ventanas Modales
     const[isOpenModalVerVacante,openModalVerVacante,closeModalVerVacante]=useModal(false);
     const[isOpenModal, openModal, closeModal]=useModal(false);
+    const[isOpenModalConfirm, openModalConfirm, closeModalConfirm]=useModal(false);
 
     //E.L. para Mensaje en Modal de Notificaciones
     const[mensajeModalInfo, setMensajeModalInfo]=useState('');
+    //E.L. para Mensaje en Modal de Confirmacion
+    const[mensajeModalConfirm, setMensajeModalConfirm]=useState('');
 
 
     //E.L. donde se almacena el listado de Vacantes  (carga inicial)
@@ -246,10 +249,55 @@ const VacantesTit = () => {
     };
     
 
-    const submitEliminarVacante = () =>{
+    const submitEliminarVacante = (datosVacante) =>{
+        setDatosVacanteSelect(datosVacante)
+        setMensajeModalConfirm('¿Seguro Elimina la Vacante?');
+        openModalConfirm();
+    };
+
+    const procesoEliminarVacante = async() => {
+        console.log('Ingresa a procesoEliminarVacante');
+        const idVacanteTit = datosVacanteSelect?.id_vacante_tit;
+        console.log('que tiene idVacanteTit: ', idVacanteTit);
+        const fechaHoraActual = traeFechaHoraActual();
+        const datosBody={
+            obsDesactiva:`Se desactiva la VACANTE por Eliminacion ${fechaHoraActual}`
+        }
+
+        try{
+            await axios.put(`${URL}/api/delvacantetit/${idVacanteTit}`,datosBody)
+            .then(async res=>{
+                console.log('que trae res de delvacantetit: ', res);
+
+                //Mostrar Notificacion de Eliminacion de Vacante
+                setMensajeModalInfo('Vacante Eliminada');
+                openModal();
+
+            }).catch(error=>{
+                console.log('que trae error delvacantetit: ', error)
+            });
+            
+        }catch(error){
+            console.error(error.message);
+        }
+        //Al final del Proceso de Eliminar Vacante recargo el listado de Vacantes Disponibles
+        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac);
 
     };
 
+    const traeFechaHoraActual = () => {
+        const now = new Date();
+        
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Meses van de 0 a 11, por eso se suma 1
+        const day = String(now.getDate()).padStart(2, '0');
+    
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
 
 
 
@@ -482,17 +530,39 @@ const VacantesTit = () => {
 
             {/* MODAL VER DATOS VACANTE */}
             <ModalEdit isOpen={isOpenModalVerVacante} closeModal={closeModalVerVacante}>
-                    <ContentModalVerDatosVacanteTit
-                        idVacante={datosVacanteSelect?.id_vacante_tit}
-                        formVacante={formVacante}
-                        closeModal={closeModalVerVacante}
-                        handleChangeFormVacante={handleChangeFormVacante}
-                        estadoForm={estadoForm}
-                        datosVacante={datosVacanteSelect}
-                        submitGuardarFormVacante={submitGuardarFormVacante}
-                        inscriptoAsignado={datosInscriptoAsignado}
-                    />
-                </ModalEdit>
+                <ContentModalVerDatosVacanteTit
+                    idVacante={datosVacanteSelect?.id_vacante_tit}
+                    formVacante={formVacante}
+                    closeModal={closeModalVerVacante}
+                    handleChangeFormVacante={handleChangeFormVacante}
+                    estadoForm={estadoForm}
+                    datosVacante={datosVacanteSelect}
+                    submitGuardarFormVacante={submitGuardarFormVacante}
+                    inscriptoAsignado={datosInscriptoAsignado}
+                />
+            </ModalEdit>
+
+            {/* MODAL DE CONFIRMACION ELIMINA VACANTE*/}
+            <ModalEdit isOpen={isOpenModalConfirm} closeModal={closeModalConfirm}>
+            <div className="mt-10 w-[30vw] flex flex-col items-center">
+                    <h1 className="text-xl text-center font-bold">{mensajeModalConfirm}</h1>
+                    <div className="flex flex-row">
+                        <div className="flex justify-center mr-2">
+                            <button
+                                className="border-2 border-[#557CF2] mt-10 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
+                                onClick={()=>{procesoEliminarVacante(); closeModalConfirm()}}
+                            >ACEPTAR</button>
+                        </div>
+                        <div className="flex justify-center ml-2">
+                            <button
+                                className="border-2 border-[#557CF2] mt-10 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
+                                onClick={()=>closeModalConfirm()}
+                            >CANCELAR</button>
+                        </div>
+                    </div>    
+                </div>
+            </ModalEdit>
+
 
             {/* MODAL DE NOTIFICACIONES */}
             <Modal isOpen={isOpenModal} closeModal={closeModal}>
