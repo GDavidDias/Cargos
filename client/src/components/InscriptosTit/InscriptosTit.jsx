@@ -21,6 +21,7 @@ import ContentModalAsignacionTit from "../ContentModalAsignacionTit/ContentModal
 import { useReactToPrint } from 'react-to-print';
 import PaginaDesignacion from "../PaginaDesignacion/PaginaDesignacion";
 import PaginaDesignacionTitular from "../PaginaDesignacionTitular/PaginaDesignacionTitular";
+import { fetchVacanteAsignadaTit } from "../../utils/fetchVacanteAsignadaTit";
 
 const InscriptosTit = () =>{
     
@@ -100,6 +101,8 @@ const InscriptosTit = () =>{
     const[datosVacante, setDatosVacante]=useState({});
 
     const componentRef = useRef(null);
+
+    const[cargoAsignado, setCargoAsignado]=useState('');
 
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
@@ -228,6 +231,16 @@ const InscriptosTit = () =>{
         console.log('presiono en submitVerDatosInscripto');
         console.log('que tiene datos inscripto: ', datosInscripto);
         setDatosInscriptoSelect(datosInscripto);
+        //traigo datos de la vacante asignada
+        if(datosInscripto.vacante_asignada!=null && datosInscripto.vacante_asignada!=''){
+            console.log('TIENE CARGO ASIGNADO');
+            const data = await fetchVacanteAsignadaTit(datosInscripto.vacante_asignada);
+            console.log('que trae data de fetchVacanteAsignadaTit: ',data);
+            setCargoAsignado(data[0]);
+        }else{
+            setCargoAsignado('');
+        }
+
         openModalEdit();
     };
 
@@ -379,6 +392,9 @@ const InscriptosTit = () =>{
     };
     
 
+    useEffect(()=>{
+        console.log('que tiene Cargo Asignado: ', cargoAsignado)
+    },[cargoAsignado])
 
     useEffect(()=>{
         seteoDatosInicialesFormInscripto();
@@ -614,6 +630,7 @@ const InscriptosTit = () =>{
                     handleChangeFormInscripto={handleChangeFormInscripto}
                     formEstadoInscripto={formEstado}
                     submitGuardarFormInscripto={submitGuardarFormInscripto}
+                    cargoAsignado={cargoAsignado}
                 />
             </ModalEdit>
 

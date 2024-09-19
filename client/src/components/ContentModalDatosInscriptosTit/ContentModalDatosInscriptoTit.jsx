@@ -1,4 +1,4 @@
-const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,idInscriptoSelect,closeModal,handleChangeFormInscripto,formEstadoInscripto,submitGuardarFormInscripto})=>{
+const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,idInscriptoSelect,closeModal,handleChangeFormInscripto,formEstadoInscripto,submitGuardarFormInscripto,cargoAsignado})=>{
     console.log('ingreso a ContentModalDatosInscriptoTit');
     return(
         <div className="notranslate h-100 w-100 flex flex-col items-center">
@@ -9,61 +9,63 @@ const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,i
 
             <div>
                 {/* DATOS DEL INSCRIPTO */}
-                <div className="border-[1px] border-sky-500 rounded-md w-[100mm] py-2 my-2 font-semibold bg-blue-100">
-                    <div className="flex flex-col ml-2 mt-[2px] items-end justify-end">
-                        <div className="flex flex-row my-[4px] mx-2 items-center">
-                            <label className="text-base mr-2">Orden:</label>
+                <div className="border-[1px] border-sky-500 rounded-md min-w-[50vw] py-2 my-2 font-semibold bg-blue-100">
+                    <div className="flex flex-row ml-2 mt-[2px] items-end justify-start">
+                        <div className="flex flex-col my-[4px] mx-2 text-start">
+                            <label className="font-semibold text-base mr-2">Orden:</label>
                             <input 
                                 name="dni"
-                                className="border-[1px] border-zinc-400 w-[60mm] text-start pl-2 bg-neutral-50 "
+                                className="border-[1px] border-zinc-500 w-[6vw] h-[4vh] text-start pl-2 bg-neutral-50 rounded"
                                 value={datosFormInscripto?.orden}
                                 disabled={true}
                             />
                         </div>
 
-                        <div className="flex flex-row my-[4px] mx-2 items-center">
-                            <label className="text-base mr-2">Dni:</label>
-                            <input 
-                                name="dni"
-                                className="border-[1px] border-zinc-400 w-[60mm] text-start pl-2 bg-neutral-50"
-                                value={datosFormInscripto?.dni}
-                                onChange={handleChangeFormInscripto}
-                            />
-                        </div>
-
-                        <div className="flex flex-row my-[4px] mx-2 items-center">
-                            <label className="text-base mr-2">Nombre:</label>
-                            <input 
-                                name="nombre"
-                                className="border-[1px] border-zinc-400 w-[60mm] pl-2 text-start pl-2 bg-neutral-50"
-                                value={datosFormInscripto?.nombre}
-                                onChange={handleChangeFormInscripto}
-                                //disabled={(datosVacante?.datetime_asignacion!=null)}
-                            />
-                        </div>
-
-                        <div className="flex flex-row my-[4px] mx-2 items-center">
-                            <label className="text-base mr-2">Apellido:</label>
+                        <div className="flex flex-col my-[4px] mx-2 text-start">
+                            <label className="font-semibold text-base mr-2">Apellido:</label>
                             <input 
                                 name="apellido"
-                                className="border-[1px] border-zinc-400 w-[60mm] pl-2 text-start pl-2 bg-neutral-50"
+                                className="border-[1px] border-zinc-500 w-[16vw] h-[4vh] pl-2 text-start pl-2 bg-neutral-50 rounded"
                                 value={datosFormInscripto?.apellido}
                                 onChange={handleChangeFormInscripto}
-                                //disabled={(datosVacante?.datetime_asignacion!=null)}
+                                disabled={(datosInscriptoSelect.vacante_asignada!=null)}
+                            />
+                        </div>
+                        <div className="flex flex-col my-[4px] mx-2 text-start">
+                            <label className="font-semibold text-base mr-2">Nombre:</label>
+                            <input 
+                                name="nombre"
+                                className="border-[1px] border-zinc-500 w-[20vw] h-[4vh] pl-2 text-start pl-2 bg-neutral-50 rounded"
+                                value={datosFormInscripto?.nombre}
+                                onChange={handleChangeFormInscripto}
+                                disabled={(datosInscriptoSelect.vacante_asignada!=null)}
                             />
                         </div>
 
-                        <div className="flex flex-row my-[4px] mx-2 items-center">
-                            <label className="text-base mr-2">Total:</label>
+                    </div>
+                    <div className="flex flex-row ml-2 mt-[2px] items-end justify-start">
+
+                        <div className="flex flex-col my-[4px] mx-2 text-start">
+                            <label className="font-semibold text-base mr-2">Dni:</label>
+                            <input 
+                                name="dni"
+                                className="border-[1px] border-zinc-500 w-[12vw] h-[4vh] text-start pl-2 bg-neutral-50 rounded"
+                                value={datosFormInscripto?.dni}
+                                onChange={handleChangeFormInscripto}
+                                disabled={(datosInscriptoSelect.vacante_asignada!=null)}
+                            />
+                        </div>
+
+                        <div className="flex flex-col my-[4px] mx-2 text-start">
+                            <label className="font-semibold text-base mr-2">Total:</label>
                             <input 
                                 name="total"
-                                className="border-[1px] border-zinc-400 w-[60mm] pl-2 text-start pl-2 bg-neutral-50"
+                                className="border-[1px] border-zinc-500 w-[6vw] h-[4vh] pl-2 text-start pl-2 bg-neutral-50 rounded"
                                 value={datosFormInscripto?.total}
                                 onChange={handleChangeFormInscripto}
-                                //disabled={(datosVacante?.datetime_asignacion!=null)}
+                                disabled={(datosInscriptoSelect.vacante_asignada!=null)}
                             />
                         </div>
-
 
                     </div>
                 </div>
@@ -74,7 +76,7 @@ const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,i
                     <div className="flex flex-row ">
                         <div className="w-[20%] "></div>
                         <div className="w-[60%] ">
-                            <label className="text-xl text-center font-bold text-green-700" translate='no'>Cargo que tomó</label>
+                            <label className="text-xl text-center font-bold text-green-700" translate='no'>Vacante que Titularizó</label>
                         </div>
                         <div className="flex flex-row w-[20%] justify-end">
                             {/* <button className="font-bold text-xl mr-2 hover:text-sky-500 hover:scale-150 transition-all duration-500">
@@ -95,11 +97,11 @@ const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,i
                     <div className="flex flex-row">
                         <div className="text-start ml-2">
                             <label className="font-semibold text-sm">ID Vacante</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[6vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.id_vacante_mov}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[6vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.id_vacante_tit}</div>
                         </div>
                         <div className="text-start ml-2">
                             <label className="font-semibold text-sm">Escuela</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.establecimiento} {cargoAsignado.obs_establecimiento}</div>
+                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.nro_establecimiento} {cargoAsignado.nombre_establecimiento}</div>
                         </div>
                         <div className="text-start ml-2">
                             <label className="font-semibold text-sm">Cargo</label>
