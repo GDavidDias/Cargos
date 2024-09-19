@@ -15,6 +15,7 @@ import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit} from "react-icons/fa";
 import { IoTrash } from "react-icons/io5";
 import { fetchAllEspecialidades } from "../../utils/fetchAllEspecialidades";
 import Modal from "../Modal/Modal";
+import ContentModalNuevaVacanteTit from "../ContentModalNuevaVacanteTit/ContentModalNuevaVacanteTit";
 
 
 const VacantesTit = () => {
@@ -25,6 +26,7 @@ const VacantesTit = () => {
     const configSG = useSelector((state)=>state.config);
 
     //E.L. para Ventanas Modales
+    const[isOpenModalNuevo,openModalNuevo,closeModalNuevo]=useModal(false);
     const[isOpenModalVerVacante,openModalVerVacante,closeModalVerVacante]=useModal(false);
     const[isOpenModal, openModal, closeModal]=useModal(false);
     const[isOpenModalConfirm, openModalConfirm, closeModalConfirm]=useModal(false);
@@ -86,6 +88,26 @@ const VacantesTit = () => {
     //si no modifica nada el estado es "ver" - habilita boton CERRAR
     const[estadoForm, setEstadoForm]=useState('ver');    
 
+    //E.L. para validar si va a permitir guardar nueva vacante.
+    const[validaFormNuevaVacante, setValidaFormNuevaVacante]=useState(false);
+
+    //E.L. de form que se usa para Nueva Vacante
+    const[formNuevaVacante, setFormNuevaVacante]=useState({
+        id_listado_vac_tit:'',
+        orden:'', 
+        id_especialidad:'', 
+        datetime_creacion:'',
+        nro_establecimiento:'', 
+        nombre_establecimiento:'', 
+        cargo:'', 
+        modalidad:'', 
+        turno:'', 
+        cupof:'',
+        localidad:'', 
+        departamento:'',
+        region:'', 
+        zona:''
+    });
 
     //--------------PROCESOS Y FUNCIONES----------
 
@@ -299,7 +321,81 @@ const VacantesTit = () => {
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     };
 
+    //----------Procesos NUEVA VACANTE-------------
 
+    const submitNuevaVacante = () =>{
+        setValidaFormNuevaVacante(false);
+        setInicialFormNuevaVacante();
+        openModalNuevo();
+    };
+
+    const setInicialFormNuevaVacante=async()=>{
+        const fechaHoraActualNuevaVac = await traeFechaHoraActual();
+        setFormNuevaVacante({
+            id_listado_vac_tit:idListadoVacantesTit, //sale del listado de configuracion
+            orden:null, //va a ser null
+            id_especialidad:'', 
+            datetime_creacion:fechaHoraActualNuevaVac, //traigo hora y fecha actual
+            nro_establecimiento:'', 
+            nombre_establecimiento:'', 
+            cargo:'', 
+            modalidad:'', 
+            turno:'', 
+            cupof:'',
+            localidad:'', 
+            departamento:'',
+            region:'', 
+            zona:''
+        });
+    };
+
+    const submitCloseModalNuevo = ()=>{
+        closeModalNuevo();
+    };
+
+    const handleChangeFormNuevaVacante =(event)=>{
+        const{name, value} = event.target;
+        
+        if(name==='id_especialidad'){
+            const filterEspecialidad = listadoEspecialidades;
+            setFormNuevaVacante({
+                ...formNuevaVacante,
+                [name]:value.toUpperCase(),
+                cargo: filterEspecialidad.filter((especialidad)=>especialidad.id_especialidad==value)[0].descripcion
+            });
+        }else{
+            setFormNuevaVacante({
+                ...formNuevaVacante,
+                [name]:value.toUpperCase()
+            });
+        }
+    };
+
+    const submitGuardarFormNuevaVacante = async() => {
+
+        console.log('presiono en submitGuardarFormNuevaVacante');
+        console.log('como queda formNuevaVacante: ', formNuevaVacante);
+        
+        await axios.post(`${URL}/api/newvacantetit`,formNuevaVacante)
+            .then(async res=>{
+                console.log('que trae res de newvacantetit: ', res);
+                //Mostar mensaje de datos actualizados.
+                setMensajeModalInfo('Vacante Creada Correctamente')
+                openModal();
+            })
+            .catch(error=>{
+                console.log('que trae error newvacantetit: ', error);
+            })
+    };
+
+
+    useEffect(()=>{
+        if(formNuevaVacante.nro_establecimiento!='' && formNuevaVacante.id_especialidad!=''){
+            setValidaFormNuevaVacante(true);
+        }else{
+            setValidaFormNuevaVacante(false);
+        }
+    },[formNuevaVacante])
 
     useEffect(()=>{
         console.log('que tiene datosInscriptoAsignado: ', datosInscriptoAsignado);
@@ -350,7 +446,7 @@ const VacantesTit = () => {
                             {(userSG.permiso!=3) &&
                                 <button 
                                     className="ml-4 px-[2px] border-[1px] border-[#73685F] rounded hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] shadow"
-                                    //onClick={submitNuevaVacante}
+                                    onClick={submitNuevaVacante}
                                 >Nueva Vacante</button>
                             }
                             
@@ -561,6 +657,18 @@ const VacantesTit = () => {
                         </div>
                     </div>    
                 </div>
+            </ModalEdit>
+
+            {/* MODAL NUEVA VACANTE */}
+            <ModalEdit isOpen={isOpenModalNuevo} closeModal={closeModalNuevo}>
+                <ContentModalNuevaVacanteTit
+                    formNuevaVacante={formNuevaVacante}
+                    closeModalNuevaVacante={submitCloseModalNuevo}
+                    handleChangeFormVacante={handleChangeFormNuevaVacante}
+                    valida={validaFormNuevaVacante}
+                    submitGuardarFormNuevaVacante={submitGuardarFormNuevaVacante}
+                    listadoEspecialidades={listadoEspecialidades}
+                />
             </ModalEdit>
 
 

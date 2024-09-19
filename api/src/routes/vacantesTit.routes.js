@@ -5,7 +5,8 @@ const {
     getVacanteAsignadaTit,
     getVacanteTitAsignadaInscripto,
     editVacanteTit,
-    delVacanteTit
+    delVacanteTit,
+    createVacanteTit
 }= require('../controllers/vacantesTit.controllers');
 
 const router = Router();
@@ -24,5 +25,8 @@ router.put('/editvacantetit/:idVacanteTit',editVacanteTit);
 
 //Elimina una Vacante 
 router.put('/delvacantetit/:idVacanteTit', delVacanteTit);
+
+//crea una nueva vacante
+router.post('/newvacantetit',createVacanteTit);
 
 module.exports = router;
