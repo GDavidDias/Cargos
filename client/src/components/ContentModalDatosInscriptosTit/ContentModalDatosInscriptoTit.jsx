@@ -1,4 +1,7 @@
-const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,idInscriptoSelect,closeModal,handleChangeFormInscripto,formEstadoInscripto,submitGuardarFormInscripto,cargoAsignado})=>{
+import { IoMdPrint } from "react-icons/io";
+import { IoTrash } from "react-icons/io5";
+
+const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,idInscriptoSelect,closeModal,handleChangeFormInscripto,formEstadoInscripto,submitGuardarFormInscripto,cargoAsignado,procesoImpresion,submitEliminarTomaCargo})=>{
     console.log('ingreso a ContentModalDatosInscriptoTit');
     return(
         <div className="notranslate h-100 w-100 flex flex-col items-center">
@@ -79,7 +82,7 @@ const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,i
                             <label className="text-xl text-center font-bold text-green-700" translate='no'>Vacante que Titularizó</label>
                         </div>
                         <div className="flex flex-row w-[20%] justify-end">
-                            {/* <button className="font-bold text-xl mr-2 hover:text-sky-500 hover:scale-150 transition-all duration-500">
+                            <button className="font-bold text-xl mr-2 hover:text-sky-500 hover:scale-150 transition-all duration-500">
                                 <IoMdPrint 
                                     title="IMPRIMIR DESIGNACION"
                                     onClick={()=>procesoImpresion()}
@@ -88,9 +91,9 @@ const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,i
                             <button className="font-bold text-lg mr-4 hover:text-red-500 hover:scale-150 transition-all duration-500">
                                 <IoTrash 
                                     title="ELIMINAR"
-                                    onClick={()=>submitEliminarTomaCargo(cargoAsignado.id_asignacion_mov)}
+                                    onClick={()=>submitEliminarTomaCargo(cargoAsignado.id_asignacion_tit)}
                                 />
-                            </button> */}
+                            </button>
                         </div>
                     </div>
                     {/* Datos a mostrar: Escuela, cargo, modalidad, turno, region, localidad, zona */}

@@ -237,8 +237,10 @@ const InscriptosTit = () =>{
             const data = await fetchVacanteAsignadaTit(datosInscripto.vacante_asignada);
             console.log('que trae data de fetchVacanteAsignadaTit: ',data);
             setCargoAsignado(data[0]);
+            setDatosVacante(data[0])
         }else{
             setCargoAsignado('');
+            setDatosVacante({})
         }
 
         openModalEdit();
@@ -388,6 +390,32 @@ const InscriptosTit = () =>{
         setDatosVacante({});
         setDatosInscriptoSelect({});
         //Recargo lista de inscriptos 
+        getInscriptosTit(idListadoInscriptosTit,currentPage,estadoInscripto,inputSearch,selectFiltroEspecialidad);
+    };
+
+    const submitEliminarTomaCargo = async(idAsignacion) =>{
+        console.log('que trae idAsignacion: ', idAsignacion);
+        const fechaHoraActual = traeFechaHoraActual();
+        const datosBody={
+            obsDesactiva:`Se desactiva la Asignacion por Eliminacion ${fechaHoraActual}`
+        }
+
+        try{
+            await axios.post(`${URL}/api/delasignaciontit/${idAsignacion}`,datosBody)
+            .then(async res=>{
+                console.log('que trae res de delasignaciontit: ', res);
+                //Mostrar Notificacion de Eliminacion de Asignacion
+                setMensajeModalInfo('Vacante que titularizo eliminado correctamente');
+                openModal();
+            })
+            .catch(error=>{
+                console.log('que trae error delasignaciontit: ', error)
+            });
+
+        }catch(error){
+            console.error(error.message);
+        }
+        //Al final del Proceso de Eliminar Asignacion recargo el listado de Vacantes Disponibles
         getInscriptosTit(idListadoInscriptosTit,currentPage,estadoInscripto,inputSearch,selectFiltroEspecialidad);
     };
     
@@ -631,6 +659,8 @@ const InscriptosTit = () =>{
                     formEstadoInscripto={formEstado}
                     submitGuardarFormInscripto={submitGuardarFormInscripto}
                     cargoAsignado={cargoAsignado}
+                    procesoImpresion={procesoImpresion}
+                    submitEliminarTomaCargo={submitEliminarTomaCargo}
                 />
             </ModalEdit>
 
