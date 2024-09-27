@@ -2,7 +2,7 @@ const pool = require('../../database/connection.js');
 
 module.exports = async(req,res)=>{
     //TRAE TODAS LAS VACANTES DE MOVIMIENTOS SEGUN EL NIVEL INDICADO EN EL LISTADO_VAC_MOV
-    const{idListadoVacMov,limit,page,filtroAsignacion,filtroBusqueda} = req.body;
+    const{idListadoVacMov,limit,page,filtroAsignacion,filtroBusqueda,filtroEspecialidad} = req.body;
     console.log('que trae idListadoVacMov: ', idListadoVacMov);
     console.log('que trae limit: ', limit);
     console.log('que trae page: ', page);
@@ -17,6 +17,10 @@ module.exports = async(req,res)=>{
             WHERE (vm.obs_desactiva IS NULL OR vm.obs_desactiva = "")
             AND vm.id_listado_vac_mov=${idListadoVacMov}
             `;
+    
+    if(filtroEspecialidad && filtroEspecialidad!=''){
+        armaquery += ` AND vm.id_especialidad IN(${filtroEspecialidad}) `
+    };
     
     if(filtroAsignacion==='asignadas'){
         armaquery+=` AND am2.datetime_asignacion IS NOT NULL`;

@@ -19,6 +19,7 @@ import Modal from "../Modal/Modal";
 import axios from "axios";
 import ContentModalNuevaVacante from "../ContentModalNuevaVacante/ContentModalNuevaVacante";
 import Paginador from "../Paginador/Paginador.jsx";
+import { fetchAllEspecialidades } from "../../utils/fetchAllEspecialidades.js";
 
 
 
@@ -106,6 +107,13 @@ const VacantesMov = () =>{
     //pagina actual
     const[currentPage, setCurrentPage]=useState(1);
 
+    //E.L. donde se almacena el listado de especialidades
+    const[listadoEspecialidades, setListadoEspecialidades]=useState([]);
+
+    //E.L. donde guarda la especialidad seleccionada
+    const[filtroEspecialidadVac, setFiltroEspecialidadVac]=useState("");
+
+
     //-----------PROCESOS Y FUNCIONES-----------
 
     const handleChangeFormVacante =(event)=>{
@@ -150,17 +158,17 @@ const VacantesMov = () =>{
         setIdListVacMov(idFilterListado);
 
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE VACANTES
-        await getVacantesMov(idFilterListado,currentPage,estadoVacantes,inputSearch)
+        await getVacantesMov(idFilterListado,currentPage,estadoVacantes,inputSearch,filtroEspecialidadVac)
     };
 
     //Este Proc carga el listado de VACANTES al E.L
-    const getVacantesMov = async(id_listado,page,filtroAsignacion,valorBusqueda) =>{
+    const getVacantesMov = async(id_listado,page,filtroAsignacion,valorBusqueda,filtroEspecialidad) =>{
         let data;
         const limit=10;
         console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
             //paso idListado, limit y page
-            data = await fetchAllVacantesMov(id_listado,limit,page,filtroAsignacion,valorBusqueda);
+            data = await fetchAllVacantesMov(id_listado,limit,page,filtroAsignacion,valorBusqueda,filtroEspecialidad);
 
             console.log('que trae data de fetchVacantesDispMov: ', data);
 
@@ -410,6 +418,28 @@ const VacantesMov = () =>{
         };
     };
 
+    //Este Proc carga el listado de especialidades en E.L.
+    const cargaEspecidalidades=async()=>{
+        const data = await fetchAllEspecialidades();
+        console.log('que tiene especialidades: ', data);
+        if(data?.length!=0){
+            setListadoEspecialidades(data);
+        }
+    };
+
+    const handleSelectFiltroEspecialidad=(event)=>{
+        const{value} = event.target;
+        console.log('que tiene filtroEspecialidad: ', value);
+        setFiltroEspecialidadVac(value);
+        
+        setCurrentPage(1);
+        //al seleccionar una especialidad, regrso a la primer pagina, por si no hay tantos inscriptos
+        
+    };
+
+    const handleCancelFiltroEspecialidadVac =()=>{
+        setFiltroEspecialidadVac("");
+    };
 
 
     useEffect(()=>{
@@ -437,8 +467,8 @@ const VacantesMov = () =>{
         console.log('APLICO FILTRO');
         //console.log('que tiene estado local estadoVacantes: ', estadoVacantes);
         //aplicoFiltroListadoVacantes(listadoVacantesMov);
-        getVacantesMov(idListVacMov,currentPage,estadoVacantes,inputSearch)
-    },[estadoVacantes,currentPage,estadoVacantes,inputSearch])
+        getVacantesMov(idListVacMov,currentPage,estadoVacantes,inputSearch,filtroEspecialidadVac)
+    },[estadoVacantes,currentPage,estadoVacantes,inputSearch,filtroEspecialidadVac])
 
     useEffect(()=>{
         seteoDatosInicialesFormVacante()
@@ -455,27 +485,62 @@ const VacantesMov = () =>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
         //LLAMO AL PROCEDIMIENTO buscoIDListadoVacantes Y PASO EL NIVEL CARGADO EN STORE GLOBAL
         buscoIDListadoVacantes(configSG.nivel.id_nivel);
+        //Cargo las especialidades
+        cargaEspecidalidades();
     },[])
 
     return(
         <div className=" notranslate h-full w-full">
             {/* ENCABEZADO DE PAGINA */}
-            <div className="bg-[#C9D991] desktop:h-[8vh] movil:h[5vh] flex flex-row">
+            <div className="bg-[#C9D991] desktop:h-[12vh] movil:h[5vh] flex flex-row">
                 {/* TITULOS - BOTONES - NIVEL */}
-                <div className="desktop:w-[45vw] flex desktop:flex-col desktop:justify-center desktop:items-start  movil:flex-row movil:w-full movil:items-center movil:justify-center">
+                <div className="desktop:w-[60vw] flex desktop:flex-col desktop:justify-center desktop:items-start  movil:flex-row movil:w-full movil:items-center movil:justify-center">
                     <label className="ml-4 text-base font-semibold">NIVEL {configSG.nivel.descripcion}</label>
-                    <div className="flex flex-row">
-                        <label className="ml-4 text-lg font-sans font-bold">VACANTES</label>
-                        {(userSG.permiso!=3) &&
-                            <button 
-                                className="ml-2 px-[2px] border-[1px] border-[#73685F] rounded hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] shadow"
-                                onClick={submitNuevaVacante}
-                            >Nueva Vacante</button>
-                        }
+                    <div className="flex flex-col">
+                        <div className="flex flex-row mb-2">
+                            <label className="ml-4 text-lg font-sans font-bold">VACANTES</label>
+                            {(userSG.permiso!=3) &&
+                                <button 
+                                    className="ml-2 px-[2px] border-[1px] border-[#73685F] rounded hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] shadow"
+                                    onClick={submitNuevaVacante}
+                                >Nueva Vacante</button>
+                            }
+                        </div>
+                        {/* SECCION FILTRO ESPECIALIDAD */}
+                        <div className="flex flex-row">
+                            <label className="mx-4 ">Especialidad: </label>
+                            <div className="border-[1px] rounded border-gray-500 bg-neutral-50">
+                                <select
+                                    className="w-[40vw] border-[1px] rounded focus:outline-none focus:ring-0 focus:border-none"
+                                    name="filtroEspecialidad"
+                                    onChange={handleSelectFiltroEspecialidad}
+                                    value={filtroEspecialidadVac}
+                                >
+                                    <option value='' selected disabled>Seleccione...</option>
+                                    {
+                                        listadoEspecialidades?.map((especialidad,index)=>(
+                                            <option 
+                                                key={index} 
+                                                value={especialidad.id_especialidad}
+                                                className="text-base"
+                                            >{especialidad.abreviatura} - {especialidad.descripcion}</option>
+                                        ))
+                                    }
+                                </select>
+                                {(filtroEspecialidadVac!="") &&
+                                    <label 
+                                        className="font-bold mx-2 cursor-pointer"
+                                        onClick={handleCancelFiltroEspecialidadVac}
+                                    >X</label>
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+
                 {/* SECCION DATOS USUARIO */}
-                <div className="movil:hidden w-[40vw] desktop:flex items-center justify-end">
+                <div className="movil:hidden w-[25vw] desktop:flex items-center justify-end">
                     <label className="mr-2 italic text-sm">{userSG.nombre}</label>
                     <FaRegUserCircle className="mr-2 text-2xl text-[#73685F] " />
                     <FaPowerOff 
@@ -487,7 +552,7 @@ const VacantesMov = () =>{
             </div>
             {/* CONTENIDO DE PAGINA */}
             <div className="h-[87vh] flex flex-col items-center">
-                <div className="desktop:h-[77vh] movil:h-[72vh] m-2 border-[1px] border-[#758C51] rounded desktop:w-[83vw] movil:w-[99vw]">
+                <div className="desktop:h-[73vh] movil:h-[72vh] m-2 border-[1px] border-[#758C51] rounded desktop:w-[83vw] movil:w-[99vw]">
                     {/* PARTE SUPERIOR DE TABLA */}
                     <div className="border-b-[1px] border-slate-300 desktop:h-[6vh] flex desktop:flex-row desktop:items-center movil:h-[9vh] movil:flex-col-reverse movil:items-start">
                         {/* Filtros */}
@@ -520,6 +585,9 @@ const VacantesMov = () =>{
                                 onClick={()=>{setEstadoVacantes('asignadas');setCurrentPage(1)}}
                             >Asignadas</label>
                         </div>
+
+                        {/* CAMPO DE FILTRO */}
+
 
                         {/* Campo de Busqueda */}
                         <div className="desktop:w-[50%]  flex desktop:justify-end movil:w-full ">

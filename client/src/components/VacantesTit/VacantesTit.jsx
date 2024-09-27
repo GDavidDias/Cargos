@@ -388,6 +388,10 @@ const VacantesTit = () => {
             })
     };
 
+    const handleCancelFiltroEspecialidadVac =()=>{
+        setFiltroEspecialidadVac("");
+    };
+
 
     useEffect(()=>{
         if(formNuevaVacante.nro_establecimiento!='' && formNuevaVacante.id_especialidad!=''){
@@ -453,7 +457,32 @@ const VacantesTit = () => {
                         </div>
                         <div className="flex flex-row">
                             <label className="mx-4 ">Especialidad: </label>
-                            <select
+                            <div className="border-[1px] rounded border-gray-500 bg-neutral-50">
+                                <select
+                                    className="w-[40vw] border-[1px] rounded focus:outline-none focus:ring-0 focus:border-none"
+                                    name="filtroEspecialidad"
+                                    onChange={handleSelectFiltroEspecialidad}
+                                    value={filtroEspecialidadVac}
+                                >
+                                    <option value='' selected disabled>Seleccione...</option>
+                                    {
+                                        listadoEspecialidades?.map((especialidad,index)=>(
+                                            <option 
+                                                key={index} 
+                                                value={especialidad.id_especialidad}
+                                                className="text-base"
+                                            >{especialidad.abreviatura} - {especialidad.descripcion}</option>
+                                        ))
+                                    }
+                                </select>
+                                {(filtroEspecialidadVac!="") &&
+                                    <label 
+                                        className="font-bold mx-2 cursor-pointer"
+                                        onClick={handleCancelFiltroEspecialidadVac}
+                                    >X</label>
+                                }
+                            </div>
+                            {/* <select
                                 className="w-[40vw] border-[1px] rounded border-gray-500"
                                 name="filtroEspecialidad"
                                 onChange={handleSelectFiltroEspecialidad}
@@ -469,7 +498,7 @@ const VacantesTit = () => {
                                         >{especialidad.abreviatura} - {especialidad.descripcion}</option>
                                     ))
                                 }
-                            </select>
+                            </select> */}
                         </div>
                     </div>
                 </div>
