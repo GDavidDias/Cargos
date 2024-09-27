@@ -53,6 +53,14 @@ INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('invitad
 INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Martin Ezequiel Contreras', 'MECONTRERAS', '123',2,1);
 INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Christian Franco Di Grazia', 'CDIGRAZIA', '123',2,1);
 INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Anibal Javier Paredes', 'AJPAREDES', '123',2,2);
+Matin Ezequiel Contreras:
+username: MECONTRERAS / PASS: 123
+
+Christian Franco Di Grazia
+username: CDIGRAZIA / PASS: 123
+
+Anibal Javier Paredes
+username: AJPAREDES / PASS: 123
 
 --------------------------------
 --PARA INSERT configuracion

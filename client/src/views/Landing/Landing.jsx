@@ -11,6 +11,9 @@ import { outUser, setUser } from "../../redux/userSlice";
 import logo from '../../assets/JUNTA-04-xs.png';
 
 const Landing = () => {
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     
     const configSG = useSelector((state)=>state.config);
 
@@ -51,26 +54,32 @@ const Landing = () => {
         const datavalida = await conexion(form);
         if(datavalida.length!=0){
             dispatch(setUser(datavalida));
+            console.log('que tiene datavalida: ', datavalida);
+            if(datavalida[0].nivel===1){
+                const datosNivel=[{id_nivel:1, descripcion:'INICIAL'}];
+                dispatch(setNivel(datosNivel));
+            }else if(datavalida[0].nivel===2){
+                const datosNivel=[{id_nivel:2, descripcion:'PRIMARIO'}];
+                dispatch(setNivel(datosNivel));
+            }
             navigate('/home');
         }else{
             dispatch(outUser());
         }
     };
 
-    const submitHandlerInvitado = async()=>{
+  
+
+    const submitNivelInicial = async() =>{
         let formInvitado = {
-            username:'',
-            password:''
+            username:'invitadoIni',
+            password:'invitadoIni'
         };
 
-        if(configSG.nivel.id_nivel===1){
-            formInvitado.username='invitadoIni';
-            formInvitado.password='invitadoIni';
-        }else if(configSG.nivel.id_nivel===2){
-            formInvitado.username='invitadoPri';
-            formInvitado.password='invitadoPri';
-        }
-        
+        console.log('Presiono Docente Inicial');
+        const datosNivel=[{id_nivel:1, descripcion:'INICIAL'}];
+        dispatch(setNivel(datosNivel));
+
         const datavalida = await conexion(formInvitado);
         if(datavalida.length!=0){
             dispatch(setUser(datavalida));
@@ -78,25 +87,25 @@ const Landing = () => {
         }else{
             dispatch(outUser());
         }
-    }
-
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-
-    const submitNivelInicial = () =>{
-        console.log('Presiono Nivel Inicial');
-        const datosNivel=[{id_nivel:1, descripcion:'INICIAL'}];
-        dispatch(setNivel(datosNivel));
-        //navigate('/home');
-        closeModalNivel();
     };
 
-    const submitNivelPrimario = ()=>{
+    const submitNivelPrimario = async()=>{
+        let formInvitado = {
+            username:'invitadoPri',
+            password:'invitadoPri'
+        };
+
         console.log('Presiono Nivel Primario');
         const datosNivel=[{id_nivel:2, descripcion:'PRIMARIO'}];
         dispatch(setNivel(datosNivel));
-        //navigate('/home');
-        closeModalNivel();
+
+        const datavalida = await conexion(formInvitado);
+        if(datavalida.length!=0){
+            dispatch(setUser(datavalida));
+            navigate('/home');
+        }else{
+            dispatch(outUser());
+        }
     };
 
     const getConfiguracion = async() =>{
@@ -112,7 +121,7 @@ const Landing = () => {
     useEffect(()=>{ 
         //Se carga la tabla de configuracion
         getConfiguracion();
-        openModalNivel();
+        //openModalNivel();
     },[])
 
     return(
@@ -123,7 +132,7 @@ const Landing = () => {
                 </div>
                 <div className="h-28  flex flex-col pl-4 justify-center items-center">
                     <label className="desktop:text-[38px] movil:text-xl font-bold text-white" translate='no'>Sistema Entrega de Cargos</label>
-                    <label className="desktop:text-[25px] movil:text-lg text-white font-semibold mt-4" translate='no'>Nivel {configSG.nivel?.descripcion}</label>
+                    {/* <label className="desktop:text-[25px] movil:text-lg text-white font-semibold mt-4" translate='no'>Nivel {configSG.nivel?.descripcion}</label> */}
                 </div>
             </div>
 
@@ -165,12 +174,20 @@ const Landing = () => {
                     translate='no'
                     id="botonEnter"
                 >Acceder</button>
-                <button
-                    className="w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded"
-                    onClick={submitHandlerInvitado}
-                    translate='no'
-                    id="botonEnter"
-                >Invitado</button>
+                <div className="flex desktop:flex-row movil:flex-col">
+                    <button
+                        className="w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2"
+                        onClick={submitNivelInicial}
+                        translate='no'
+                        id="botonEnter"
+                    >Docente Inicial</button>
+                    <button
+                        className="w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2"
+                        onClick={submitNivelPrimario}
+                        translate='no'
+                        id="botonEnter"
+                    >Docente Primaria</button>
+                </div>
             </div>
 
             {/* MODAL INICIAL SELECCION NIVEL */}
