@@ -4,6 +4,7 @@ const getVacanteTitAsignadaInscripto = require('./getVacanteTitAsignadaInscripto
 const editVacanteTit = require('./editVacanteTit.js');
 const delVacanteTit = require('./delVacanteTit.js');
 const createVacanteTit = require('./createVacanteTit.js');
+const getAllVacantesFiltroAsignacionTit = require('./geAllVacantesFiltroAsignacionTit.js');
 
 module.exports = {
     getAllVacantesTit,
@@ -11,5 +12,6 @@ module.exports = {
     getVacanteTitAsignadaInscripto,
     editVacanteTit,
     delVacanteTit,
-    createVacanteTit
+    createVacanteTit,
+    getAllVacantesFiltroAsignacionTit
 };

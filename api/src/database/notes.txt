@@ -48,7 +48,11 @@ INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('usuario
 INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('usuario inicial', 'userini', '123',2,1);
 INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('usuario primario', 'userpri', '123',2,2);
 INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('invitado inicial', 'invitadoIni', 'invitadoIni',3,1);
-INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('invitado primaria', 'invitadoPri', 'invitadoPri',3,2);
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('invitado primaria', 
+'invitadoPri', 'invitadoPri',3,2);
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Martin Ezequiel Contreras', 'MECONTRERAS', '123',2,1);
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Christian Franco Di Grazia', 'CDIGRAZIA', '123',2,1);
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Anibal Javier Paredes', 'AJPAREDES', '123',2,2);
 
 --------------------------------
 --PARA INSERT configuracion

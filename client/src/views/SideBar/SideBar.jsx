@@ -43,6 +43,12 @@ const SideBar = () => {
         dispatch(setPage('Asignaciones'))
     };
 
+    const submitListados = () =>{
+        //
+        console.log('Presiona en Listados');
+        dispatch(setPage('Listados'))
+    };
+
     const submitInscriptosTit = () =>{
         //
         console.log('Presiona en Inscriptos Titularizacion');
@@ -55,10 +61,10 @@ const SideBar = () => {
         dispatch(setPage('VacantesTit'))
     };
 
-    const submitListados = () =>{
+    const submitListadosTit = () =>{
         //
-        console.log('Presiona en Listados');
-        dispatch(setPage('Listados'))
+        console.log('Presiona en Listados Titularizacion');
+        dispatch(setPage('ListadosTit'))
     };
 
     const submitInscriptosPyR = () =>{
@@ -242,6 +248,20 @@ const SideBar = () => {
                         <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
                         <label className="font-light">Vacantes</label>
                     </div>
+                    {(userSG.permiso!=3) &&
+                        <div 
+                            className={` rounded p-[4px] flex flex-row justify-start items-center
+                                ${(pageSG==='ListadosTit')
+                                ?'bg-[#C9D991]'
+                                :'hover:bg-[#C9D991]'
+                            }
+                                `}
+                            onClick={()=>submitListadosTit()}
+                        >
+                            <CgList className="text-xl font-bold mr-2"/>
+                            <label className="font-light">Listados</label>
+                        </div>
+                    }
                 </div>
 
 

@@ -6,7 +6,8 @@ const {
     getVacanteTitAsignadaInscripto,
     editVacanteTit,
     delVacanteTit,
-    createVacanteTit
+    createVacanteTit,
+    getAllVacantesFiltroAsignacionTit
 }= require('../controllers/vacantesTit.controllers');
 
 const router = Router();
@@ -28,5 +29,8 @@ router.put('/delvacantetit/:idVacanteTit', delVacanteTit);
 
 //crea una nueva vacante
 router.post('/newvacantetit',createVacanteTit);
+
+//trae datos de vantes e inscriptos segun filtro de Asignacion
+router.post('/vacantesasignatit', getAllVacantesFiltroAsignacionTit);
 
 module.exports = router;
