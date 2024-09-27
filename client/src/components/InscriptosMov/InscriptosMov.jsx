@@ -29,6 +29,7 @@ import Paginador from "../Paginador/Paginador";
 import PaginaDesignacion from "../PaginaDesignacion/PaginaDesignacion";
 import { outUser } from "../../redux/userSlice";
 import { IoMdPrint } from "react-icons/io";
+import { fetchAllEspecialidades } from "../../utils/fetchAllEspecialidades";
 
 
 
@@ -132,6 +133,22 @@ const InscriptosMov = ()=>{
 
     const componentRef = useRef(null);
 
+    //E.L. donde se almacena el listado de especialidades
+    const[listadoEspecialidades, setListadoEspecialidades]=useState([]);
+
+    //E.L. donde guarda la especialidad seleccionada
+    const[filtroEspecialidadVac, setFiltroEspecialidadVac]=useState("");
+
+    //E.L. guarda la pagina actual de listado Vacantes
+    const[currentPageVac, setCurrentPageVac]=useState(1);
+    //E.L. para guardar datos de paginacion de listado Vacantes
+    const[paginacionVac, setPaginacionVac]=useState('');
+
+    //E.L. guarda el campo Order
+    const[orderBy, setOrderBy]=useState('');
+    //E.L. guarda el tipo de orden
+    const[typeOrder, setTypeOrder]=useState('');
+
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
     //-------------------------------------
@@ -194,20 +211,25 @@ const InscriptosMov = ()=>{
         setIdListVacMov(idFilterListado);
 
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE VACANTES
-        await getVacantesDisponiblesMov(idFilterListado)
+        await getVacantesDisponiblesMov(idFilterListado,currentPageVac,inputSearchVac,filtroEspecialidadVac,orderBy,typeOrder)
     };
 
     //Este Proc carga el listado de VACANTES Disponibles al E.L
-    const getVacantesDisponiblesMov = async(id_listado) =>{
+    const getVacantesDisponiblesMov = async(id_listado,page,valorBusqueda,filtroEspecialidad,orderBy, typeOrder) =>{
         let data;
+        const limit=10;
         //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
-            data = await fetchVacantesDispMov(id_listado);
+            data = await fetchVacantesDispMov(id_listado,limit,page,valorBusqueda,filtroEspecialidad,orderBy, typeOrder);
             console.log('que trae data de fetchVacantesDispMov: ', data);
 
-            if(data?.length!=0){
-                setListadoVacantesDispMov(data); 
-                setFilterListadoVacantesDispMov(data);
+            if(data.result?.length!=0){
+                setListadoVacantesDispMov(data.result); 
+                //setFilterListadoVacantesDispMov(data);
+                setPaginacionVac(data.paginacion);
+            }else{
+                setListadoVacantesDispMov([]);
+                setPaginacionVac(data.paginacion);
             };
         };
     };  
@@ -424,7 +446,8 @@ const InscriptosMov = ()=>{
     //Presiono boton Cancelar (X) dentro de input busqueda
     const handleCancelSearchVac = async()=>{
         setInputSearchVac('')
-        setFilterListadoVacantesDispMov(listadoVacantesDispMov);
+        //setFilterListadoVacantesDispMov(listadoVacantesDispMov);
+        //setFiltroEspecialidadVac("");
         //setDocRecFilter(docrecSG);
         //aplicoFiltrosListado(listadoInscriptosMov);
     };
@@ -434,60 +457,70 @@ const InscriptosMov = ()=>{
     const submitSearchVac = async()=>{
         //console.log('presiono buscar con este input: ', inputSearch);
         let searchVac;
-        searchVac = await listadoVacantesDispMov.filter(vacante=>vacante.establecimiento.toLowerCase().includes(inputSearchVac.toLowerCase()) || vacante.cargo.toLowerCase().includes(inputSearchVac.toLowerCase()) || vacante.modalidad.toLowerCase().includes(inputSearchVac.toLowerCase()) || vacante.turno.toLowerCase().includes(inputSearchVac) || vacante.region.toLowerCase().includes(inputSearchVac) || vacante.localidad.toLowerCase().includes(inputSearchVac));
+        searchVac = await filterListadoVacantesDispMov.filter(vacante=>vacante.establecimiento.toLowerCase().includes(inputSearchVac.toLowerCase()) || vacante.cargo.toLowerCase().includes(inputSearchVac.toLowerCase()) || vacante.modalidad.toLowerCase().includes(inputSearchVac.toLowerCase()) || vacante.turno.toLowerCase().includes(inputSearchVac) || vacante.region.toLowerCase().includes(inputSearchVac) || vacante.localidad.toLowerCase().includes(inputSearchVac));
         setFilterListadoVacantesDispMov(searchVac);
     };    
     //-------------------------------------------------------------------    
 
-    //Proc: Al presionar sobre uno de los encabezados en el icono Ordenar
+    //-------------- PROCESOS DE ORDENAMIENTO --------------------
     const submitOrderVac = (campo_order)=>{
         //seteo vacio campo busqueda
         setInputSearchVac('')
         setCampoOrderVac(campo_order);
         if(campo_order==='establecimiento'){
             if(order){
-                //ordenar Descencente
-                const sortVac = [...filterListadoVacantesDispMov].sort((a,b)=>{
-                    return a.establecimiento>b.establecimiento ?1 :-1;
-                });
-                setFilterListadoVacantesDispMov(sortVac);
+                setOrderBy('establecimiento');
+                setTypeOrder('DESC');
+                setCurrentPageVac(1);
             }else{
-                //Ordernar Ascendente
-                const sortVac = [...filterListadoVacantesDispMov].sort((a,b)=>{
-                    return a.establecimiento<b.establecimiento ?1 :-1;
-                });
-                setFilterListadoVacantesDispMov(sortVac);
+
+                setOrderBy('establecimiento');
+                setTypeOrder('ASC');
+                setCurrentPageVac(1);
             }
         }else if(campo_order==='localidad'){
             if(order){
-                //ordenar Descencente
-                const sortVac = [...filterListadoVacantesDispMov].sort((a,b)=>{
-                    return a.localidad<b.localidad ?1 :-1;
-                });
-                setFilterListadoVacantesDispMov(sortVac);
+
+                setOrderBy('localidad');
+                setTypeOrder('DESC');
+                setCurrentPageVac(1);
             }else{
-                //Ordernar Ascendente
-                const sortVac = [...filterListadoVacantesDispMov].sort((a,b)=>{
-                    return a.localidad>b.localidad ?1 :-1;
-                });
-                setFilterListadoVacantesDispMov(sortVac);
+
+                setOrderBy('localidad');
+                setTypeOrder('ASC');
+                setCurrentPageVac(1);
             }
+
         }else if(campo_order==='zona'){
             if(order){
                 //ordenar Descencente
-                const sortVac = [...filterListadoVacantesDispMov].sort((a,b)=>{
-                    return a.zona>b.zona ?1 :-1;
-                });
-                setFilterListadoVacantesDispMov(sortVac);
+                // const sortVac = [...filterListadoVacantesDispMov].sort((a,b)=>{
+                //     return a.zona>b.zona ?1 :-1;
+                // });
+                // setFilterListadoVacantesDispMov(sortVac);
             }else{
                 //Ordernar Ascendente
-                const sortVac = [...filterListadoVacantesDispMov].sort((a,b)=>{
-                    return a.zona<b.zona ?1 :-1;
-                });
-                setFilterListadoVacantesDispMov(sortVac);
+                // const sortVac = [...filterListadoVacantesDispMov].sort((a,b)=>{
+                //     return a.zona<b.zona ?1 :-1;
+                // });
+                // setFilterListadoVacantesDispMov(sortVac);
             }
         }
     };
+
+    //------------ PROCESO DE FILTRO POR ESPECIALIDAD -----------------
+    const filterEspecialidad =async(idEspecialidad)=>{
+        setInputSearchVac("")
+        console.log('que ingresa a idEspecialidad: ', idEspecialidad);
+        console.log('que tiene listado a filtrar: ', filterListadoVacantesDispMov);
+        if(idEspecialidad===""){
+            setFilterListadoVacantesDispMov(listadoVacantesDispMov);
+        }else{
+            const filterListadoVacantes = await listadoVacantesDispMov.filter(vac=>vac.id_especialidad==idEspecialidad);
+            console.log('como filtra listado: ', filterListadoVacantes);
+            setFilterListadoVacantesDispMov(filterListadoVacantes);
+        }
+    }
 
     //Proc: Al presionar sobre icono Ver Vacantes Disponibles
     const submitVerVacantes = (datos) =>{
@@ -717,9 +750,54 @@ const InscriptosMov = ()=>{
         buscoIdlistadoInscrip(nivel);
         //LLAMO AL PROCEDIMIENTO buscoIDListadoVacantes Y PASO EL NIVEL CARGADO EN STORE GLOBAL
         buscoIDListadoVacantes(nivel);
+        //Cargo las especialidades
+        cargaEspecidalidades();
+    };
+
+    //Este Proc carga el listado de especialidades en E.L.
+    const cargaEspecidalidades=async()=>{
+        const data = await fetchAllEspecialidades();
+        console.log('que tiene especialidades: ', data);
+        if(data?.length!=0){
+            setListadoEspecialidades(data);
+        }
+    };
+    
+
+    const handleCancelFiltroEspecialidadVac =()=>{
+        setFiltroEspecialidadVac("");
+    };
+
+    const handleSelectFiltroEspecialidad=(event)=>{
+        const{value} = event.target;
+        console.log('que tiene filtroEspecialidad: ', value);
+        setFiltroEspecialidadVac(value);
+        
+        setCurrentPageVac(1);
+        //al seleccionar una especialidad, regrso a la primer pagina, por si no hay tantos inscriptos
+        
+    };
+
+    const submitCloseModalVac = () =>{
+        setFiltroEspecialidadVac("");
+        setCurrentPageVac(1);
+        setCampoOrderVac('');
+        setOrderBy('');
+        setTypeOrder('');
+        closeModalVac();
+    };
+
+    const handlePageChangeVac = (nuevaPagina)=>{
+        if(nuevaPagina>0 && nuevaPagina<=paginacionVac?.totalPages){
+            setCurrentPageVac(nuevaPagina);
+        };
     };
 
 
+    useEffect(()=>{
+        //Al cambiar pagina de Vacantes disponibles
+        getVacantesDisponiblesMov(idListVacMov,currentPageVac,inputSearchVac,filtroEspecialidadVac,orderBy,typeOrder)
+    },[currentPageVac])
 
     useEffect(()=>{
         //recargo listado de inscriptos con la nueva pagina
@@ -728,13 +806,17 @@ const InscriptosMov = ()=>{
 
     //A medida que se escribe en el Input de BUsqueda de Vacantes Disponibles se ejecuta
     //la busqueda filtrando el listado de vacantes
-    useEffect(()=>{
-        busquedaDinamica();
-    },[inputSearchVac])
-
     // useEffect(()=>{
-    //     console.log('que tiene campo inputSearch: ', inputSearch);
-    // },[inputSearch])
+    //     busquedaDinamica();
+    // },[inputSearchVac])
+
+    useEffect(()=>{
+        console.log('que especialidad de Vacante selecciono: ', filtroEspecialidadVac);
+        //filterEspecialidad(filtroEspecialidadVac);
+        console.log('APLICO FILTRO LISTADO VACANTES')
+        getVacantesDisponiblesMov(idListVacMov,currentPageVac,inputSearchVac,filtroEspecialidadVac,orderBy,typeOrder)
+    },[filtroEspecialidadVac,inputSearchVac,orderBy,typeOrder])
+
 
     //Al setear en E.L los datos del inscripto seleccionado
     useEffect(()=>{
@@ -746,15 +828,6 @@ const InscriptosMov = ()=>{
         console.log('como queda el listado filtrado filterListadoInscriptosMov: ', filterListadoInscriptosMov);
     },[filterListadoInscriptosMov])
 
-    //Al setear algun FILTRO o si listadoInscripto se recarga por modificacion de datos
-    // useEffect(()=>{
-    //     console.log('APLICO FILTRO')
-    //     console.log('que tiene estado local tipoInscripto: ', tipoInscripto);
-    //     console.log('que tiene estado local estadoInscripto: ', estadoInscripto);
-
-    //     //aplicoFiltrosListado(listadoInscriptosMov);
-
-    // },[listadoInscriptosMov,tipoInscripto, estadoInscripto]);
 
     //APLICO FILTROS de tipoInscripto (Activos / Disponibilidad), estadoInscripto(todos/sinasignar/asignados) y busquedadinamica(inputSearch)
     useEffect(()=>{
@@ -995,27 +1068,59 @@ const InscriptosMov = ()=>{
                 <div className="h-[60vh] w-[90vw] mt-2 ">
                     {/* PARTE SUPERIOR - FILTROS Y BUSQUEDA */}
                     <div className="border-[1px] border-zinc-400 rounded-t-lg h-[9vh] flex flex-col bg-[#dde8b7]">
-                        {/* CUADRO BUSQUEDA */}
-                        <div className="flex justify-end my-[4px]">
-                            <div className="border-[1px] border-zinc-400 w-[20vw] rounded flex flex-row items-center justify-between mr-2 bg-white">
-                                <input 
-                                    className="w-[15vw] focus:outline-none rounded pl-[2px]"
-                                    placeholder="Buscar..."
-                                    type="text"
-                                    value={inputSearchVac}
-                                    onChange={handleInputSearchVacChange}
-                                />
-                                <div className="flex flex-row items-center ">
-                                    {(inputSearchVac!='') &&
-                                        <FaTimes
-                                            className="text-slate-400 cursor-pointer text-lg"
-                                            onClick={()=>handleCancelSearchVac()}
-                                        />
+                        {/* FILTROS */}
+                        <div className="flex flex-row justify-between">
+                            {/* FILTRO ESPECIALIDAD */}
+                            <div className="flex flex-row my-[4px]">
+                                <label className="mx-4 ">Especialidad: </label>
+                                <div className="border-[1px] h-[26px] rounded border-zinc-400 bg-neutral-50">
+                                    <select
+                                        className="w-[40vw] h-[24px] border-[1px] rounded focus:outline-none focus:ring-0 focus:border-none"
+                                        name="filtroEspecialidad"
+                                        onChange={handleSelectFiltroEspecialidad}
+                                        value={filtroEspecialidadVac}
+                                    >
+                                        <option value='' selected disabled>Seleccione...</option>
+                                        {
+                                            listadoEspecialidades?.map((especialidad,index)=>(
+                                                <option 
+                                                    key={index} 
+                                                    value={especialidad.id_especialidad}
+                                                    className="text-base"
+                                                >{especialidad.abreviatura} - {especialidad.descripcion}</option>
+                                            ))
+                                        }
+                                    </select>
+                                    {(filtroEspecialidadVac!="") &&
+                                        <label 
+                                            className="font-bold mx-2 cursor-pointer"
+                                            onClick={handleCancelFiltroEspecialidadVac}
+                                        >X</label>
                                     }
-                                    <FaSearch 
-                                        className="text-zinc-500 cursor-pointer mr-2"
-                                        onClick={()=>submitSearchVac()}
+                                </div>
+                            </div>
+                            {/* CUADRO BUSQUEDA */}
+                            <div className="flex justify-end my-[4px]">
+                                <div className="border-[1px] border-zinc-400 w-[20vw] rounded flex flex-row items-center justify-between mr-2 bg-white">
+                                    <input 
+                                        className="w-[15vw] focus:outline-none rounded pl-[2px]"
+                                        placeholder="Buscar..."
+                                        type="text"
+                                        value={inputSearchVac}
+                                        onChange={handleInputSearchVacChange}
                                     />
+                                    <div className="flex flex-row items-center ">
+                                        {(inputSearchVac!='') &&
+                                            <FaTimes
+                                                className="text-slate-400 cursor-pointer text-lg"
+                                                onClick={()=>handleCancelSearchVac()}
+                                            />
+                                        }
+                                        {/* <FaSearch 
+                                            className="text-zinc-500 cursor-pointer mr-2"
+                                            onClick={()=>submitSearchVac()}
+                                        /> */}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1091,7 +1196,10 @@ const InscriptosMov = ()=>{
                                     />
                                 }
                             </div>
-                            <div 
+                            <div className="flex flex-row items-center justify-center w-[8vw] ">
+                                <label className="font-semibold">Zona</label>
+                            </div>
+                            {/* <div 
                                 className={`flex flex-row items-center justify-center w-[8vw] border-r-    [1px] border-zinc-200 hover:text-sky-500 cursor-pointer
                                     ${(campoOrderVac==='zona')
                                         ?`text-sky-500`
@@ -1115,7 +1223,7 @@ const InscriptosMov = ()=>{
                                         className="ml-2 cursor-pointer"
                                     />
                                 }
-                            </div>
+                            </div> */}
                             <div className="flex flex-row items-center justify-center w-[8vw] ">
                                 <label className="font-semibold">Acciones</label>
                             </div>
@@ -1138,7 +1246,7 @@ const InscriptosMov = ()=>{
                             </thead> */}
                             <tbody>
                                 {
-                                    filterListadoVacantesDispMov?.map((vacante, index)=>{
+                                    listadoVacantesDispMov?.map((vacante, index)=>{
                                         return(
                                             <tr
                                                 className={`text-lg font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 `}
@@ -1175,10 +1283,20 @@ const InscriptosMov = ()=>{
 
                     </div>
                 </div>
+
+                <div className="mt-4">
+                    <Paginador
+                        currentpage={paginacionVac?.page}
+                        totalpage={paginacionVac?.totalPages}
+                        onPageChange={handlePageChangeVac}
+                        totalItems={paginacionVac?.totalItems}
+                    />
+                </div>
+
                 <div>
                     <button
-                        className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
-                        onClick={closeModalVac}
+                        className="border-2 border-[#7C8EA6] mt-2 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                        onClick={submitCloseModalVac}
                         translate='no'
                     >CERRAR</button>
                 </div>

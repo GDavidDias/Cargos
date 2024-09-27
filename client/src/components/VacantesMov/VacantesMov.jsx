@@ -127,10 +127,20 @@ const VacantesMov = () =>{
 
     const handleChangeFormNuevaVacante =(event)=>{
         const{name, value} = event.target;
-        setFormNuevaVacante({
-            ...formNuevaVacante,
-            [name]:value.toUpperCase()
-        });
+
+        if(name==='id_especialidad'){
+            const filterEspecialidad = listadoEspecialidades;
+            setFormNuevaVacante({
+                ...formNuevaVacante,
+                [name]:value.toUpperCase(),
+                cargo: filterEspecialidad.filter((especialidad)=>especialidad.id_especialidad==value)[0].descripcion
+            });
+        }else{
+            setFormNuevaVacante({
+                ...formNuevaVacante,
+                [name]:value.toUpperCase()
+            });
+        }
     };
 
 
@@ -715,6 +725,7 @@ const VacantesMov = () =>{
                     handleChangeFormVacante={handleChangeFormNuevaVacante}
                     valida={validaFormNuevaVacante}
                     submitGuardarFormNuevaVacante={submitGuardarFormNuevaVacante}
+                    listadoEspecialidades={listadoEspecialidades}
                 />
             </ModalEdit>
 

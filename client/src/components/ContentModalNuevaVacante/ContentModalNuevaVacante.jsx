@@ -1,4 +1,4 @@
-const ContentModalNuevaVacante = ({formNuevaVacante,closeModalNuevaVacante,handleChangeFormVacante,valida,submitGuardarFormNuevaVacante})=>{
+const ContentModalNuevaVacante = ({formNuevaVacante,closeModalNuevaVacante,handleChangeFormVacante,valida,submitGuardarFormNuevaVacante,listadoEspecialidades})=>{
     //console.log('que tiene Valida: ', valida);
     console.log('ingresa a ContentModalNuevaVacante');
     return(
@@ -43,6 +43,26 @@ const ContentModalNuevaVacante = ({formNuevaVacante,closeModalNuevaVacante,handl
 
 
                     </div>
+
+                    <div className="flex flex-row ml-2 mt-2">
+                        <div>
+                            <label className="mr-2">Especialidad</label>
+                            <select
+                                className=" border-[1px] rounded border-gray-500 w-[30vw]"
+                                name="id_especialidad"
+                                onChange={handleChangeFormVacante}
+                                value={formNuevaVacante?.id_especialidad}
+                            >
+                                <option value='' selected disabled>Seleccione...</option>
+                                {
+                                    listadoEspecialidades?.map((especialidad,index)=>(
+                                        <option key={index} value={especialidad.id_especialidad}>{especialidad.abreviatura} - {especialidad.descripcion}</option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+                    </div>
+
                     <div className="flex flex-row ml-2 mt-2">
                         <div className="flex flex-col mr-2">
                             <label className="text-sm">Cargo</label>
