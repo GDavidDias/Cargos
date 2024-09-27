@@ -3,12 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchConfig } from "../../utils/fetchConfig";
 import { setConfig, setNivel } from "../../redux/configSlice";
 import { useNavigate } from "react-router-dom";
-import ModalEdit from "../../components/ModalEdit/ModalEdit";
+import ModalUser from "../../components/ModalUser/ModalUser";
+import Modal from "../../components/Modal/Modal";
 import { useModal } from "../../hooks/useModal";
 import { IoMdEyeOff } from "react-icons/io";
 import { conexion } from "../../utils/conexion";
 import { outUser, setUser } from "../../redux/userSlice";
 import logo from '../../assets/JUNTA-04-xs.png';
+import { changepass } from "../../utils/changepass";
+
 
 const Landing = () => {
 
@@ -18,7 +21,14 @@ const Landing = () => {
     const configSG = useSelector((state)=>state.config);
 
     //E.L de Ventanas Modales
-    const[isOpenModalNivel, openModalNivel, closeModalNivel]=useModal(false);
+    const[isOpenModal,openModal,closeModal]=useModal(false);
+    const[mensajeModalInfo, setMensajeModalInfo] = useState("");
+
+    const[isOpenModalChangePass,openModalChangePass,closeModalChangePass]=useModal(false);
+    const[mensajeErrorModalChangeInfo, setMensajeErrorModalChangeInfo] = useState("");
+    const[errorValida, setErrorValida] = useState(false);
+
+    const[mensajeLogin, setMensajeLogin]=useState("");
 
     const[ver,setVer]=useState(false);
 
@@ -26,6 +36,20 @@ const Landing = () => {
         username:'',
         password:''
     });
+
+    const[formChangePass, setFormChangePass]=useState({
+        username:'',
+        password:'',
+        newpassword:''
+    });
+
+    const handleChangePass = (event) =>{
+        const{name, value} = event.target;
+        setFormChangePass({
+            ...formChangePass,
+            [name]:value.toUpperCase()
+        })
+    };
 
     const handleChange = (event)=>{
         const{name,value} = event.target;
@@ -50,21 +74,33 @@ const Landing = () => {
     };
 
     const submitHandler = async()=>{
-        
-        const datavalida = await conexion(form);
-        if(datavalida.length!=0){
-            dispatch(setUser(datavalida));
-            console.log('que tiene datavalida: ', datavalida);
-            if(datavalida[0].nivel===1){
-                const datosNivel=[{id_nivel:1, descripcion:'INICIAL'}];
-                dispatch(setNivel(datosNivel));
-            }else if(datavalida[0].nivel===2){
-                const datosNivel=[{id_nivel:2, descripcion:'PRIMARIO'}];
-                dispatch(setNivel(datosNivel));
-            }
-            navigate('/home');
+        console.log('que tiene form: ', form);
+        if(form.username==="" || form.password===""){
+            setMensajeLogin("Ingrese Usuario y Contraseña");
         }else{
-            dispatch(outUser());
+
+            const datavalida = await conexion(form);
+            console.log('que tiene datavalida: ', datavalida);
+            if(datavalida.length!=0){
+                dispatch(setUser(datavalida));
+                if(datavalida[0].nivel===1){
+                    //USUARIO DE NIVEL INICIAL
+                    const datosNivel=[{id_nivel:1, descripcion:'INICIAL'}];
+                    dispatch(setNivel(datosNivel));
+                }else if(datavalida[0].nivel===2){
+                    //USUARIO DE NIVEL PRIMARIO
+                    const datosNivel=[{id_nivel:2, descripcion:'PRIMARIO'}];
+                    dispatch(setNivel(datosNivel));
+                }else if(datavalida[0].nivel===3){
+                    //SI ES ADMINISTRADOR INGRESA A PRIMARIO Y PODRA CAMBIAR DE NIVEL DENTRO
+                    const datosNivel=[{id_nivel:2, descripcion:'PRIMARIO'}];
+                    dispatch(setNivel(datosNivel));
+                }
+                navigate('/home');
+            }else{
+                setMensajeLogin("Usuario o Contraña Invalidos")
+                dispatch(outUser());
+            }
         }
     };
 
@@ -114,6 +150,64 @@ const Landing = () => {
         dispatch(setConfig(data));
     };
 
+    const ModalChangePass = ()=>{
+        setForm({
+            username:'',
+            password:''
+        })
+        openModalChangePass();
+        setMensajeErrorModalChangeInfo('Con usuario y contraseña actual');
+        setErrorValida(false);
+    };
+
+    //PRESIONO BOTON ACEPTAR DE MODALUSER CAMBIO CONTRASEÑA
+    const submitAceptarChangePass =async()=>{
+        if(formChangePass.newpassword===''){
+            setMensajeErrorModalChangeInfo('Ingrese una Nueva Contraseña');
+            setErrorValida(true);
+        }else{
+            const datavalida = await conexion(formChangePass);
+            console.log('que trae datavalida: ', datavalida);
+            if(datavalida.length!=0){
+                //dispatch(setUser(datavalida));
+                console.log('que tiene formChangePass: ', formChangePass);
+                //SI VALIDA USUARIO
+                const result = await changepass(formChangePass);
+                if(result.length!=0){
+                    //llamo a modal mensaje cambio correcto, ingrese a sistema.
+                    setMensajeModalInfo('Cambio de contraseña exitoso, ingrese al sistema');
+                    openModal();
+                }
+                
+            }else{
+                setMensajeErrorModalChangeInfo('Usuario o Contraseña Invalido');
+                setErrorValida(true);
+                dispatch(outUser())
+            }
+        }
+    };
+
+    const submitCloseModal = ()=>{
+        closeModal();
+        closeModalChangePass();
+        setFormChangePass({
+            username:'',
+            password:'',
+            newpassword:''
+        })
+    };
+
+    const CancelChangePass = ()=>{
+        setFormChangePass({
+            username:'',
+            password:'',
+            newpassword:''      
+        })
+        closeModalChangePass();
+    };
+
+
+
     useEffect(()=>{
         console.log('que tiene configSG: ', configSG);
     },[configSG])
@@ -121,6 +215,7 @@ const Landing = () => {
     useEffect(()=>{ 
         //Se carga la tabla de configuracion
         getConfiguracion();
+        setMensajeLogin("Ingrese Usuario y Contraseña")
         //openModalNivel();
     },[])
 
@@ -138,8 +233,9 @@ const Landing = () => {
 
             <div className="desktop:h-[50vh] flex flex-col justify-center items-center  bg-[#FFFEFC]  border-2 border-[#729DA6] desktop:w-[50vw] movil:w-full movil:h-[50vh] rounded-lg mt-10 shadow-lg  p-4">
             <label className="text-[#729DA6] font-medium text-[20px] pt-4 " translate='no'>Ingresar al Sistema</label>
-            <div className="flex flex-row my-6">
-                <div className="flex flex-col text-right movil:w-[28vw] desktop:w-[15vw]">
+            <label className="text-sm text-red-500 italic">{mensajeLogin}</label>
+            <div className="flex flex-row mt-4 mb-4">
+                <div className="flex flex-col text-right movil:w-[28vw] desktop:w-[16vw]">
                     <label className="m-2 " translate='no'>Nombre de usuario</label>
                     <label className="m-2 " translate='no'>Contraseña</label>
                 </div>
@@ -164,48 +260,119 @@ const Landing = () => {
                     </div>
                 </div>
                 </div>
-                {/* <label
+                <label
                     className="text-sky-500 hover:text-sky-800 hover:cursor-pointer"
-                    //onClick={()=>ModalChangePass()}
-                >Cambiar Contraseña</label> */}
+                    onClick={()=>ModalChangePass()}
+                >Cambiar Contraseña</label>
                 <button
                     className="w-40 h-8 bg-[#729DA6] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#6A88F7] shadow-md rounded"
                     onClick={submitHandler}
                     translate='no'
                     id="botonEnter"
                 >Acceder</button>
-                <div className="flex desktop:flex-row movil:flex-col">
-                    <button
-                        className="w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2"
-                        onClick={submitNivelInicial}
-                        translate='no'
-                        id="botonEnter"
-                    >Docente Inicial</button>
-                    <button
-                        className="w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2"
-                        onClick={submitNivelPrimario}
-                        translate='no'
-                        id="botonEnter"
-                    >Docente Primaria</button>
+                <div className="flex desktop:flex-row movil:flex-col mt-4">
+                    <div>
+                        <span className="relative flex h-3 w-3 mb-[-2vh] ">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+                        </span>
+                        <button
+                            className=" w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2 "
+                            onClick={submitNivelInicial}
+                            translate='no'
+                            id="botonEnter"
+                        >Docente Inicial</button>
+                    </div>
+                    <div>
+                        <span className="relative flex h-3 w-3 mb-[-2vh] ">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+                        </span>
+                        <button
+                            className="w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2"
+                            onClick={submitNivelPrimario}
+                            translate='no'
+                            id="botonEnter"
+                        >Docente Primaria</button>
+                    </div>
                 </div>
             </div>
 
-            {/* MODAL INICIAL SELECCION NIVEL */}
-            <ModalEdit isOpen={isOpenModalNivel} closeModal={closeModalNivel}>
-                <div className="mt-10 w-72">
-                    <h1 className="text-xl text-center font-bold">Seleccione el Nivel</h1>
-                    <div className="flex movil:flex-col movil:items-center desktop:flex-row desktop:justify-center">
+            {/* MODAL PARA CAMBIO CONTRASEÑA */}
+            <ModalUser isOpen={isOpenModalChangePass} closeModal={closeModalChangePass}>
+                <div className="mt-4 mb-4 w-72 text-center">
+                    <h1 className="text-xl text-center font-bold">Cambiar Contraseña</h1>
+                    <label 
+                        className={`italic
+                                ${(errorValida)
+                                    ?`text-red-500`
+                                    :`text-black`
+                                }
+                            `}
+                    >{mensajeErrorModalChangeInfo}</label>
+                    <div className="flex flex-col items-center ">
+                        <div className="mt-4 flex flex-col items-start">
+                            <label>Usuario: </label>
+                            <input
+                                name="username"
+                                type="text"
+                                className="border-[1px] border-gray-400 h-[10mm] w-[62mm] pl-2 focus:outline-none"
+                                value={formChangePass.username}
+                                onChange={handleChangePass}
+                            ></input>
+                        </div>
+                        <div className="mt-4 flex flex-col items-start">
+                            <label>Contraseña Actual:</label>
+                            <div className="flex flex-row items-center border-[1px] border-gray-400 h-[11mm] w-[62mm] ">
+                                <input
+                                    name="password"
+                                    type={ver ?'text' :'password'}
+                                    className="h-[10mm] w-[52mm] ml-2 focus:outline-none"
+                                    value={formChangePass.password}
+                                    onChange={handleChangePass}
+                                ></input>
+                                <IoMdEyeOff onClick={()=>handleVer()} className="text-xl"/>
+                            </div>
+                        </div>
+                        <div className="mt-4 flex flex-col items-start">
+                            <label>Nueva Contraseña:</label>
+                            <div className="flex flex-row items-center border-[1px] border-gray-400 h-[11mm] w-[62mm] ">
+                                <input
+                                    name="newpassword"
+                                    type={ver ?'text' :'password'}
+                                    className="h-[10mm] w-[52mm] ml-2 focus:outline-none"
+                                    value={formChangePass.newpassword}
+                                    onChange={handleChangePass}
+                                ></input>
+                                <IoMdEyeOff onClick={()=>handleVer()} className="text-xl"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col items-center mt-4">
                         <button
-                            className="border-2 border-[#557CF2] mt-10 mx-2 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
-                            onClick={()=>submitNivelInicial()}
-                        >Inicial</button>
-                        <button
-                            className="border-2 border-[#557CF2] mt-10 mx-2 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
-                            onClick={()=>submitNivelPrimario()}
-                        >Primario</button>
+                            className="border-2 border-[#729DA6] my-2 font-medium w-40 h-8 bg-[#729DA6] text-white hover:bg-[#6A88F7] rounded"
+                            onClick={()=>submitAceptarChangePass()}
+                            >Aceptar</button>
+                        <label
+                            className="text-sky-500 hover:text-sky-800 hover:cursor-pointer"
+                            onClick={()=>CancelChangePass()}
+                        >Cancelar</label>
                     </div>
                 </div>
-            </ModalEdit>
+            </ModalUser>
+            
+            {/* MODAL DE MENSAJES */}
+            <Modal isOpen={isOpenModal} closeModal={closeModal}>
+                <div className="mt-10 w-72">
+                    <h1 className="text-xl text-center font-bold">{mensajeModalInfo}</h1>
+                    <div className="flex justify-center">
+                        <button
+                            className="border-2 border-[#729DA6] mt-10 font-bold w-40 h-8 bg-[#729DA6] text-white hover:bg-[#6A88F7] "
+                            onClick={()=>submitCloseModal()}
+                        >OK</button>
+                    </div>
+                </div>
+            </Modal>
 
         </div>
     )

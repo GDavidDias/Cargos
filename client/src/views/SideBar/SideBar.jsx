@@ -78,6 +78,48 @@ const SideBar = () => {
         console.log('Presiona sobre Vacantes Provisionales y Reemplazantes');
         dispatch(setPage('VacantesPyR'))
     };
+    
+    const submitNivelInicial = async() =>{
+        // let formInvitado = {
+        //     username:'invitadoIni',
+        //     password:'invitadoIni'
+        // };
+
+        console.log('Presiono Docente Inicial');
+        const datosNivel=[{id_nivel:1, descripcion:'INICIAL'}];
+        dispatch(setNivel(datosNivel));
+        navigate('/home');
+
+
+
+        // const datavalida = await conexion(formInvitado);
+        // if(datavalida.length!=0){
+        //     dispatch(setUser(datavalida));
+        //     navigate('/home');
+        // }else{
+        //     dispatch(outUser());
+        // }
+    };
+
+    const submitNivelPrimario = async()=>{
+        // let formInvitado = {
+        //     username:'invitadoPri',
+        //     password:'invitadoPri'
+        // };
+
+        console.log('Presiono Nivel Primario');
+        const datosNivel=[{id_nivel:2, descripcion:'PRIMARIO'}];
+        dispatch(setNivel(datosNivel));
+        navigate('/home');
+
+        // const datavalida = await conexion(formInvitado);
+        // if(datavalida.length!=0){
+        //     dispatch(setUser(datavalida));
+        //     navigate('/home');
+        // }else{
+        //     dispatch(outUser());
+        // }
+    };
 
 
     useEffect(()=>{
@@ -296,36 +338,21 @@ const SideBar = () => {
                     </div>
                 </div>
 
-                {/* MENU REPORTES */}
-                {/* <div className="ml-2 mt-6 text-white text-base">
-                    <label >Reportes</label>
-                    <div 
-                        className={` rounded p-[4px] flex flex-row justify-start items-center
-                            ${(pageSG==='AsignacionesMov')
-                            ?'bg-[#C9D991]'
-                            :'hover:bg-[#C9D991]'
-                        }
-                            `}
-                        onClick={()=>submitAsignaciones()}
-                    >
-                        <MdOutlineAssignmentTurnedIn className="text-xl font-bold mr-2"/>
-                        <label className="">Asignaciones</label>
-                    </div>
-                    
-                </div> */}
 
-                {/* SELECCION NIVEL */}
-                {/* <div className="ml-2 mt-6 text-white text-base flex flex-col">
-                    <label>temporalmente seleccionar nivel al loguearse</label>
-                    <button 
-                        className="border-[1px] border-white m-2 rounded"
-                        onClick={()=>submitNivelInicial()}
-                    >Inicial</button>
-                    <button 
-                        className="border-[1px] border-white m-2 rounded"
-                        onClick={()=>submitNivelPrimario()}
-                    >Primario</button>
-                </div> */}
+                {/* MENU ADMINISTRADORES */}
+                {(userSG.permiso===1) &&
+                    <div className="ml-2 mt-6 text-white text-base flex flex-col">
+                        <label>Administrador</label>
+                        <button 
+                            className="border-[1px] border-white m-2 rounded"
+                            onClick={()=>submitNivelInicial()}
+                        >Inicial</button>
+                        <button 
+                            className="border-[1px] border-white m-2 rounded"
+                            onClick={()=>submitNivelPrimario()}
+                        >Primario</button>
+                    </div>
+                }
             </div>
         </nav>
     )

@@ -9,7 +9,7 @@ module.exports = async(req,res)=>{
     try{
         const [result] = await pool.query(`UPDATE usuarios SET password='${newpassword}' WHERE username='${username}';`);
 
-        console.log('que trae result validateuser: ', result);
+        console.log('que trae result changepass: ', result);
 
 
         res.status(200).json(result);

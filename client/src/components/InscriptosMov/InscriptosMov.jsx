@@ -712,6 +712,14 @@ const InscriptosMov = ()=>{
     };
 
 
+    const cargaInicialListados=(nivel)=>{
+        //LLAMO AL PROCEDIMIENTO buscoIdlistadoInscrip Y PASO EL NIVEL CARGADO EN STORE GLOBAL
+        buscoIdlistadoInscrip(nivel);
+        //LLAMO AL PROCEDIMIENTO buscoIDListadoVacantes Y PASO EL NIVEL CARGADO EN STORE GLOBAL
+        buscoIDListadoVacantes(nivel);
+    };
+
+
 
     useEffect(()=>{
         //recargo listado de inscriptos con la nueva pagina
@@ -779,16 +787,14 @@ const InscriptosMov = ()=>{
     useEffect(()=>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
         console.log('que tiene configSG en InscriptosMov (CARGA INICIAL): ', configSG);
+        cargaInicialListados(configSG.nivel.id_nivel);
     },[configSG])
 
 
     //AL INGRESAR SE CARGA EL LISTADO DE INSCRIPTOS
     useEffect(()=>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
-        //LLAMO AL PROCEDIMIENTO buscoIdlistadoInscrip Y PASO EL NIVEL CARGADO EN STORE GLOBAL
-        buscoIdlistadoInscrip(configSG.nivel.id_nivel);
-        //LLAMO AL PROCEDIMIENTO buscoIDListadoVacantes Y PASO EL NIVEL CARGADO EN STORE GLOBAL
-        buscoIDListadoVacantes(configSG.nivel.id_nivel);
+        cargaInicialListados(configSG.nivel.id_nivel);
 
     },[]);
 
