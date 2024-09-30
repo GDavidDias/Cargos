@@ -231,69 +231,83 @@ const Landing = () => {
                 </div>
             </div>
 
-            <div className="desktop:h-[50vh] flex flex-col justify-center items-center  bg-[#FFFEFC]  border-2 border-[#729DA6] desktop:w-[50vw] movil:w-full movil:h-[50vh] rounded-lg mt-10 shadow-lg  p-4">
-            <label className="text-[#729DA6] font-medium text-[20px] pt-4 " translate='no'>Ingresar al Sistema</label>
-            <label className="text-sm text-red-500 italic">{mensajeLogin}</label>
-            <div className="flex flex-row mt-4 mb-4">
-                <div className="flex flex-col text-right movil:w-[28vw] desktop:w-[16vw]">
-                    <label className="m-2 " translate='no'>Nombre de usuario</label>
-                    <label className="m-2 " translate='no'>Contraseña</label>
-                </div>
-                <div className="flex flex-col justify-end">
-                    <input
-                        className="m-2 border-[1px] border-black rounded px-2 w-[200px]"
-                        value={form.username}
-                        onChange={handleChange}
-                        name="username"
-                        type="text"
-                    ></input>
-                    <div className="flex flex-row items-center">
-                        <input
-                            className="m-2 border-[1px] border-black rounded px-2 w-[200px]"
-                            value={form.password}
-                            onChange={handleChange}
-                            name="password"
-                            type={ver ? 'text' :'password'}      
-                            onKeyPress={handleKeyPress}
-                        ></input>
-                        <IoMdEyeOff onClick={()=>handleVer()}/>
+            <div className="desktop:h-[50vh] flex flex-col justify-center items-center  bg-[#FFFEFC]  border-2 border-[#729DA6] desktop:w-[55vw] movil:w-full movil:h-[50vh] rounded-lg mt-10 shadow-lg  p-4 ">
+                <label className="text-[#729DA6] font-medium text-[20px] mb-4 " translate='no'>Ingresar al Sistema</label>
+                <div className="flex flex-row">
+                    {/* PARTE IZQUIERDA INGRESO INVITADOS */}
+                    <div className="border-2 border-[#729DA6] desktop:w-[25vw] movil:w-[60vw] text-center mx-2 rounded-md">
+                        <h1 className="font-semibold mt-2 text-[17px]">Entrega de Cargos</h1>
+                        <h1 className=" mt-2 text-[17px]">(Ingreso Docentes)</h1>
+                        <div className="flex flex-col mt-4">
+                            <div className="my-4">
+                                {/* <span className="relative flex h-3 w-3 mb-[-2vh] ">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+                                </span> */}
+                                <button
+                                    className=" w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2 "
+                                    onClick={submitNivelInicial}
+                                    translate='no'
+                                    id="botonEnter"
+                                >Sala INICIAL</button>
+                            </div>
+                            <div>
+                                {/* <span className="relative flex h-3 w-3 mb-[-2vh] ">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+                                </span> */}
+                                <button
+                                    className="w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2"
+                                    onClick={submitNivelPrimario}
+                                    translate='no'
+                                    id="botonEnter"
+                                >Sala PRIMARIA</button>
+                            </div>
+                        </div>
+
                     </div>
-                </div>
-                </div>
-                <label
-                    className="text-sky-500 hover:text-sky-800 hover:cursor-pointer"
-                    onClick={()=>ModalChangePass()}
-                >Cambiar Contraseña</label>
-                <button
-                    className="w-40 h-8 bg-[#729DA6] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#6A88F7] shadow-md rounded"
-                    onClick={submitHandler}
-                    translate='no'
-                    id="botonEnter"
-                >Acceder</button>
-                <div className="flex desktop:flex-row movil:flex-col mt-4">
-                    <div>
-                        <span className="relative flex h-3 w-3 mb-[-2vh] ">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
-                        </span>
-                        <button
-                            className=" w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2 "
-                            onClick={submitNivelInicial}
-                            translate='no'
-                            id="botonEnter"
-                        >Docente Inicial</button>
-                    </div>
-                    <div>
-                        <span className="relative flex h-3 w-3 mb-[-2vh] ">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
-                        </span>
-                        <button
-                            className="w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2"
-                            onClick={submitNivelPrimario}
-                            translate='no'
-                            id="botonEnter"
-                        >Docente Primaria</button>
+
+                    {/* PARTE DERECHA INGRESO USUARIOS JPCD */}
+                    {/* SOLO APARECE EN MODO DESKTOP, NOVIL NO */}
+                    <div className="movil:hidden desktop:flex desktop:flex-col border-2 border-[#729DA6] w-[25vw]  text-center mx-2 rounded-md">
+                        <h1 className="font-semibold mt-2 text-[17px]">Ingreso usuarios JPCD</h1>
+                        <label className="text-sm text-red-500 italic">{mensajeLogin}</label>
+                        <div className="flex flex-row mt-4 mb-4 justify-center">
+                            <div className="flex flex-col ">
+                                <label>Usuario:</label>
+                                <input
+                                    className="mx-2 border-[1px] border-black rounded px-2 w-[200px]"
+                                    value={form.username}
+                                    onChange={handleChange}
+                                    name="username"
+                                    type="text"
+                                ></input>
+                                <label className="mt-2">Contraseña:</label>
+                                <div className="flex flex-row items-center border-[1px] border-black rounded mx-2">
+                                    <input
+                                        className="ml-2 w-[176px] "
+                                        value={form.password}
+                                        onChange={handleChange}
+                                        name="password"
+                                        type={ver ? 'text' :'password'}      
+                                        onKeyPress={handleKeyPress}
+                                    ></input>
+                                    <IoMdEyeOff onClick={()=>handleVer()}/>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center">
+                            <label
+                                className="text-sky-500 hover:text-sky-800 hover:cursor-pointer"
+                                onClick={()=>ModalChangePass()}
+                            >Cambiar Contraseña</label>
+                            <button
+                                className="w-40 h-8 bg-[#729DA6] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#6A88F7] shadow-md rounded"
+                                onClick={submitHandler}
+                                translate='no'
+                                id="botonEnter"
+                            >Acceder</button>
+                        </div>
                     </div>
                 </div>
             </div>

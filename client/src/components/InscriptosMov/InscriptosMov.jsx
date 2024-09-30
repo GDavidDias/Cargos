@@ -1323,6 +1323,12 @@ const InscriptosMov = ()=>{
                         <label className="mr-4 text-zinc-800">Puntaje: {datosInscriptoSelect.total}</label>
                     </div>
                 </div>
+                {/* AVISO ESPECIALIDA DIFIERE DE LA SOLICITADA */}
+                {(datosInscriptoSelect.cargo_solicitado!=datosVacanteSelect.cargo) &&
+                    <div className="border-[2px] border-red-500 flex flex-col justify-center rounded-md shadow font-semibold text-lg bg-red-100 mb-2 blink">
+                        <label className="mx-4">{`El cargo solicitado: ${datosInscriptoSelect.cargo_solicitado}, es distinto al cargo a tomar: ${datosVacanteSelect.cargo}`}</label>
+                    </div>
+                }
                 {/* DATOS DE LOS CARGOS */}
                 <div className="flex flex-row h-[54vh] w-[50vw]">
                     {/* CARGO ORIGEN */}
