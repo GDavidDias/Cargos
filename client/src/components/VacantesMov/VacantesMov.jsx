@@ -713,6 +713,7 @@ const VacantesMov = () =>{
                     datosVacante={datosVacanteSelect}
                     submitGuardarFormVacante={submitGuardarFormVacante}
                     inscriptoAsignado={inscriptoAsignado}
+                    userSG = {userSG}
                 />
                 
             </ModalEdit>

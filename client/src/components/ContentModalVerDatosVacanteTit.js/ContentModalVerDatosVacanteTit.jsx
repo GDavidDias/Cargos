@@ -1,4 +1,4 @@
-const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handleChangeFormVacante,estadoForm,datosVacante,submitGuardarFormVacante,inscriptoAsignado}) =>{
+const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handleChangeFormVacante,estadoForm,datosVacante,submitGuardarFormVacante,inscriptoAsignado, userSG}) =>{
     console.log('ingreso a ContentModalVerDatosVacanteTit');
 
     return(
@@ -132,7 +132,7 @@ const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handle
                 </div>
 
                 {/* DATOS DE SU ASIGNACION */}
-                {(inscriptoAsignado.id_inscripto_tit) &&
+                {(inscriptoAsignado.id_inscripto_tit && userSG.permiso!=3) &&
                 <div className="min-h-[10vh] mt-2 border-[1px] border-orange-500 rounded ">
                     <label 
                         className="ml-2 font-semibold"

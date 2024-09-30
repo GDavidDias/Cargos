@@ -1,4 +1,4 @@
-const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFormVacante,estadoForm,datosVacante,submitGuardarFormVacante,inscriptoAsignado})=>{
+const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFormVacante,estadoForm,datosVacante,submitGuardarFormVacante,inscriptoAsignado, userSG})=>{
     console.log('ingreso a ContentModalVerVacante')
     //console.log('datos completo de Vacante Seleccionada: ', datosVacante);
     return(
@@ -132,7 +132,8 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                 </div>
 
                 {/* DATOS DE SU ASIGNACION */}
-                {(inscriptoAsignado.length!=0) &&
+                {/* NOTA: Los invitados docentes, no deben ver los datos a quien fue asignado. */}
+                {(inscriptoAsignado.length!=0 && userSG.permiso!=3) &&
                 <div className="min-h-[10vh] mt-2 border-[1px] border-orange-500 rounded ">
                     <label 
                         className="ml-2 font-semibold"

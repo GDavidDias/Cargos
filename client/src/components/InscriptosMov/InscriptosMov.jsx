@@ -433,6 +433,7 @@ const InscriptosMov = ()=>{
         const {value} = event.target;
         setInputSearchVac(value);
         setCampoOrderVac('');
+        setCurrentPageVac(1);
     };
 
     const busquedaDinamica=()=>{
@@ -446,6 +447,7 @@ const InscriptosMov = ()=>{
     //Presiono boton Cancelar (X) dentro de input busqueda
     const handleCancelSearchVac = async()=>{
         setInputSearchVac('')
+        setCurrentPageVac(1);
         //setFilterListadoVacantesDispMov(listadoVacantesDispMov);
         //setFiltroEspecialidadVac("");
         //setDocRecFilter(docrecSG);

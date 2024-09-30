@@ -664,6 +664,7 @@ const VacantesTit = () => {
                     datosVacante={datosVacanteSelect}
                     submitGuardarFormVacante={submitGuardarFormVacante}
                     inscriptoAsignado={datosInscriptoAsignado}
+                    userSG={userSG}
                 />
             </ModalEdit>
 
