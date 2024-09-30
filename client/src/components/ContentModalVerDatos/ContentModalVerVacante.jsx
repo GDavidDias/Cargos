@@ -7,8 +7,26 @@ const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFo
                 className="text-xl text-center font-bold flex flex-row items-center" 
                 translate='no'
             >Datos de la Vacante <p className="text-sm font-light ml-2">({idVacante})</p></label>
+            <label className={`
+                ${(inscriptoAsignado.length!=0)
+                    ?`text-red-500 font-bold`
+                    :`text-green-500 font-bold`
+
+                }
+            `}>{
+                (inscriptoAsignado.length!=0)    
+                ?`(OCUPADA)`
+                :`(DISPONIBLE)`
+                    }</label>
             <div>
-                <div className="min-h-[23vh]  mt-[4px] border-[2px] border-sky-500 rounded bg-sky-100">
+                <div 
+                    className={`min-h-[23vh]  mt-[4px] border-[2px]  rounded 
+                        ${(inscriptoAsignado.length!=0)
+                            ?`bg-red-100 border-red-500`
+                            :`bg-sky-100 border-sky-500`
+                        }
+                        `}
+                >
                     <div className="flex flex-col ml-2 mt-[2px] items-end justify-end">
                         <div className="flex flex-row my-[2px] mx-2 items-center">
                             <label className="text-sm mr-2">Orden:</label>
