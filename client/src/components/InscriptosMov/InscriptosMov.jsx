@@ -61,6 +61,7 @@ const InscriptosMov = ()=>{
 
     //guarda el id del listado de inscriptos
     const[idListadoInscriptosMov, setIdListadoInscriptosMov]=useState('');
+    const[idListadoInscriptosMovCompara, setIdListadoInscriptosMovCompara]=useState('');
 
     //E.L. para aplicar filtros sobre el listado de inscriptos
     const[filterListadoInscriptosMov, setFilterListadoInscriptosMov]=useState([]);
@@ -172,18 +173,25 @@ const InscriptosMov = ()=>{
         //Guardo el id del listado de inscriptos
         setIdListadoInscriptosMov(idFilterListado);
 
+        //Traigo el id del listado con cual comparar inscriptos
+        const idFilterListadoCompara = configFilterNivel[0]?.id_listado_inscriptos_mov_compara;
+        console.log('que tiene ID LISTADO COMPARA: ', idFilterListadoCompara);
+        //Guardo id del Listado que compara
+        setIdListadoInscriptosMovCompara(idFilterListadoCompara)
+
+
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO
-        await getInscriptosMov(idFilterListado,currentPage,tipoInscripto,estadoInscripto);
+        await getInscriptosMov(idFilterListado,currentPage,tipoInscripto,estadoInscripto,inputSearch,idFilterListadoCompara);
     };
 
     //Este Proc carga el listado de inscriptos_mov al E.L
-    const getInscriptosMov = async(id_listado,page,idTipoInscripto,filtroAsignacion,valorBusqueda) =>{
+    const getInscriptosMov = async(id_listado,page,idTipoInscripto,filtroAsignacion,valorBusqueda,idListadoCompara) =>{
         let data;
         const limit=10;
         console.log('que trae id_listado getInscriptosMovListado: ', id_listado);
         if(id_listado){
             //paso id_listado, limit y page
-            data = await fetchAllInscriptosMov(id_listado, limit, page,idTipoInscripto,filtroAsignacion, valorBusqueda);
+            data = await fetchAllInscriptosMov(id_listado, limit, page,idTipoInscripto,filtroAsignacion, valorBusqueda, idListadoCompara);
             //console.log('que trae data de fetchAllInscriptosMov: ', data);
 
             if(data.result?.length!=0){
@@ -323,7 +331,7 @@ const InscriptosMov = ()=>{
         //Cargo de nuevo listado de inscriptos con datos actualizados,
         //aplico los filtros y traigo dato si fue asignado o no
         //recargaListadoInscriptos();
-        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch);
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
     };
 
     
@@ -743,7 +751,7 @@ const InscriptosMov = ()=>{
         closeModalConfirm();
         closeModalAsign();
         closeModalVac();
-        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch);
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
     };
 
 
@@ -803,7 +811,7 @@ const InscriptosMov = ()=>{
 
     useEffect(()=>{
         //recargo listado de inscriptos con la nueva pagina
-        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch);
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
     },[currentPage])
 
     //A medida que se escribe en el Input de BUsqueda de Vacantes Disponibles se ejecuta
@@ -834,7 +842,7 @@ const InscriptosMov = ()=>{
     //APLICO FILTROS de tipoInscripto (Activos / Disponibilidad), estadoInscripto(todos/sinasignar/asignados) y busquedadinamica(inputSearch)
     useEffect(()=>{
         console.log('APLICO FILTRO')
-        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch);
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
     },[tipoInscripto,estadoInscripto,inputSearch])
 
 
@@ -976,7 +984,7 @@ const InscriptosMov = ()=>{
                     </div>
 
                     {/* PARTE INFERIOR DE DATOS DE TABLA */}
-                    <div className="h-[79vh] overflow-y-auto">
+                    <div className="desktop:h-[65vh] desktop-lg:h-[79vh] desktop-md:h-[65vh] overflow-y-auto">
                         <table className="border-[1px] bg-slate-50 w-full">
                             <thead>
                                 <tr className="sticky top-0 text-sm border-b-[1px] border-zinc-300 bg-zinc-200">
@@ -996,7 +1004,7 @@ const InscriptosMov = ()=>{
                                 {
                                     // filterListadoInscriptosMov?.map((inscripto, index)=>{
                                     listadoInscriptosMov?.map((inscripto, index)=>{
-                                        const colorFila = inscripto.vacante_asignada ?`bg-red-200` :(((inscripto.id_inscriptos_mov % 2)===0) ?`bg-zinc-200` :``)
+                                        const colorFila = (inscripto.vacante_asignada || inscripto.dniEnOtroNivel) ?`bg-red-200` :(((inscripto.id_inscriptos_mov % 2)===0) ?`bg-zinc-200` :``)
                                         return(
                                             <tr 
                                                 className={`text-lg font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 ${colorFila}`}
@@ -1025,7 +1033,7 @@ const InscriptosMov = ()=>{
                                                             onClick={()=>submitVerDatosInscripto(inscripto)}
                                                         />
                                                         {
-                                                            (inscripto.vacante_asignada===null || inscripto.vacante_asignada==='')
+                                                            ((inscripto.vacante_asignada===null || inscripto.vacante_asignada==='' ) && inscripto.dniEnOtroNivel===null)
                                                             ?<BiTransferAlt 
                                                                 className="text-2xl hover:cursor-pointer hover:text-[#83F272] ml-2"      
                                                                 title="Vacantes"
@@ -1059,7 +1067,7 @@ const InscriptosMov = ()=>{
         
         {/* MODAL DE VACANTES DISPONIBLES*/}
         <ModalEdit isOpen={isOpenModalVac} closeModal={closeModalVac}>
-            <div className="h-100 w-100  flex flex-col items-center">
+            <div className="h-full w-100  flex flex-col items-center">
                 <label className="text-xl text-center font-bold " translate='no'>VACANTES DISPONIBLES</label>
                 {/* DATOS DEL INSCRIPTO */}
                 <div className="border-[1px] border-zinc-300  flex justify-center rounded-md shadow font-semibold">
@@ -1067,7 +1075,7 @@ const InscriptosMov = ()=>{
                     <label className="mr-4 text-red-400">Cargo Origen: {datosInscriptoSelect.cargo_actual}</label>
                     <label className="mr-4 text-sky-500">Cargo Solicitado: {datosInscriptoSelect.cargo_solicitado}</label>
                 </div>
-                <div className="h-[60vh] w-[90vw] mt-2 ">
+                <div className="h-[60vh] w-full mt-2 ">
                     {/* PARTE SUPERIOR - FILTROS Y BUSQUEDA */}
                     <div className="border-[1px] border-zinc-400 rounded-t-lg h-[9vh] flex flex-col bg-[#dde8b7]">
                         {/* FILTROS */}
@@ -1233,7 +1241,7 @@ const InscriptosMov = ()=>{
                     </div>
 
                     {/* PARTE INFERIOR - DATOS DE TABLA */}
-                    <div className="w-full h-[52vh] overflow-y-auto border-[1px] border-zinc-400 rounded-b-lg border-t-0">
+                    <div className="w-full h-[51vh] overflow-y-auto border-[1px] border-zinc-400 rounded-b-lg border-t-0">
                         <table className="">
                             {/* <thead>
                                 <tr className="text-sm border-b-[1px] border-zinc-300">
@@ -1560,7 +1568,11 @@ const InscriptosMov = ()=>{
                         :<div className="w-[50vw]">
                             <label className="text-red-500 font-semibold ">Su Cargo Original genero una Vacante Disponible, elimine la vacante generada o realice Toma de Cargo de una Vacante</label>
                         </div>
-                    :``
+                    :(datosInscriptoSelect.dniEnOtroNivel!=null)
+                        ?<div className="w-[50vw]">
+                            <label className="text-red-500 font-semibold ">EL DOCENTE YA TOMO CARGO EN OTRO NIVEL.</label>
+                        </div>
+                        :``
                 }
 
 

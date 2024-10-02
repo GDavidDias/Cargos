@@ -2,7 +2,7 @@ import axios from 'axios';
 import { URL } from '../../varGlobal';
 
 
-export const fetchAllInscriptosMov = async(id_listado,limit,page,idTipoInscripto,filtroAsignacion,valorBusqueda) => {
+export const fetchAllInscriptosMov = async(id_listado,limit,page,idTipoInscripto,filtroAsignacion,valorBusqueda,idListadoCompara) => {
     let valoresInscripto;
     if(idTipoInscripto===1){
         valoresInscripto="1";
@@ -15,7 +15,8 @@ export const fetchAllInscriptosMov = async(id_listado,limit,page,idTipoInscripto
         "page":page,
         "idTipoInscripto":valoresInscripto,
         "filtroAsignacion":filtroAsignacion,
-        "filtroBusqueda":valorBusqueda
+        "filtroBusqueda":valorBusqueda,
+        "idListadoInscriptosCompara":idListadoCompara
     };
     console.log('que tiene datos que pasa a body en fetchAllInscriptosMov: ', dataBody);
 

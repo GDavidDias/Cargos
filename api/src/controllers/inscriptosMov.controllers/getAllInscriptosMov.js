@@ -4,7 +4,7 @@ module.exports = async(req,res)=>{
     //TRAE TODOS LOS INSCRIPTOS DE LA TABLA inscriptos_mov
     //QUE SEAN DEL NIVEL INDICADO EN EL LISTADO id_listado_inscriptos
     console.log('ingresa a getAllInscriptosMov');
-    const {id_listado_inscriptos,limit,page,idTipoInscripto,filtroAsignacion,filtroBusqueda} = req.body;
+    const {id_listado_inscriptos,limit,page,idTipoInscripto,filtroAsignacion,filtroBusqueda,idListadoInscriptosCompara} = req.body;
 
     console.log('que trae id_listado_inscriptos: ', id_listado_inscriptos);
     console.log('que trae limit: ', limit);
@@ -12,18 +12,36 @@ module.exports = async(req,res)=>{
     console.log('que trae idTipoInscripto: ', idTipoInscripto);
     console.log('que trae filtroAsignacion: ', filtroAsignacion);
     console.log('que trae filtroBusqueda: ', filtroBusqueda);
+    //este idListadoInscriptosCompara, sirve para comparar contra que listado, el dni de un docente ya tiene asignado un cargo.
+    //traigo todas las asignaciones realizadas con ese idListadoInscriptosCompara y con su dni puedo buscar si existe en el listado de id_listado_inscriptos
+    console.log('que trae idListadoInscriptosCompara: ', idListadoInscriptosCompara);
+
 
     const offset = (page-1)*limit;
 
 
-    let armaquery=`SELECT im.id_inscriptos_mov, im.cargo_actual, im.cargo_solicitado, im.dni, im.apellido, im.nombre, im.observacion, im.total, im.orden, im.nro_escuela, im.legajo, im.id_especialidad, e.descripcion AS especialidad, im.id_tipo_inscripto, ti.descripcion AS tipoinscripto, im.id_listado_inscriptos, li.descripcion, am2.id_vacante_mov AS vacante_asignada, im.id_vacante_generada_cargo_actual
+    let armaquery=`SELECT im.id_inscriptos_mov, im.cargo_actual, im.cargo_solicitado, im.dni, im.apellido, im.nombre, im.observacion, im.total, im.orden, im.nro_escuela, im.legajo, im.id_especialidad, e.descripcion AS especialidad, im.id_tipo_inscripto, ti.descripcion AS tipoinscripto, im.id_listado_inscriptos, li.descripcion, am2.id_vacante_mov AS vacante_asignada, im.id_vacante_generada_cargo_actual, imCompara.dni AS dniEnOtroNivel
             FROM inscriptos_mov AS im
             LEFT JOIN especialidad AS e ON im.id_especialidad = e.id_especialidad 
             LEFT JOIN tipo_inscripto AS ti ON im.id_tipo_inscripto = ti.id_tipo_inscripto
             LEFT JOIN listado_inscriptos AS li ON im.id_listado_inscriptos = li.id_listado_inscriptos
             LEFT JOIN (SELECT am.id_inscripto_mov, am.id_vacante_mov FROM asignacion_mov AS am WHERE am.obs_desactiva IS NULL) AS am2 ON im.id_inscriptos_mov = am2.id_inscripto_mov
 
-            WHERE im.id_listado_inscriptos = ${id_listado_inscriptos}
+            `;
+
+    //arma subonsulta para saber si se encuentra en otro listado con alguna asignacion.
+    if(idListadoInscriptosCompara && idListadoInscriptosCompara!=''){
+        armaquery += ` LEFT JOIN (SELECT DISTINCT im2.dni
+                         FROM inscriptos_mov AS im2 
+                         JOIN (SELECT am3.id_inscripto_mov 
+                                    FROM asignacion_mov AS am3 
+                                    WHERE am3.obs_desactiva IS NULL) AS am4 ON im2.id_inscriptos_mov = am4.id_inscripto_mov
+                         WHERE im2.id_listado_inscriptos = ${idListadoInscriptosCompara} ) AS imCompara ON im.dni = imCompara.dni
+                        `;
+    };
+
+
+    armaquery += `WHERE im.id_listado_inscriptos = ${id_listado_inscriptos}
             AND im.id_tipo_inscripto IN (${idTipoInscripto})            
             `;
 

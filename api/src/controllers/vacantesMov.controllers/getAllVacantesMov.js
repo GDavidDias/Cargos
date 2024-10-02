@@ -31,10 +31,12 @@ module.exports = async(req,res)=>{
     if(filtroBusqueda && filtroBusqueda!=''){
         armaquery+=` AND (LOWER(vm.establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                             OR LOWER(vm.obs_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vm.departamento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vm.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                             OR LOWER(vm.cargo) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                             OR LOWER(vm.modalidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                            OR LOWER(vm.turno) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                            OR LOWER(vm.region) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                            OR LOWER(vm.departamento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                            OR LOWER(vm.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                     ) `
     }
 

@@ -20,7 +20,7 @@ CREATE TABLE listado_vacantes(id_listado_vacantes INT(7) NOT NULL AUTO_INCREMENT
 
 CREATE TABLE listado_inscriptos(id_listado_inscriptos INT(7) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(250) DEFAULT NULL, id_nivel INT(7) DEFAULT NULL, PRIMARY KEY(id_listado_inscriptos));
 
-CREATE TABLE configuracion(id_configuracion INT(7) NOT NULL AUTO_INCREMENT, id_nivel INT(7) DEFAULT NULL, id_listado_inscriptos_mov INT(7) DEFAULT NULL, id_listado_vacantes_mov INT(7) DEFAULT NULL, id_listado_inscriptos_tit INT(7) DEFAULT NULL, id_listado_vacantes_tit INT(7) DEFAULT NULL, PRIMARY KEY(id_configuracion));
+CREATE TABLE configuracion(id_configuracion INT(7) NOT NULL AUTO_INCREMENT, id_nivel INT(7) DEFAULT NULL, id_listado_inscriptos_mov INT(7) DEFAULT NULL, id_listado_vacantes_mov INT(7) DEFAULT NULL, id_listado_inscriptos_tit INT(7) DEFAULT NULL, id_listado_vacantes_tit INT(7) DEFAULT NULL, id_listado_inscriptos_mov_compara INT(7) DEFAULT NULL, PRIMARY KEY(id_configuracion));
 
 CREATE TABLE usuarios (id_usuario INT(7) NOT NULL AUTO_INCREMENT, nombre VARCHAR(50) DEFAULT NULL, username VARCHAR(50) DEFAULT NULL, password VARCHAR(50) DEFAULT NULL, permiso INT(2) DEFAULT NULL, nivel INT(2) DEFAULT NULL, obs_desactiva VARCHAR(250) DEFAULT NULL,PRIMARY KEY(id_usuario));
 
@@ -64,19 +64,20 @@ username: AJPAREDES / PASS: 123
 
 --------------------------------
 --PARA INSERT configuracion
-+---------------------------+------+------+-----+---------+----------------+
-| Field                     | Type | Null | Key | Default | Extra          |
-+---------------------------+------+------+-----+---------+----------------+
-| id_configuracion          | int  | NO   | PRI | NULL    | auto_increment |
-| id_nivel                  | int  | YES  |     | NULL    |                |
-| id_listado_inscriptos_mov | int  | YES  |     | NULL    |                |
-| id_listado_vacantes_mov   | int  | YES  |     | NULL    |                |
-| id_listado_inscriptos_tit | int  | YES  |     | NULL    |                |
-| id_listado_vacantes_tit   | int  | YES  |     | NULL    |                |
-+---------------------------+------+------+-----+---------+----------------+
++-----------------------------------+------+------+-----+---------+----------------+
+| Field                             | Type | Null | Key | Default | Extra          |
++-----------------------------------+------+------+-----+---------+----------------+
+| id_configuracion                  | int  | NO   | PRI | NULL    | auto_increment |
+| id_nivel                          | int  | YES  |     | NULL    |                |
+| id_listado_inscriptos_mov         | int  | YES  |     | NULL    |                |
+| id_listado_vacantes_mov           | int  | YES  |     | NULL    |                |
+| id_listado_inscriptos_tit         | int  | YES  |     | NULL    |                |
+| id_listado_vacantes_tit           | int  | YES  |     | NULL    |                |
+| id_listado_inscriptos_mov_compara | int  | YES  |     | NULL    |                |
++-----------------------------------+------+------+-----+---------+----------------+
 
-INSERT INTO configuracion(id_nivel, id_listado_inscriptos_mov, id_listado_vacantes_mov, id_listado_inscriptos_tit, id_listado_vacantes_tit) VALUES(1, 1, 1, 2, 2);
-INSERT INTO configuracion(id_nivel, id_listado_inscriptos_mov, id_listado_vacantes_mov, id_listado_inscriptos_tit, id_listado_vacantes_tit) VALUES(2, 3, 3, 4, 4);
+INSERT INTO configuracion(id_nivel, id_listado_inscriptos_mov, id_listado_vacantes_mov, id_listado_inscriptos_tit, id_listado_vacantes_tit, id_listado_inscriptos_mov_compara) VALUES(1, 1, 1, 2, 2, 3);
+INSERT INTO configuracion(id_nivel, id_listado_inscriptos_mov, id_listado_vacantes_mov, id_listado_inscriptos_tit, id_listado_vacantes_tit, id_listado_inscriptos_mov_compara) VALUES(2, 3, 3, 4, 4, 1);
 
 ------------------------------------------------------
 --PARA INSERT listado_inscriptos

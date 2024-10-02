@@ -11,6 +11,8 @@ export default {
       'desktop': '800px',
       'desktop-md':'1024px',
       'desktop-lg':'1280px',
+      'desktop-xl':'1600px',
+
     },
     extend: {
       boxShadow: {
