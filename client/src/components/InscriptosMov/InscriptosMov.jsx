@@ -30,6 +30,7 @@ import PaginaDesignacion from "../PaginaDesignacion/PaginaDesignacion";
 import { outUser } from "../../redux/userSlice";
 import { IoMdPrint } from "react-icons/io";
 import { fetchAllEspecialidades } from "../../utils/fetchAllEspecialidades";
+import { fetchAllVacantesMov } from "../../utils/fetchAllVacantes";
 
 
 
@@ -150,6 +151,13 @@ const InscriptosMov = ()=>{
     //E.L. guarda el tipo de orden
     const[typeOrder, setTypeOrder]=useState('');
 
+    const[isIntervalActive, setIsIntervalActive]=useState(true);
+
+    const[totalVacantes, setTotalVacantes]=useState({
+        disponibles:0,
+        asignadas:0
+    });
+
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
     //-------------------------------------
@@ -201,8 +209,35 @@ const InscriptosMov = ()=>{
                 setListadoInscriptosMov([]);
                 setPaginacion(data.paginacion);
             };
+
+            //LLAMO A PROC PARA CONTADOR DE VACANTES ASIGNADAS Y DISPONIBLES
+            traeVacantesTotales(id_listado);
         };
     }; 
+
+    const traeVacantesTotales=async(id_listado)=>{
+        let dataVacAsignadas;
+        let dataVacDisponibles;
+        const limit=999999;
+        const page=1;
+        const filtroBusqueda="";
+        const filtroEspecialidad="";
+
+        
+        dataVacAsignadas = await fetchAllVacantesMov(id_listado,limit,page,'asignadas',filtroBusqueda,filtroEspecialidad);
+
+        console.log('que trae DATA ASIGNADAS de fetchVacantesDispMov: ', dataVacAsignadas);
+
+        dataVacDisponibles = await fetchAllVacantesMov(id_listado,limit,page,'disponibles',filtroBusqueda,filtroEspecialidad);
+
+        console.log('que trae DATA DISPONIBLES de fetchVacantesDispMov: ', dataVacDisponibles);
+
+        setTotalVacantes({
+            asignadas:dataVacAsignadas?.paginacion.totalItems,
+            disponibles:dataVacDisponibles?.paginacion.totalItems
+        });
+
+    };
 
     //Proc: traigo el ID del listado de Vacantes configurado
     const buscoIDListadoVacantes = async(id_nivel) =>{
@@ -735,13 +770,25 @@ const InscriptosMov = ()=>{
         };
     };
 
+    //PAGINA OFICIO
+    // const handlePrint = useReactToPrint({
+    //     content:() => componentRef.current,
+    //     pageStyle:`
+    //     @page {
+    //       size: LEGAL; /* Tamaño del papel */
+    //       orientation: portrait; /* Orientación vertical */
+    //     }
+    //   `,
+    // });
 
+    //PAGINA MITAD OFICIO
     const handlePrint = useReactToPrint({
         content:() => componentRef.current,
         pageStyle:`
         @page {
-          size: LEGAL; /* Tamaño del papel */
-          orientation: portrait; /* Orientación vertical */
+          size: 21.59cm 17.78cm; /* Tamaño del papel */
+          margin:0.4cm;
+          orientation: landscape; /* Orientación vertical */
         }
       `,
     });
@@ -762,6 +809,8 @@ const InscriptosMov = ()=>{
         buscoIDListadoVacantes(nivel);
         //Cargo las especialidades
         cargaEspecidalidades();
+
+
     };
 
     //Este Proc carga el listado de especialidades en E.L.
@@ -803,6 +852,9 @@ const InscriptosMov = ()=>{
         };
     };
 
+    useEffect(()=>{
+        console.log('que tiene CONTADOR: ',totalVacantes);
+    },[totalVacantes])
 
     useEffect(()=>{
         //Al cambiar pagina de Vacantes disponibles
@@ -845,6 +897,17 @@ const InscriptosMov = ()=>{
         getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
     },[tipoInscripto,estadoInscripto,inputSearch])
 
+    useEffect(()=>{
+        if (!isIntervalActive) return;
+
+        const intervalId = setInterval(()=>{
+            getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
+        }, 10000);
+
+        return()=>clearInterval(intervalId);
+
+    },[tipoInscripto, estadoInscripto, inputSearch, currentPage])
+
 
     useEffect(()=>{
         console.log('que tiene asignacionCargoOriginal: ', asignacionCargoOriginal);
@@ -886,7 +949,7 @@ const InscriptosMov = ()=>{
             {/* ENCABEZADO DE PAGINA */}
             <div className="bg-[#C9D991] h-[12vh] flex flex-row">
                 {/* TITULOS - BOTONES - NIVEL */}
-                <div className="w-[45vw] flex justify-center items-start flex-col">
+                <div className="w-[40vw] flex justify-center items-start flex-col ">
                     <label className="ml-4 text-base font-semibold">NIVEL {configSG.nivel.descripcion}</label>
                     <div className="flex flex-row">
                         <label className="ml-4 text-lg font-sans font-bold">INSCRIPTOS - LUOM</label>
@@ -910,8 +973,34 @@ const InscriptosMov = ()=>{
                         >Disponibilidad</button>
                     </div>
                 </div>
+                {/* SECCION CONTADOR INFORMATIVO */}
+                <div className="w-[30vw] flex justify-center items-start flex-col ">
+                    <div className="ml-8 text-base italic font-semibold">
+                        {/* <label> Vacantes Disp: {totalVacantes.disponibles}</label>
+                        <label> / Asignadas: {totalVacantes.asignadas}</label> */}
+                    </div>
+                    <div className="p-[1px] border-[2px] border-[#7C8EA6] rounded-md shadow">
+                        <table >
+                            <thead>
+                                <tr className="">
+                                    <th colSpan={2} className=" text-center bg-gray-100 ">Vacantes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr className="border-y-[1px] border-gray-400">
+                                    <td  className="border-r-[1px] border-gray-400 bg-sky-100 text-sm font-semibold">Disponibles</td>
+                                    <td  className=" bg-red-100 text-sm font-semibold">Asignadas</td>
+                                </tr>
+                                <tr>
+                                    <td  className="border-r-[1px] border-gray-400 text-center font-semibold bg-sky-100">{totalVacantes.disponibles}</td>
+                                    <td  className=" text-center font-semibold bg-red-100">{totalVacantes.asignadas}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 {/* SECCION DATOS USUARIO */}
-                <div className=" w-[40vw] flex items-center justify-end">
+                <div className=" w-[30vw] flex items-center justify-end ">
                     <label className="mr-2 italic text-sm">{userSG.nombre}</label>
                     <FaRegUserCircle className="mr-2 text-2xl text-[#73685F] " />
                     <FaPowerOff 
@@ -1742,11 +1831,11 @@ const InscriptosMov = ()=>{
                 id_nivel={configSG?.nivel.id_nivel}
             />
             <br/>
-            <PaginaDesignacion
+            {/* <PaginaDesignacion
                 datosInscripto={datosInscriptoSelect}
                 datosVacante={datosVacanteSelect}
                 id_nivel={configSG?.nivel.id_nivel}
-            />
+            /> */}
         </div>
 
         </div>

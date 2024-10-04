@@ -113,6 +113,14 @@ const VacantesMov = () =>{
     //E.L. donde guarda la especialidad seleccionada
     const[filtroEspecialidadVac, setFiltroEspecialidadVac]=useState("");
 
+    const[obsEliminaVacante, setObsEliminaVacante]=useState("");
+
+    const[isIntervalActive, setIsIntervalActive]=useState(true);
+
+    const[totalVacantes, setTotalVacantes]=useState({
+        disponibles:0,
+        asignadas:0
+    });
 
     //-----------PROCESOS Y FUNCIONES-----------
 
@@ -190,8 +198,35 @@ const VacantesMov = () =>{
                 setListadoVacantesMov([]);
                 setPaginacion(data.paginacion)
             }
+
+            //LLAMO A PROC PARA CONTADOR DE VACANTES ASIGNADAS Y DISPONIBLES
+            traeVacantesTotales(id_listado);
         };
     };  
+
+    const traeVacantesTotales=async(id_listado)=>{
+        let dataVacAsignadas;
+        let dataVacDisponibles;
+        const limit=999999;
+        const page=1;
+        const filtroBusqueda="";
+        const filtroEspecialidad="";
+
+
+        dataVacAsignadas = await fetchAllVacantesMov(id_listado,limit,page,'asignadas',filtroBusqueda,filtroEspecialidad);
+
+        console.log('que trae DATA ASIGNADAS de fetchVacantesDispMov: ', dataVacAsignadas);
+
+        dataVacDisponibles = await fetchAllVacantesMov(id_listado,limit,page,'disponibles',filtroBusqueda,filtroEspecialidad);
+
+        console.log('que trae DATA DISPONIBLES de fetchVacantesDispMov: ', dataVacDisponibles);
+
+        setTotalVacantes({
+            asignadas:dataVacAsignadas?.paginacion.totalItems,
+            disponibles:dataVacDisponibles?.paginacion.totalItems
+        })
+
+    };
 
     //Proceso para filtrar el listado de vacantes por todos/disponibles/asignado
     const aplicoFiltroListadoVacantes = async(data)=>{
@@ -296,8 +331,11 @@ const VacantesMov = () =>{
         const idVacanteMov = idVacanteSelect;
         console.log('que tiene idVacanteMov: ', idVacanteMov);
         const fechaHoraActual = traeFechaHoraActual();
-        const datosBody={
-            obsDesactiva:`Se desactiva la VACANTE por Eliminacion ${fechaHoraActual}`
+        let datosBody={}
+        if(obsEliminaVacante===""){
+            datosBody={obsDesactiva:`Se desactiva la VACANTE por Eliminacion ${fechaHoraActual}`}
+        }else{
+            datosBody={obsDesactiva:`${fechaHoraActual} - ${obsEliminaVacante}`}
         }
 
         try{
@@ -451,6 +489,18 @@ const VacantesMov = () =>{
         setFiltroEspecialidadVac("");
     };
 
+    const handleChangeObsEliminaVacante = (event) =>{
+        const {name, value}=event.target;
+        setObsEliminaVacante(value);
+    };
+
+    useEffect(()=>{
+        console.log('que tiene CONTADOR: ',totalVacantes);
+    },[totalVacantes])
+
+    useEffect(()=>{
+        //console.log('que tiene leyenda para eliminar vacante: ', obsEliminaVacante);
+    },[obsEliminaVacante])
 
     useEffect(()=>{
         console.log('que tiene inscriptoAsignado: ', inscriptoAsignado);
@@ -478,7 +528,18 @@ const VacantesMov = () =>{
         //console.log('que tiene estado local estadoVacantes: ', estadoVacantes);
         //aplicoFiltroListadoVacantes(listadoVacantesMov);
         getVacantesMov(idListVacMov,currentPage,estadoVacantes,inputSearch,filtroEspecialidadVac)
-    },[estadoVacantes,currentPage,estadoVacantes,inputSearch,filtroEspecialidadVac])
+    },[estadoVacantes,currentPage,inputSearch,filtroEspecialidadVac])
+
+    useEffect(()=>{
+        if (!isIntervalActive) return;
+
+        const intervalId = setInterval(()=>{
+            getVacantesMov(idListVacMov,currentPage,estadoVacantes,inputSearch,filtroEspecialidadVac)
+        }, 10000);
+
+        return()=>clearInterval(intervalId);
+
+    },[isIntervalActive,idListVacMov,estadoVacantes,currentPage,inputSearch,filtroEspecialidadVac])
 
     useEffect(()=>{
         seteoDatosInicialesFormVacante()
@@ -732,19 +793,28 @@ const VacantesMov = () =>{
 
             {/* MODAL DE CONFIRMACION ELIMINA VACANTE*/}
             <ModalEdit isOpen={isOpenModalConfirm} closeModal={closeModalConfirm}>
-            <div className="mt-10 w-[30vw] flex flex-col items-center">
-                    <h1 className="text-xl text-center font-bold">{mensajeModalConfirm}</h1>
+            <div className="mt-2 w-[30vw] flex flex-col items-center">
+                    {/* <h1 className="text-xl text-center font-bold">{mensajeModalConfirm}</h1> */}
+                    <h1 className="text-xl text-center font-bold mb-4">Eliminar la Vacante</h1>
+                    <div className="flex flex-col justify-start">
+                        <label>Observacion:</label>
+                        <input 
+                            className="border-[1px] border-black w-[25vw] rounded"
+                            value={obsEliminaVacante}
+                            onChange={handleChangeObsEliminaVacante}
+                        ></input>
+                    </div>
                     <div className="flex flex-row">
                         <div className="flex justify-center mr-2">
                             <button
                                 className="border-2 border-[#557CF2] mt-10 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
-                                onClick={()=>{procesoEliminarVacante(); closeModalConfirm()}}
+                                onClick={()=>{procesoEliminarVacante(); closeModalConfirm();setObsEliminaVacante("")}}
                             >ACEPTAR</button>
                         </div>
                         <div className="flex justify-center ml-2">
                             <button
                                 className="border-2 border-[#557CF2] mt-10 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
-                                onClick={()=>closeModalConfirm()}
+                                onClick={()=>{closeModalConfirm();setObsEliminaVacante("")}}
                             >CANCELAR</button>
                         </div>
                     </div>    

@@ -109,6 +109,8 @@ const VacantesTit = () => {
         zona:''
     });
 
+    const[obsEliminaVacante, setObsEliminaVacante]=useState("");
+
     //--------------PROCESOS Y FUNCIONES----------
 
     const logOut = () =>{
@@ -282,8 +284,11 @@ const VacantesTit = () => {
         const idVacanteTit = datosVacanteSelect?.id_vacante_tit;
         console.log('que tiene idVacanteTit: ', idVacanteTit);
         const fechaHoraActual = traeFechaHoraActual();
-        const datosBody={
-            obsDesactiva:`Se desactiva la VACANTE por Eliminacion ${fechaHoraActual}`
+        let datosBody={}
+        if(obsEliminaVacante===""){
+            datosBody={obsDesactiva:`Se desactiva la VACANTE por Eliminacion ${fechaHoraActual}`}
+        }else{
+            datosBody={obsDesactiva:`${fechaHoraActual} - ${obsEliminaVacante}`}
         }
 
         try{
@@ -390,6 +395,11 @@ const VacantesTit = () => {
 
     const handleCancelFiltroEspecialidadVac =()=>{
         setFiltroEspecialidadVac("");
+    };
+
+    const handleChangeObsEliminaVacante = (event) =>{
+        const {name, value}=event.target;
+        setObsEliminaVacante(value);
     };
 
 
@@ -671,18 +681,26 @@ const VacantesTit = () => {
             {/* MODAL DE CONFIRMACION ELIMINA VACANTE*/}
             <ModalEdit isOpen={isOpenModalConfirm} closeModal={closeModalConfirm}>
             <div className="mt-10 w-[30vw] flex flex-col items-center">
-                    <h1 className="text-xl text-center font-bold">{mensajeModalConfirm}</h1>
+                    <h1 className="text-xl text-center font-bold">Eliminar Vacante</h1>
+                    <div className="flex flex-col justify-start">
+                        <label>Observacion:</label>
+                        <input 
+                            className="border-[1px] border-black w-[25vw] rounded"
+                            value={obsEliminaVacante}
+                            onChange={handleChangeObsEliminaVacante}
+                        ></input>
+                    </div>
                     <div className="flex flex-row">
                         <div className="flex justify-center mr-2">
                             <button
                                 className="border-2 border-[#557CF2] mt-10 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
-                                onClick={()=>{procesoEliminarVacante(); closeModalConfirm()}}
+                                onClick={()=>{procesoEliminarVacante(); closeModalConfirm();setObsEliminaVacante("")}}
                             >ACEPTAR</button>
                         </div>
                         <div className="flex justify-center ml-2">
                             <button
                                 className="border-2 border-[#557CF2] mt-10 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
-                                onClick={()=>closeModalConfirm()}
+                                onClick={()=>{closeModalConfirm();setObsEliminaVacante("")}}
                             >CANCELAR</button>
                         </div>
                     </div>    

@@ -52,10 +52,16 @@ const Listados = () => {
         console.log('presiono vacantes disponibles')
         //traigo datos y guardo en store local
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE VACANTES
-        const data = await fetchVacantesDispMov(idListVacMov);
+        const limit=9999999999;
+        const page=1;
+        const filtroBusqueda="";
+        const filtroEspecialidad="";
+        const orderBy="";
+        const typeOrder="";
+        const data = await fetchVacantesDispMov(idListVacMov,limit,page,filtroBusqueda,filtroEspecialidad,orderBy,typeOrder);
         console.log('que trae data de fetchVacantesDispMov: ', data);
-        if(data.length!=0){
-            setlistado(data);
+        if(data.result.length!=0){
+            setlistado(data.result);
         }
     };
 
