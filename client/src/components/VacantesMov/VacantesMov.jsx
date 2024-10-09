@@ -224,7 +224,7 @@ const VacantesMov = () =>{
         setTotalVacantes({
             asignadas:dataVacAsignadas?.paginacion.totalItems,
             disponibles:dataVacDisponibles?.paginacion.totalItems
-        })
+        });
 
     };
 

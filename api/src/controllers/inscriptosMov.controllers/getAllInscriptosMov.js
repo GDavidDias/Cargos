@@ -41,6 +41,7 @@ module.exports = async(req,res)=>{
     };
 
 
+
     armaquery += `WHERE im.id_listado_inscriptos = ${id_listado_inscriptos}
             AND im.id_tipo_inscripto IN (${idTipoInscripto})            
             `;

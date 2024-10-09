@@ -31,6 +31,7 @@ import { outUser } from "../../redux/userSlice";
 import { IoMdPrint } from "react-icons/io";
 import { fetchAllEspecialidades } from "../../utils/fetchAllEspecialidades";
 import { fetchAllVacantesMov } from "../../utils/fetchAllVacantes";
+import { validaDniAsignadoListado } from "../../utils/validaDniAsignadoListado";
 
 
 
@@ -48,10 +49,12 @@ const InscriptosMov = ()=>{
     const[isOpenModalAsign,openModalAsign,closeModalAsign]=useModal(false);
     const[isOpenModalVac,openModalVac,closeModalVac]=useModal(false);
     const[isOpenModalEdit,openModalEdit,closeModalEdit]=useModal(false);
+    const[isOpenModalDatos,openModalDatos,closeModalDatos]=useModal(false);
     const[isOpenModal,openModal,closeModal]=useModal(false);
     const[mensajeModalInfo, setMensajeModalInfo]=useState('');
     const[mensajeModalConfirm, setMensajeModalConfirm]=useState('');
-
+    const[mensajeModalDatos, setMensajeModalDatos]=useState('');
+    
     //E.L. para filtrar los listados, que se determinan por
     // disponibilidad -> 1  / activos -> 2
     const[tipoInscripto, setTipoInscripto]=useState(2);
@@ -157,6 +160,8 @@ const InscriptosMov = ()=>{
         disponibles:0,
         asignadas:0
     });
+
+    const[datosValidaDni, setDatosValidaDni]=useState([]);
 
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
@@ -565,17 +570,28 @@ const InscriptosMov = ()=>{
             console.log('como filtra listado: ', filterListadoVacantes);
             setFilterListadoVacantesDispMov(filterListadoVacantes);
         }
-    }
+    };
+
 
     //Proc: Al presionar sobre icono Ver Vacantes Disponibles
-    const submitVerVacantes = (datos) =>{
-        //vacion input busqueda
-        setInputSearchVac('')
-        console.log('que recibe datos inscripto al Ver Vacantes: ', datos);
-        setDatosInscriptoSelect(datos);
-        //cargo listado original de vacantes disponibles
-        setFilterListadoVacantesDispMov(listadoVacantesDispMov);
-        openModalVac();
+    const submitVerVacantes = async(datos) =>{
+        //VALIDACION DNI ASIGNADO
+        const datosValidate = await validaDniAsignadoListado(idListadoInscriptosMov,datos.dni);
+        console.log('que trae validaDniAsignadoListado: ', datosValidate);
+        if(datosValidate.length!=0){
+            setDatosValidaDni(datosValidate[0]);
+            console.log('Inscripto ya tomo cargo');
+            setMensajeModalDatos(`El Docente ${datosValidate[0].apellido}, ${datosValidate[0].nombre} con DNI(${datosValidate[0].dni}) tomo el siguiente cargo:`);
+            openModalDatos();
+        }else{
+            //vacion input busqueda
+            setInputSearchVac('')
+            console.log('que recibe datos inscripto al Ver Vacantes: ', datos);
+            setDatosInscriptoSelect(datos);
+            //cargo listado original de vacantes disponibles
+            setFilterListadoVacantesDispMov(listadoVacantesDispMov);
+            openModalVac();
+        }
     };
 
     //Proc prsiona sobre icono asignar en Vacantes disponibles
@@ -851,6 +867,12 @@ const InscriptosMov = ()=>{
             setCurrentPageVac(nuevaPagina);
         };
     };
+
+    const SubmitCloseModalDatos = ()=>{
+        closeModalDatos();
+        setMensajeModalDatos('');
+    };
+
 
     useEffect(()=>{
         console.log('que tiene CONTADOR: ',totalVacantes);
@@ -1819,6 +1841,47 @@ const InscriptosMov = ()=>{
                 </div>
             </div>
         </Modal>
+
+
+        {/* MODAL DE NOTIFICACIONES */}
+        <Modal isOpen={isOpenModalDatos} closeModal={closeModalDatos}>
+            <div className="mt-10 w-full flex flex-col items-center">
+                <h1 className="text-xl text-center font-bold">{mensajeModalDatos}</h1>
+                <div className="flex flex-col mt-4 items-end">
+                    <div className="text-start mx-2 flex flex-row items-center">
+                        <label className="font-semibold text-base mr-2">Establecimiento</label>
+                        <div className="border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] flex items-center">{datosValidaDni?.vac_establecimiento} {datosValidaDni?.vac_obs_establecimiento}</div>
+                    </div>
+                    <div className="text-start mx-2 flex flex-row items-center">
+                        <label className="font-semibold text-base mr-2">Cargo</label>
+                        <div className="border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] flex items-center">{datosValidaDni?.vac_cargo}</div>
+                    </div>
+                    <div className="text-start mx-2 flex flex-row items-center">
+                        <label className="font-semibold text-base mr-2">Modalidad</label>
+                        <div className="border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] flex items-center">{datosValidaDni?.vac_modalidad}</div>
+                    </div>
+                    <div className="text-start mx-2 flex flex-row items-center">
+                        <label className="font-semibold text-base mr-2">Turno</label>
+                        <div className="border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] flex items-center">{datosValidaDni?.vac_turno}</div>
+                    </div>
+                    <div className="text-start mx-2 flex flex-row items-center">
+                        <label className="font-semibold text-base mr-2">Region</label>
+                        <div className="border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] flex items-center">{datosValidaDni?.vac_region}</div>
+                    </div>
+                    <div className="text-start mx-2 flex flex-row items-center">
+                        <label className="font-semibold text-base mr-2">Localidad</label>
+                        <div className="border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] flex items-center">{datosValidaDni?.vac_localidad}</div>
+                    </div>
+                </div>
+                <div className="flex justify-center">
+                    <button
+                        className="border-2 border-[#557CF2] mt-10 font-bold w-40 h-8 bg-[#557CF2] text-white hover:bg-sky-300 hover:border-sky-300"
+                        onClick={()=>SubmitCloseModalDatos()}
+                    >OK</button>
+                </div>
+            </div>
+        </Modal>
+
 
         {/* PAGINA DE IMPRESION DESIGNACION */}
         <div 
