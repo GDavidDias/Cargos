@@ -4,7 +4,8 @@ const {
     getAllInscriptosMov,
     editInscriptoMov,
     updateIdVacanteGenerada,
-    validateDniAsignado
+    validateDniAsignado,
+    updateEstadoAsignadoInscripto
 } = require('../controllers/inscriptosMov.controllers');
 
 const router = Router();
@@ -21,5 +22,8 @@ router.put('/updatevacantegenerada/:idInscriptoMov', updateIdVacanteGenerada);
 
 //Valida y muestra datos si el dni de un inscripto en un mismo listado, ya tiene una asignacion
 router.post('/validatedniasignado', validateDniAsignado);
+
+//Actualiza el id del estado Asignado Inscripto: 1-"Asignado" / 2-"No Asignado" / 3-"En Espera"
+router.put('/updateestadoinscripto/:idInscriptoMov', updateEstadoAsignadoInscripto);
 
 module.exports = router;

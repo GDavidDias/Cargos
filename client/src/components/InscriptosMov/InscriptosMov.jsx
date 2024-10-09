@@ -32,6 +32,8 @@ import { IoMdPrint } from "react-icons/io";
 import { fetchAllEspecialidades } from "../../utils/fetchAllEspecialidades";
 import { fetchAllVacantesMov } from "../../utils/fetchAllVacantes";
 import { validaDniAsignadoListado } from "../../utils/validaDniAsignadoListado";
+import { IoMdMore } from "react-icons/io";
+import { updateEstadoAsignadoInscripto } from "../../utils/updateEstadoAsignadoInscripto";
 
 
 
@@ -162,6 +164,8 @@ const InscriptosMov = ()=>{
     });
 
     const[datosValidaDni, setDatosValidaDni]=useState([]);
+
+    const[estadoAsignadoInscripto, setEstadoAsignadoInscripto]=useState('');
 
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
@@ -575,13 +579,16 @@ const InscriptosMov = ()=>{
 
     //Proc: Al presionar sobre icono Ver Vacantes Disponibles
     const submitVerVacantes = async(datos) =>{
-        //VALIDACION DNI ASIGNADO
+        //VALIDACION DNI YA TOMO CARGO
         const datosValidate = await validaDniAsignadoListado(idListadoInscriptosMov,datos.dni);
         console.log('que trae validaDniAsignadoListado: ', datosValidate);
+        //seteo el estadoAsignadoInscripto
+        setEstadoAsignadoInscripto(datos.id_estado_inscripto);
+
         if(datosValidate.length!=0){
             setDatosValidaDni(datosValidate[0]);
             console.log('Inscripto ya tomo cargo');
-            setMensajeModalDatos(`El Docente ${datosValidate[0].apellido}, ${datosValidate[0].nombre} con DNI(${datosValidate[0].dni}) tomo el siguiente cargo:`);
+            setMensajeModalDatos(`El Docente ${datosValidate[0].apellido}, ${datosValidate[0].nombre} con DNI(${datosValidate[0].dni}) ya tomo el siguiente cargo:`);
             openModalDatos();
         }else{
             //vacion input busqueda
@@ -622,6 +629,9 @@ const InscriptosMov = ()=>{
             console.log('como arma form para Asignacion: ', formAsignacion);
             await axios.post(`${URL}/api/createasignacionmov`,formAsignacion)
                 .then(async res=>{
+                    //Antes de continuar Actualizo el ESTADO DEL INSCRIPTO A: 1-"Asignado"
+                    await updateEstadoAsignadoInscripto(datosInscriptoSelect.id_inscriptos_mov, 1);
+
                     console.log('que trae res de createasignacionmov: ', res);
                     //?Verifico que tipo de Asignacion es
                     if(datosInscriptoSelect.id_tipo_inscripto===1){
@@ -732,6 +742,8 @@ const InscriptosMov = ()=>{
         try{
             await axios.post(`${URL}/api/delasignacionmov/${idAsignacion}`,datosBody)
             .then(async res=>{
+                //Si se elimina la Asignacion, se debe volver a Actualizar el Estado del Inscrpto a NULL
+                await updateEstadoAsignadoInscripto(datosInscriptoSelect.id_inscriptos_mov, null);
                 console.log('que trae res de delasignacionmov: ', res);
                 //Mostrar Notificacion de Eliminacion de Asignacion
                 setMensajeModalInfo('Toma de Cargo Eliminada');
@@ -859,6 +871,7 @@ const InscriptosMov = ()=>{
         setCampoOrderVac('');
         setOrderBy('');
         setTypeOrder('');
+        setEstadoAsignadoInscripto('');
         closeModalVac();
     };
 
@@ -871,6 +884,25 @@ const InscriptosMov = ()=>{
     const SubmitCloseModalDatos = ()=>{
         closeModalDatos();
         setMensajeModalDatos('');
+    };
+
+    const HandleSelectEstadoAsignadoInscripto=(event)=>{
+        const{value} = event.target;
+        console.log('que viene en handleSelectEstadoAsignadoInscripto: ', value);
+        setEstadoAsignadoInscripto(value);
+    };
+
+    const submitGuardarEstadoInscripto=async()=>{
+        try{
+            const datosUpdateEstado = await updateEstadoAsignadoInscripto(datosInscriptoSelect.id_inscriptos_mov, estadoAsignadoInscripto);
+            console.log('que trae datosUpdateEstado: ', datosUpdateEstado)
+            setMensajeModalInfo('Estado del Inscripto Actualizado');
+            openModal();
+            setEstadoAsignadoInscripto('');
+        }catch(error){
+            console.log('error en updateEstadoAsignadoInscripto', error);
+        }
+
     };
 
 
@@ -1108,6 +1140,7 @@ const InscriptosMov = ()=>{
                                     <th className="border-r-[1px] border-zinc-300">Cargo Actual</th>
                                     <th className="border-r-[1px] border-zinc-300">Cargo Solicitado</th>
                                     <th className="border-r-[1px] border-zinc-300">Observacion</th>
+                                    <th className="border-r-[1px] border-zinc-300">Estado</th>
                                     <th className="">Acciones</th>
                                 </tr>
                             </thead>
@@ -1129,7 +1162,8 @@ const InscriptosMov = ()=>{
                                                 <td>{inscripto.nro_escuela}</td>
                                                 <td className="text-center">{inscripto.cargo_actual}</td>
                                                 <td className="text-center">{inscripto.cargo_solicitado}</td>
-                                                <td className="text-sm">{inscripto.observacion}</td>
+                                                <td className="text-sm text-center">{inscripto.observacion}</td>
+                                                <td className="text-sm text-center">{inscripto.estado_inscripto}</td>
                                                 <td>
                                                     <div className="flex flex-row items-center justify-center  ">
                                                         {(inscripto.vacante_asignada===null && inscripto.id_vacante_generada_cargo_actual!=null)
@@ -1152,6 +1186,7 @@ const InscriptosMov = ()=>{
                                                             />
                                                             :``
                                                         }
+                                                        
                                                         
                                                     </div>
                                                 </td>
@@ -1181,10 +1216,26 @@ const InscriptosMov = ()=>{
             <div className="h-full w-100  flex flex-col items-center">
                 <label className="text-xl text-center font-bold " translate='no'>VACANTES DISPONIBLES</label>
                 {/* DATOS DEL INSCRIPTO */}
-                <div className="border-[1px] border-zinc-300  flex justify-center rounded-md shadow font-semibold">
-                    <label className="mx-4 text-zinc-500">Docente: {datosInscriptoSelect.apellido} {datosInscriptoSelect.nombre}</label>
-                    <label className="mr-4 text-red-400">Cargo Origen: {datosInscriptoSelect.cargo_actual}</label>
-                    <label className="mr-4 text-sky-500">Cargo Solicitado: {datosInscriptoSelect.cargo_solicitado}</label>
+                <div className="flex flex-row">
+                    <div className="border-[1px] border-zinc-400  flex justify-center rounded-md shadow font-semibold">
+                        <label className="mx-4 text-zinc-500">{datosInscriptoSelect.apellido} {datosInscriptoSelect.nombre}</label>
+                        <label className="mr-4 text-red-400">Cargo Origen: {datosInscriptoSelect.cargo_actual}</label>
+                        <label className="mr-4 text-sky-500">Cargo Solicitado: {datosInscriptoSelect.cargo_solicitado}</label>
+                    </div>
+                    <div className="ml-2 flex flex-row">
+                        <label>Estado: </label>
+                        <div className="ml-2 border-[1px] border-zinc-400  flex justify-center rounded-md shadow font-semibold">
+                            <select 
+                                className="focus:outline-none rounded-md"
+                                value={estadoAsignadoInscripto}
+                                onChange={HandleSelectEstadoAsignadoInscripto}
+                            >
+                                <option value='' disabled selected>Seleccione...</option>
+                                <option value={2}>No Asignado</option>
+                                <option value={3}>En Espera</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div className="h-[60vh] w-full mt-2 ">
                     {/* PARTE SUPERIOR - FILTROS Y BUSQUEDA */}
@@ -1354,17 +1405,6 @@ const InscriptosMov = ()=>{
                     {/* PARTE INFERIOR - DATOS DE TABLA */}
                     <div className="w-full h-[51vh] overflow-y-auto border-[1px] border-zinc-400 rounded-b-lg border-t-0">
                         <table className="">
-                            {/* <thead>
-                                <tr className="text-sm border-b-[1px] border-zinc-300">
-                                    <th className="border-r-[1px] border-zinc-300">Escuela</th>
-                                    <th className="border-r-[1px] border-zinc-300">Cargo</th>
-                                    <th className="border-r-[1px] border-zinc-300">Modalidad</th>
-                                    <th className="border-r-[1px] border-zinc-300">Turno</th>
-                                    <th className="border-r-[1px] border-zinc-300">Region</th>
-                                    <th className="border-r-[1px] border-zinc-300">Localidad</th>
-                                    <th className="border-r-[1px] border-zinc-300">Zona</th>
-                                </tr>
-                            </thead> */}
                             <tbody>
                                 {
                                     listadoVacantesDispMov?.map((vacante, index)=>{
@@ -1415,11 +1455,27 @@ const InscriptosMov = ()=>{
                 </div>
 
                 <div>
-                    <button
-                        className="border-2 border-[#7C8EA6] mt-2 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
-                        onClick={submitCloseModalVac}
-                        translate='no'
-                    >CERRAR</button>
+                    {(estadoAsignadoInscripto==='' || estadoAsignadoInscripto===null)
+                        ?<button
+                            className="border-2 border-[#7C8EA6] mt-2 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                            onClick={submitCloseModalVac}
+                            translate='no'
+                        >CERRAR</button>
+                        :<div>
+                            <button
+                                className="border-2 border-[#7C8EA6] mt-2 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                                onClick={submitGuardarEstadoInscripto}
+                                translate='no'
+                            >GUARDAR ESTADO</button>
+                            <button
+                                className="border-2 border-[#7C8EA6] mt-2 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                                onClick={()=>{submitCloseModalVac();setEstadoAsignadoInscripto('')}}
+                                translate='no'
+                            >CANCELAR</button>
+                        </div>
+
+                    }
+                    
                 </div>
             </div>
         </ModalEdit>
