@@ -34,6 +34,7 @@ import { fetchAllVacantesMov } from "../../utils/fetchAllVacantes";
 import { validaDniAsignadoListado } from "../../utils/validaDniAsignadoListado";
 import { IoMdMore } from "react-icons/io";
 import { updateEstadoAsignadoInscripto } from "../../utils/updateEstadoAsignadoInscripto";
+import PaginaAsistencia from "../PaginaAsistencia/PaginaAsistencia";
 
 
 
@@ -139,6 +140,8 @@ const InscriptosMov = ()=>{
     const[currentPage, setCurrentPage]=useState(1);
 
     const componentRef = useRef(null);
+
+    const componentRefAsistencia = useRef(null);
 
     //E.L. donde se almacena el listado de especialidades
     const[listadoEspecialidades, setListadoEspecialidades]=useState([]);
@@ -290,6 +293,16 @@ const InscriptosMov = ()=>{
     const submitVerDatosInscripto = async(datos) =>{
         console.log('que recibe datos inscripto: ', datos);
         setDatosInscriptoSelect(datos);
+
+        //seteo el estadoAsignadoInscripto
+        console.log('QUE TIENE datos.id_estado_inscripto: ', datos.id_estado_inscripto);
+        if(datos.id_estado_inscripto!=null){
+            setEstadoAsignadoInscripto(datos.id_estado_inscripto);
+        }else{
+            setEstadoAsignadoInscripto('');
+        }
+
+
         //traigo los datos del cargo (vacante) asignado
         if (datos.vacante_asignada!=null && datos.vacante_asignada!=''){
             console.log('TIENE CARGO ASIGNADO');
@@ -454,6 +467,7 @@ const InscriptosMov = ()=>{
     //Escribir dentro del input de busqueda
     const handleInputSearchChange = (event) =>{
         const {value} = event.target;
+        setCurrentPage(1);
         setInputSearch(value);
     };
 
@@ -583,6 +597,7 @@ const InscriptosMov = ()=>{
         const datosValidate = await validaDniAsignadoListado(idListadoInscriptosMov,datos.dni);
         console.log('que trae validaDniAsignadoListado: ', datosValidate);
         //seteo el estadoAsignadoInscripto
+        console.log('QUE TIENE datos.id_estado_inscripto: ', datos.id_estado_inscripto);
         setEstadoAsignadoInscripto(datos.id_estado_inscripto);
 
         if(datosValidate.length!=0){
@@ -714,6 +729,12 @@ const InscriptosMov = ()=>{
         await handlePrint();
     };
 
+    //Proceso para Imprimir la designacion
+    const procesoImpresionAsistencia = async()=>{
+        console.log('ingresa a Impresion de Asistencia');
+        await handlePrintAsistencia();
+    };
+
     //?---------------------------------------------------------------
 
 
@@ -812,6 +833,18 @@ const InscriptosMov = ()=>{
     //PAGINA MITAD OFICIO
     const handlePrint = useReactToPrint({
         content:() => componentRef.current,
+        pageStyle:`
+        @page {
+          size: 21.59cm 17.78cm; /* Tamaño del papel */
+          margin:0.4cm;
+          orientation: landscape; /* Orientación vertical */
+        }
+      `,
+    });
+
+    //PAGINA MITAD OFICIO
+    const handlePrintAsistencia = useReactToPrint({
+        content:() => componentRefAsistencia.current,
         pageStyle:`
         @page {
           size: 21.59cm 17.78cm; /* Tamaño del papel */
@@ -1015,7 +1048,7 @@ const InscriptosMov = ()=>{
                                     ?`border-[#7C8EA6] bg-[#7C8EA6] text-white`
                                     :`border-[#73685F]  hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] `
                                 }`}
-                            onClick={()=>setTipoInscripto(2)}
+                            onClick={()=>{setTipoInscripto(2);setCurrentPage(1)}}
                         >Activos</button>
                         <button 
                             className={`ml-2 px-[2px] border-[1px] rounded shadow 
@@ -1023,7 +1056,7 @@ const InscriptosMov = ()=>{
                                     ?`border-[#7C8EA6] bg-[#7C8EA6] text-white`
                                     :`border-[#73685F]  hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] `
                                 }`}
-                            onClick={()=>setTipoInscripto(1)}
+                            onClick={()=>{setTipoInscripto(1);setCurrentPage(1)}}
                         >Disponibilidad</button>
                     </div>
                 </div>
@@ -1078,7 +1111,7 @@ const InscriptosMov = ()=>{
                                         :`border-zinc-300 text-black`
                                     }
                                     `}
-                                onClick={()=>setEstadoInscripto('todos')}
+                                onClick={()=>{setEstadoInscripto('todos');setCurrentPage(1)}}
                             >Todos</label>
                             <label 
                                 className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
@@ -1087,7 +1120,7 @@ const InscriptosMov = ()=>{
                                         :`border-zinc-300 text-black`
                                     }
                                     `}
-                                onClick={()=>setEstadoInscripto('sinasignar')}
+                                onClick={()=>{setEstadoInscripto('sinasignar');setCurrentPage(1)}}
                             >Sin Asignar</label>
                             <label 
                                 className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
@@ -1096,7 +1129,7 @@ const InscriptosMov = ()=>{
                                         :`border-zinc-300 text-black`
                                     }
                                     `}
-                                onClick={()=>setEstadoInscripto('asignados')}
+                                onClick={()=>{setEstadoInscripto('asignados');setCurrentPage(1)}}
                             >Asignados</label>
                         </div>
 
@@ -1665,7 +1698,7 @@ const InscriptosMov = ()=>{
                             />
                         </div>
                     </div>
-                    <div className="flex flex-row ml-2 my-4">
+                    <div className="flex flex-row ml-2 my-4 justify-between">
                         <div className="flex flex-col mr-2">
                             <label className="text-sm">Observaciones</label>
                             <input 
@@ -1673,6 +1706,30 @@ const InscriptosMov = ()=>{
                                 value={formInscripto.observacion}
                                 disabled={true}
                             />
+                        </div>
+                        <div className="flex flex-row">
+                            <div className="flex flex-col mr-2">
+                                <label className="text-sm">Estado del Docente</label>
+                                <input 
+                                    className="border-[1px] border-zinc-400 w-[40mm] pl-[2px]"
+                                    value={(datosInscriptoSelect?.estado_inscripto) ?datosInscriptoSelect.estado_inscripto :`` }
+                                    disabled={true}
+                                />
+                            </div>
+                            {(datosInscriptoSelect.estado_inscripto==='' || datosInscriptoSelect.estado_inscripto===null)
+                            ?``
+                            :<div className="flex flex-col items-center mr-2">
+                                <label className="text-sm">Asistencia</label>
+                                <button className="font-bold hover:text-orange-500 hover:scale-150 transition-all duration-500 ">
+                                    <IoMdPrint 
+                                        title="IMPRIMIR ASISTENCIA"
+                                        className="text-2xl"
+                                        onClick={()=>procesoImpresionAsistencia()}
+                                    />
+                                </button>
+                            </div>
+                            }
+                            
                         </div>
                     </div>
                     <div className="flex flex-col mx-2 my-4">
@@ -1955,6 +2012,18 @@ const InscriptosMov = ()=>{
                 datosVacante={datosVacanteSelect}
                 id_nivel={configSG?.nivel.id_nivel}
             /> */}
+        </div>
+
+        {/* PAGINA IMPRESION ASISTENCIA */}
+        <div 
+            className="flex flex-col print:page-break-after"
+            ref={componentRefAsistencia}
+        >
+            <PaginaAsistencia
+                datosInscripto={datosInscriptoSelect}
+                datosVacante={datosVacanteSelect}
+                id_nivel={configSG?.nivel.id_nivel}
+            />
         </div>
 
         </div>
