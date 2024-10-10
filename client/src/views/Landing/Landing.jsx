@@ -69,7 +69,7 @@ const Landing = () => {
     const handleKeyPress = (event)=>{
         if(event.key==='Enter'){
             document.getElementById("botonEnter")?.click();
-            //submitHandler();
+            submitHandler();
         }
     };
 
@@ -283,9 +283,9 @@ const Landing = () => {
                                     type="text"
                                 ></input>
                                 <label className="mt-2">Contraseña:</label>
-                                <div className="flex flex-row items-center border-[1px] border-black rounded mx-2">
+                                <div className="flex flex-row items-center border-[1px] border-black rounded mx-2 ">
                                     <input
-                                        className="ml-2 w-[176px] "
+                                        className="ml-2 w-[176px] focus:outline-none"
                                         value={form.password}
                                         onChange={handleChange}
                                         name="password"
