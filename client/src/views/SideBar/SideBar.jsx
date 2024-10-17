@@ -37,10 +37,10 @@ const SideBar = () => {
         dispatch(setPage('VacantesMov'))
     };
 
-    const submitAsignaciones = () =>{
-        //
-        console.log('Presiona en Asignaciones');
-        dispatch(setPage('Asignaciones'))
+    //PROCEDIMIENTO QUE LLAMA A PANTALLA DE VACANTES PARA DOCENTES
+    const submitVacMovDoc = () =>{
+        console.log('Presiona en VacMovDoc');
+        dispatch(setPage('VacMovDoc'))
     };
 
     const submitListados = () =>{
@@ -259,6 +259,20 @@ const SideBar = () => {
                             <label className="font-light">Listados</label>
                         </div>
                     }
+
+                    <div 
+                        className={` rounded p-[4px] flex flex-row justify-start items-center
+                            ${(pageSG==='VacMovDoc')
+                            ?'bg-[#C9D991]'
+                            :'hover:bg-[#C9D991]'
+                        }
+                            `}
+                        onClick={()=>submitVacMovDoc()}
+                    >
+                        <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
+                        <label className="font-light">Vac TEST</label>
+                    </div>
+
                 </div>
 
                 {/* MENU TITULARIZACION */}

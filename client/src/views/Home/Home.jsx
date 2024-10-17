@@ -11,6 +11,7 @@ import VacantesTit from "../../components/VacantesTit/VacantesTit";
 import Listados from "../../components/Listados/Listados";
 import InscriptosPyR from "../../components/InscriptosPyR/InscriptosPyR";
 import ListadosTit from "../../components/ListadosTit/ListadosTit";
+import VacMovDoc from "../../components/VacMovDoc/VacMovDoc";
 
 const Home = () =>{
     const dispatch = useDispatch();
@@ -45,6 +46,9 @@ const Home = () =>{
                 break;
             case 'Asignaciones': //Pantalla de Asignaciones Realizadas, segun tipo de movimiento y nivel
                 setContent(<AsignacionesMov/>);
+                break;                
+            case 'VacMovDoc': //Pantalla de Asignaciones Realizadas, segun tipo de movimiento y nivel
+                setContent(<VacMovDoc/>);
                 break;                
         }
     },[pageSG]);

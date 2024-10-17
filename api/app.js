@@ -1,3 +1,6 @@
+const http = require('http');
+const { Server } = require('socket.io');
+
 const express = require('express');
 const cors = require('cors');
 
@@ -12,7 +15,11 @@ const inscriptosTitRoutes = require('./src/routes/inscriptosTit.routes.js');
 const vacantesTitRoutes = require('./src/routes/vacantesTit.routes.js');
 const asignacionTitRoutes = require('./src/routes/asignacionTit.routes.js');
 
+
 const app = express();
+
+
+
 
 //Configuracion de Middlewares
 app.use(express.urlencoded({extended:true}));
@@ -20,6 +27,29 @@ app.use(express.json());
 
 //HABILITO CORS
 app.use(cors());
+
+//creo servidor http para socket
+const server = http.createServer(app);
+
+//configuro socket io con el servidor
+//const io=socketIo(server);
+const io = new Server(server,{
+    cors:{
+        origin:"*",
+        methods: ["GET" , "POST"]
+    }
+});
+
+//const io = new Server(server);
+
+//Escucho conexiones de clientes socket
+io.on("connection", (socket)=>{
+    console.log("Cliente conectado: ", socket.id);
+
+    socket.on('solicitud-cliente',(data)=>{
+        console.log(data);
+    });
+})
 
 //rutas
 app.use('/api', especialidadRoutes);
@@ -36,4 +66,7 @@ app.use('/api', vacantesTitRoutes);
 app.use('/api', asignacionTitRoutes);
 
 
-module.exports = app;
+//server.listen(3001,()=>{console.log("Server Socket is Running")})
+
+//module.exports = app;
+module.exports = server;
