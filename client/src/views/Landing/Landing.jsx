@@ -232,12 +232,12 @@ const Landing = () => {
             </div>
 
             <div className="desktop:h-[50vh] flex flex-col justify-center items-center  bg-[#FFFEFC]  border-2 border-[#729DA6] desktop:w-[55vw] movil:w-full movil:h-[50vh] rounded-lg mt-10 shadow-lg  p-4 ">
-                <label className="text-[#729DA6] font-medium text-[20px] mb-4 " translate='no'>Ingresar al Sistema</label>
+                <label className="text-[#729DA6] font-medium text-[20px] mb-4 desktop-xl:text-3xl " translate='no'>Ingresar al Sistema</label>
                 <div className="flex flex-row">
                     {/* PARTE IZQUIERDA INGRESO INVITADOS */}
                     <div className="border-2 border-[#729DA6] desktop:w-[25vw] movil:w-[60vw] text-center mx-2 rounded-md">
-                        <h1 className="font-semibold mt-2 text-[17px]">Entrega de Cargos</h1>
-                        <h1 className=" mt-2 text-[17px]">(Ingreso Docentes)</h1>
+                        <h1 className="font-semibold mt-2 text-[17px] desktop-xl:text-2xl">Entrega de Cargos</h1>
+                        <h1 className=" mt-2 text-[17px] desktop-xl:text-xl">(Ingreso Docentes)</h1>
                         <div className="flex flex-col mt-4">
                             <div className="my-4">
                                 {/* <span className="relative flex h-3 w-3 mb-[-2vh] ">
@@ -245,7 +245,7 @@ const Landing = () => {
                                     <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
                                 </span> */}
                                 <button
-                                    className=" w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2 "
+                                    className=" w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2 desktop-xl:h-10 desktop-xl:text-xl"
                                     onClick={submitNivelInicial}
                                     translate='no'
                                     id="botonEnter"
@@ -257,7 +257,7 @@ const Landing = () => {
                                     <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
                                 </span> */}
                                 <button
-                                    className="w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2"
+                                    className="w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2 desktop-xl:h-10 desktop-xl:text-xl"
                                     onClick={submitNivelPrimario}
                                     translate='no'
                                     id="botonEnter"
@@ -270,39 +270,39 @@ const Landing = () => {
                     {/* PARTE DERECHA INGRESO USUARIOS JPCD */}
                     {/* SOLO APARECE EN MODO DESKTOP, NOVIL NO */}
                     <div className="movil:hidden desktop:flex desktop:flex-col border-2 border-[#729DA6] w-[25vw]  text-center mx-2 rounded-md">
-                        <h1 className="font-semibold mt-2 text-[17px]">Ingreso usuarios JPCD</h1>
-                        <label className="text-sm text-red-500 italic">{mensajeLogin}</label>
+                        <h1 className="font-semibold mt-2 text-[17px] desktop-xl:text-2xl">Ingreso usuarios JPCD</h1>
+                        <label className="text-sm text-red-500 italic desktop-xl:text-lg">{mensajeLogin}</label>
                         <div className="flex flex-row mt-4 mb-4 justify-center">
                             <div className="flex flex-col ">
-                                <label>Usuario:</label>
+                                <label className="text-base desktop-xl:text-xl">Usuario:</label>
                                 <input
-                                    className="mx-2 border-[1px] border-black rounded px-2 w-[200px]"
+                                    className="mx-2 border-[1px] border-black rounded px-2 w-[200px] desktop-xl:text-xl"
                                     value={form.username}
                                     onChange={handleChange}
                                     name="username"
                                     type="text"
                                 ></input>
-                                <label className="mt-2">Contraseña:</label>
+                                <label className="mt-2 text-base desktop-xl:text-xl">Contraseña:</label>
                                 <div className="flex flex-row items-center border-[1px] border-black rounded mx-2 ">
                                     <input
-                                        className="ml-2 w-[176px] focus:outline-none"
+                                        className="ml-2 w-[176px] focus:outline-none desktop-xl:text-xl"
                                         value={form.password}
                                         onChange={handleChange}
                                         name="password"
                                         type={ver ? 'text' :'password'}      
                                         onKeyPress={handleKeyPress}
                                     ></input>
-                                    <IoMdEyeOff onClick={()=>handleVer()}/>
+                                    <IoMdEyeOff className="desktop-xl:text-xl" onClick={()=>handleVer()}/>
                                 </div>
                             </div>
                         </div>
                         <div className="flex flex-col items-center">
                             <label
-                                className="text-sky-500 hover:text-sky-800 hover:cursor-pointer"
+                                className="text-sky-500 hover:text-sky-800 hover:cursor-pointer desktop-xl:text-lg"
                                 onClick={()=>ModalChangePass()}
                             >Cambiar Contraseña</label>
                             <button
-                                className="w-40 h-8 bg-[#729DA6] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#6A88F7] shadow-md rounded"
+                                className="w-40 h-8 bg-[#729DA6] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#6A88F7] shadow-md rounded desktop-xl:h-10 desktop-xl:text-xl"
                                 onClick={submitHandler}
                                 translate='no'
                                 id="botonEnter"

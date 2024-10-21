@@ -2,7 +2,7 @@ CREATE DATABASE dbcargos;
 
 USE dbcargos;
 
-CREATE TABLE inscriptos_mov(id_inscriptos_mov INT(11) NOT NULL AUTO_INCREMENT, cargo_actual VARCHAR(50) DEFAULT NULL, cargo_solicitado VARCHAR(50) DEFAULT NULL, dni VARCHAR(50) DEFAULT NULL, apellido VARCHAR(250) DEFAULT NULL, nombre VARCHAR(250) DEFAULT NULL, observacion VARCHAR(250) DEFAULT NULL, total VARCHAR(50) DEFAULT NULL, orden INT(11) DEFAULT NULL, nro_escuela VARCHAR(250) DEFAULT NULL,  legajo INT(11) DEFAULT NULL, id_especialidad INT(7) DEFAULT NULL, id_tipo_inscripto INT(7) DEFAULT NULL, id_listado_inscriptos INT(7) DEFAULT NULL, id_vacante_generada_cargo_actual INT(11) DEFAULT NULL, id_estado_inscripto INT(2),  PRIMARY KEY(id_inscriptos_mov));
+CREATE TABLE inscriptos_mov(id_inscriptos_mov INT(11) NOT NULL AUTO_INCREMENT, cargo_actual VARCHAR(50) DEFAULT NULL, turno_actual VARCHAR(50) DEFAULT NULL, cargo_solicitado VARCHAR(50) DEFAULT NULL, dni VARCHAR(50) DEFAULT NULL, apellido VARCHAR(250) DEFAULT NULL, nombre VARCHAR(250) DEFAULT NULL, observacion VARCHAR(250) DEFAULT NULL, total VARCHAR(50) DEFAULT NULL, orden INT(11) DEFAULT NULL, nro_escuela VARCHAR(250) DEFAULT NULL,  legajo INT(11) DEFAULT NULL, id_especialidad INT(7) DEFAULT NULL, id_tipo_inscripto INT(7) DEFAULT NULL, id_listado_inscriptos INT(7) DEFAULT NULL, id_vacante_generada_cargo_actual INT(11) DEFAULT NULL, id_estado_inscripto INT(2),  PRIMARY KEY(id_inscriptos_mov));
 
 CREATE TABLE estado_inscripto(id_estado_inscripto INT(2) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_estado_inscripto));
 
@@ -38,6 +38,9 @@ CREATE TABLE estado_inscripto(id_estado_inscripto INT(2) NOT NULL AUTO_INCREMENT
 
 -->agrego campo estado_inscripto en tabla inscriptos_mov
 ALTER TABLE inscriptos_mov ADD id_estado_inscripto INT(2);
+
+--> Agrego campo turno_actual en tabla inscriptos_mov
+ALTER TABLE inscriptos_mov ADD turno_actual_actual VARCHAR(50);
 -----------------------------------------
 PERMISOS:
 1 - administrador

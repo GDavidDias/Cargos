@@ -26,9 +26,14 @@ export default {
           '80%': { transform: 'translateX(8px)', opacity: '1', color:'green' }, // Mover a la derecha manteniendo la opacidad
           '100%': { transform: 'translateX(8px)', opacity: '0' }, // Al final, desaparecer
         },
+        parpadeo: {
+          '0%, 100%': { borderColor: 'transparent' },
+          '50%': { borderColor: 'red' }, // Usa el color actual del borde
+        },
       },
       animation: {
         'left-disappear': 'moveLeftDisappear 2s ease-in-out infinite',
+        'parpadeoborde': 'parpadeo 1s ease-in-out infinite',
       },
     },
   },

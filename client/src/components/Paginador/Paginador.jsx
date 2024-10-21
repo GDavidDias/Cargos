@@ -29,7 +29,7 @@ const Paginador = ({currentpage,totalpage,onPageChange,totalItems}) =>{
                 <button
                     disabled={currentpage===1}
                 ><IoIosArrowBack 
-                    className={`text-xl font-bold
+                    className={`text-xl font-bold desktop-xl:text-lg
                         ${(currentpage===1)
                             ?`text-zinc-300`
                             :`text-zinc-700`
@@ -40,7 +40,7 @@ const Paginador = ({currentpage,totalpage,onPageChange,totalItems}) =>{
                 {pageNumbers?.map((page,index)=>(
                     <button 
                         key={index} 
-                        className={`desktop:px-3 movil:px-2 py-1 rounded-2xl
+                        className={`desktop:px-3 movil:px-2 py-1 rounded-2xl text-base desktop-xl:text-lg
                             ${(currentpage===page)
                                 ?`bg-gray-700 text-white`
                                 :`bg-gray-100`
@@ -53,7 +53,7 @@ const Paginador = ({currentpage,totalpage,onPageChange,totalItems}) =>{
                 <button
                     disabled={currentpage===totalpage}
                 ><IoIosArrowForward 
-                    className={`text-xl font-bold
+                    className={`text-xl font-bold desktop-xl:text-lg
                         ${(currentpage===totalpage)
                             ?`text-zinc-300`
                             :`text-zinc-700`
@@ -63,7 +63,7 @@ const Paginador = ({currentpage,totalpage,onPageChange,totalItems}) =>{
                 /></button>
             </div>
             <div>
-                <label className="text-sm">Mostrando {getStartItem} a {getEndItem} de {totalItems}</label>
+                <label className="text-sm desktop-xl:text-lg">Mostrando {getStartItem} a {getEndItem} de {totalItems}</label>
             </div>
         </div>
     )

@@ -18,8 +18,8 @@
 .modalContainer{
     position: relative;
     padding: 1rem;
-    /* min-width: 940px; */
-    max-width: 1400px;
+    min-width: 30vw;
+    max-width: 90vw;
     /* min-height: 500px; */
     max-height: 95vh;
     overflow-y: auto;

@@ -216,68 +216,68 @@ const SideBar = () => {
 
                 {/* MENU MOVIMIENTOS */}
                 <div className="ml-2 mt-2 text-white text-base">
-                    <label className="font-normal">Traslados y Cambio de Funcion</label>
+                    <label className="font-normal desktop-xl:text-lg">Traslados y Cambio de Funcion</label>
                     {(userSG.permiso!=3) &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
                                 ${(pageSG==='InscriptosMov')
-                                ?'bg-[#C9D991]'
+                                ?'bg-[#C9D991] text-[#7C8EA6]'
                                 :'hover:bg-[#C9D991]'
                             }
                                 `}
                             onClick={()=>submitInscriptosMov()}
                         >
                             <PiUserListBold className="text-xl font-bold mr-2"/>
-                            <label className="font-light">Inscriptos</label>
+                            <label className="font-light desktop-xl:text-lg">Inscriptos</label>
                         </div>
                     }
 
                     <div 
                         className={` rounded p-[4px] flex flex-row justify-start items-center
                             ${(pageSG==='VacantesMov')
-                            ?'bg-[#C9D991]'
+                            ?'bg-[#C9D991] text-[#7C8EA6]'
                             :'hover:bg-[#C9D991]'
                         }
                             `}
                         onClick={()=>submitVacantesMov()}
                     >
                         <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
-                        <label className="font-light">Vacantes</label>
+                        <label className="font-light desktop-xl:text-lg">Vacantes</label>
                     </div>
 
                     {(userSG.permiso!=3) &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
                                 ${(pageSG==='Listados')
-                                ?'bg-[#C9D991]'
+                                ?'bg-[#C9D991] text-[#7C8EA6]'
                                 :'hover:bg-[#C9D991]'
                             }
                                 `}
                             onClick={()=>submitListados()}
                         >
                             <CgList className="text-xl font-bold mr-2"/>
-                            <label className="font-light">Listados</label>
+                            <label className="font-light desktop-xl:text-lg">Listados</label>
                         </div>
                     }
 
                     <div 
                         className={` rounded p-[4px] flex flex-row justify-start items-center
                             ${(pageSG==='VacMovDoc')
-                            ?'bg-[#C9D991]'
+                            ?'bg-[#C9D991] text-[#7C8EA6]'
                             :'hover:bg-[#C9D991]'
                         }
                             `}
                         onClick={()=>submitVacMovDoc()}
                     >
                         <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
-                        <label className="font-light">Vac TEST</label>
+                        <label className="font-light desktop-xl:text-lg">Vac TEST</label>
                     </div>
 
                 </div>
 
                 {/* MENU TITULARIZACION */}
                 <div className="ml-2 mt-6 text-white text-base">
-                    <label className="font-normal">Titularizacion</label>
+                    <label className="font-normal desktop-xl:text-lg">Titularizacion</label>
                     {(userSG.permiso!=3) &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
@@ -289,7 +289,7 @@ const SideBar = () => {
                             onClick={()=>submitInscriptosTit()}
                         >
                             <PiUserListBold className="text-xl font-bold mr-2"/>
-                            <label className="font-light">Inscriptos</label>
+                            <label className="font-light desktop-xl:text-lg">Inscriptos</label>
                         </div>
                     }
                     <div 
@@ -302,7 +302,7 @@ const SideBar = () => {
                         onClick={()=>submitVacantesTit()}
                     >
                         <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
-                        <label className="font-light">Vacantes</label>
+                        <label className="font-light desktop-xl:text-lg">Vacantes</label>
                     </div>
                     {(userSG.permiso!=3) &&
                         <div 
@@ -315,7 +315,7 @@ const SideBar = () => {
                             onClick={()=>submitListadosTit()}
                         >
                             <CgList className="text-xl font-bold mr-2"/>
-                            <label className="font-light">Listados</label>
+                            <label className="font-light desktop-xl:text-lg">Listados</label>
                         </div>
                     }
                 </div>

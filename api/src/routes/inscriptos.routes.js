@@ -6,8 +6,10 @@ const {
     updateIdVacanteGenerada,
     validateDniAsignado,
     updateEstadoAsignadoInscripto,
-    validateLegajoAsignado
+    validateLegajoAsignado,
+    validateLegajoDisponibilidad
 } = require('../controllers/inscriptosMov.controllers');
+const validaLegajoDisponibilidad = require('../controllers/inscriptosMov.controllers/validaLegajoDisponibilidad');
 
 const router = Router();
 
@@ -29,5 +31,8 @@ router.put('/updateestadoinscripto/:idInscriptoMov', updateEstadoAsignadoInscrip
 
 //Valida y muestra datos si el legajo de un inscripto en un mismo listado, ya tiene una asignacion
 router.post('/validatelegajoasignado', validateLegajoAsignado);
+
+//VAlida si un legajo esta en disponibilidad
+router.post('/validalegajodisponibilidad', validaLegajoDisponibilidad);
 
 module.exports = router;

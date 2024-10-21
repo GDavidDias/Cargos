@@ -4,6 +4,7 @@ const updateIdVacanteGenerada = require('./updateIdVacanteGenerada.js');
 const validateDniAsignado = require('./validateDniAsignado.js');
 const updateEstadoAsignadoInscripto = require('./updateEstadoAsignadoInscripto.js');
 const validateLegajoAsignado = require('./validaLegajoAsignado.js');
+const validateLegajoDisponibilidad = require('./validaLegajoDisponibilidad.js');
 
 module.exports={
     getAllInscriptosMov,
@@ -11,5 +12,6 @@ module.exports={
     updateIdVacanteGenerada,
     validateDniAsignado,
     updateEstadoAsignadoInscripto,
-    validateLegajoAsignado
+    validateLegajoAsignado,
+    validateLegajoDisponibilidad
 }

@@ -90,6 +90,7 @@ const InscriptosMov = ()=>{
     //E.L. de form que se usa para actualizar los datos del inscripto
     const[formInscripto, setFormInscripto]=useState({
         cargo_actual:'', 
+        turno_actual:'',
         cargo_solicitado:'', 
         dni:'', 
         apellido:'', 
@@ -328,10 +329,18 @@ const InscriptosMov = ()=>{
     //datos del inscripto, cambiando el estado del form a "editar"
     const handleChange = (event) => {
         const{name, value} = event.target;
-        setFormInscripto({
-            ...formInscripto,
-            [name]:value
-        });
+        if(name==='turno_actual'){
+            setFormInscripto({
+                ...formInscripto,
+                [name]:value.toUpperCase()
+            });
+        }else{
+
+            setFormInscripto({
+                ...formInscripto,
+                [name]:value
+            });
+        }
         setEstadoForm('editar');
     };
 
@@ -339,6 +348,7 @@ const InscriptosMov = ()=>{
     const valoresInicialesFormInscripto = ()=>{
         setFormInscripto({
             cargo_actual:datosInscriptoSelect.cargo_actual, 
+            turno_actual:datosInscriptoSelect?.turno_actual, 
             cargo_solicitado:datosInscriptoSelect.cargo_solicitado, 
             dni:datosInscriptoSelect.dni, 
             apellido:datosInscriptoSelect.apellido, 
@@ -839,9 +849,8 @@ const InscriptosMov = ()=>{
         content:() => componentRef.current,
         pageStyle:`
         @page {
-          size: 21.59cm 17.78cm; /* Tamaño del papel */
-          margin:0.4cm;
-          orientation: landscape; /* Orientación vertical */
+          size: 16.51cm 21.59cm   ; /* Tamaño del papel */
+          margin: 0cm;
         }
       `,
     });
@@ -853,7 +862,7 @@ const InscriptosMov = ()=>{
         @page {
           size: 21.59cm 17.78cm; /* Tamaño del papel */
           margin:0.4cm;
-          orientation: landscape; /* Orientación vertical */
+          orientation: portrait; /* Orientación vertical */
         }
       `,
     });
@@ -997,7 +1006,7 @@ const InscriptosMov = ()=>{
 
         return()=>clearInterval(intervalId);
 
-    },[tipoInscripto, estadoInscripto, inputSearch, currentPage])
+    },[formInscripto, tipoInscripto, estadoInscripto, inputSearch, currentPage])
 
 
     useEffect(()=>{
@@ -1041,11 +1050,11 @@ const InscriptosMov = ()=>{
             <div className="bg-[#C9D991] h-[12vh] flex flex-row">
                 {/* TITULOS - BOTONES - NIVEL */}
                 <div className="w-[40vw] flex justify-center items-start flex-col ">
-                    <label className="ml-4 text-base font-semibold">NIVEL {configSG.nivel.descripcion}</label>
+                    <label className="ml-4 text-base desktop-xl:text-xl font-semibold">NIVEL {configSG.nivel.descripcion}</label>
                     <div className="flex flex-row">
-                        <label className="ml-4 text-lg font-sans font-bold">INSCRIPTOS - LUOM</label>
+                        <label className="ml-4 text-lg desktop-xl:text-xl font-sans font-bold">INSCRIPTOS - LUOM</label>
                     </div>
-                    <div className="flex flex-row">
+                    <div className="flex flex-row desktop-xl:text-xl">
                         <button 
                             className={`ml-4 mr-2 px-[2px] border-[1px] rounded shadow 
                                 ${(tipoInscripto===2)
@@ -1109,7 +1118,7 @@ const InscriptosMov = ()=>{
                         {/* Filtros */}
                         <div className="text-base w-[50%] ">
                             <label 
-                                className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
+                                className={`border-b-2 px-2 cursor-pointer transition-all duration-500 desktop-xl:text-lg
                                     ${(estadoInscripto==='todos')
                                         ?`border-sky-500 text-sky-500`
                                         :`border-zinc-300 text-black`
@@ -1118,7 +1127,7 @@ const InscriptosMov = ()=>{
                                 onClick={()=>{setEstadoInscripto('todos');setCurrentPage(1)}}
                             >Todos</label>
                             <label 
-                                className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
+                                className={`border-b-2 px-2 cursor-pointer transition-all duration-500 desktop-xl:text-lg
                                     ${(estadoInscripto==='sinasignar')
                                         ?`border-sky-500 text-sky-500`
                                         :`border-zinc-300 text-black`
@@ -1127,7 +1136,7 @@ const InscriptosMov = ()=>{
                                 onClick={()=>{setEstadoInscripto('sinasignar');setCurrentPage(1)}}
                             >Sin Asignar</label>
                             <label 
-                                className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
+                                className={`border-b-2 px-2 cursor-pointer transition-all duration-500 desktop-xl:text-lg
                                     ${(estadoInscripto==='asignados')
                                         ?`border-sky-500 text-sky-500`
                                         :`border-zinc-300 text-black`
@@ -1141,7 +1150,7 @@ const InscriptosMov = ()=>{
                         <div className="w-[50%]  flex justify-end">
                             <div className="border-[1px] border-zinc-400 w-[20vw] rounded flex flex-row items-center justify-between mr-2">
                                 <input 
-                                    className="w-[15vw] focus:outline-none rounded"
+                                    className="w-[15vw] focus:outline-none rounded desktop-xl:text-lg"
                                     placeholder="Buscar..."
                                     type="text"
                                     value={inputSearch}
@@ -1164,11 +1173,11 @@ const InscriptosMov = ()=>{
                     </div>
 
                     {/* PARTE INFERIOR DE DATOS DE TABLA */}
-                    <div className="desktop:h-[65vh] desktop-lg:h-[79vh] desktop-md:h-[65vh] overflow-y-auto">
+                    <div className="desktop:h-[65vh] desktop-lg:h-[65vh] desktop-md:h-[65vh] overflow-y-auto">
                         <table className="border-[1px] bg-slate-50 w-full">
                             <thead>
-                                <tr className="sticky top-0 text-sm border-b-[1px] border-zinc-300 bg-zinc-200">
-                                    <th className="border-r-[1px] border-zinc-300">Orden</th>
+                                <tr className="sticky top-0 text-sm desktop-xl:text-lg border-b-[1px] border-zinc-300 bg-zinc-200">
+                                    <th className="border-r-[1px] border-zinc-300">Ord.</th>
                                     <th className="border-r-[1px] border-zinc-300">Puntaje</th>
                                     <th className="border-r-[1px] border-zinc-300">Apellido</th>
                                     <th className="border-r-[1px] border-zinc-300">Nombre</th>
@@ -1176,6 +1185,7 @@ const InscriptosMov = ()=>{
                                     <th className="border-r-[1px] border-zinc-300">Legajo</th>
                                     <th className="border-r-[1px] border-zinc-300">Escuela</th>
                                     <th className="border-r-[1px] border-zinc-300">Cargo Actual</th>
+                                    <th className="border-r-[1px] border-zinc-300">Turno</th>
                                     <th className="border-r-[1px] border-zinc-300">Cargo Solicitado</th>
                                     <th className="border-r-[1px] border-zinc-300">Observacion</th>
                                     <th className="border-r-[1px] border-zinc-300">Estado</th>
@@ -1189,17 +1199,18 @@ const InscriptosMov = ()=>{
                                         const colorFila = (inscripto.vacante_asignada || inscripto.dniEnOtroNivel) ?`bg-red-200` :(((inscripto.id_inscriptos_mov % 2)===0) ?`bg-zinc-200` :``)
                                         return(
                                             <tr 
-                                                className={`text-lg font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 ${colorFila}`}
+                                                className={`text-lg desktop-xl:text-xl font-medium border-b-[1px] border-zinc-500 h-[5vh] desktop-xl:h-[5.5vh] hover:bg-orange-300 ${colorFila}`}
                                                 key={index}
                                             >
-                                                <td className="text-center">{inscripto.orden}</td>
-                                                <td className="text-center">{inscripto.total}</td>
-                                                <td>{inscripto.apellido}</td>
-                                                <td>{inscripto.nombre}</td>
-                                                <td className="text-center">{inscripto.dni}</td>
+                                                <td className="text-center font-light">{inscripto.orden}</td>
+                                                <td className="text-center font-bold text-sky-800">{inscripto.total}</td>
+                                                <td className="pl-2">{inscripto.apellido}</td>
+                                                <td className="pl-2">{inscripto.nombre}</td>
+                                                <td className="text-center px-2">{inscripto.dni}</td>
                                                 <td className="text-center">{inscripto.legajo}</td>
                                                 <td className="text-center">{inscripto.nro_escuela}</td>
                                                 <td className="text-center">{inscripto.cargo_actual}</td>
+                                                <td className="text-center">{inscripto.turno_actual}</td>
                                                 <td className="text-center">{inscripto.cargo_solicitado}</td>
                                                 <td className="text-sm text-center">{inscripto.observacion}</td>
                                                 <td className="text-sm text-center">{inscripto.estado_inscripto}</td>
@@ -1253,17 +1264,23 @@ const InscriptosMov = ()=>{
         {/* MODAL DE VACANTES DISPONIBLES*/}
         <ModalEdit isOpen={isOpenModalVac} closeModal={closeModalVac}>
             <div className="h-full w-100  flex flex-col items-center">
-                <label className="text-xl text-center font-bold " translate='no'>VACANTES DISPONIBLES</label>
+                <label className="text-xl desktop-xl:text-2xl text-center font-bold " translate='no'>VACANTES DISPONIBLES</label>
                 {/* DATOS DEL INSCRIPTO */}
                 <div className="flex flex-row">
-                    <div className="border-[1px] border-zinc-400  flex justify-center rounded-md shadow font-semibold">
-                        <label className="mx-4 text-zinc-500">{datosInscriptoSelect.apellido} {datosInscriptoSelect.nombre}</label>
-                        <label className="mr-4 text-red-400">Cargo Origen: {datosInscriptoSelect.cargo_actual}</label>
-                        <label className="mr-4 text-sky-500">Cargo Solicitado: {datosInscriptoSelect.cargo_solicitado}</label>
+                    <div className="my-2 border-[1px] border-zinc-400 flex flex-row justify-center rounded-md shadow font-semibold desktop-xl:text-2xl">
+                        <label className="ml-2 text-zinc-500">{datosInscriptoSelect.apellido} {datosInscriptoSelect.nombre}</label>
+                        <label className="mx-2 text-zinc-500 font-bold">({datosInscriptoSelect.tipoinscripto})</label>
+                        <label className="mr-[2px] text-red-400">C. Origen: </label>
+                        <label className="mr-4 text-red-400 font-bold">{datosInscriptoSelect.cargo_actual}</label>
+                        <label className="mr-[2px] text-red-400">Turno:</label>
+                        <label className="mr-2 text-red-400 font-bold">{datosInscriptoSelect.turno_actual}</label>
+                        <label className="mr-2 font-bold">/</label>
+                        <label className="mr-[2px] text-sky-500">C. Solicitado: </label>
+                        <label className="mr-4 text-sky-500 font-bold">{datosInscriptoSelect.cargo_solicitado}</label>
                     </div>
-                    <div className="ml-2 flex flex-row">
-                        <label>Estado: </label>
-                        <div className="ml-2 border-[1px] border-zinc-400  flex justify-center rounded-md shadow font-semibold">
+                    <div className="ml-2 flex flex-row items-center">
+                        <label className="text-base desktop-xl:text-lg font-bold">Estado: </label>
+                        <div className="ml-2 border-[1px] border-zinc-400  flex justify-center rounded-md shadow font-semibold text-base desktop-xl:text-lg">
                             <select 
                                 className="focus:outline-none rounded-md"
                                 value={estadoAsignadoInscripto}
@@ -1283,7 +1300,7 @@ const InscriptosMov = ()=>{
                         <div className="flex flex-row justify-between">
                             {/* FILTRO ESPECIALIDAD */}
                             <div className="flex flex-row my-[4px]">
-                                <label className="mx-4 ">Especialidad: </label>
+                                <label className="mx-4 text-base desktop-xl:text-lg ">Especialidad: </label>
                                 <div className="border-[1px] h-[26px] rounded border-zinc-400 bg-neutral-50">
                                     <select
                                         className="w-[40vw] h-[24px] border-[1px] rounded focus:outline-none focus:ring-0 focus:border-none"
@@ -1314,7 +1331,7 @@ const InscriptosMov = ()=>{
                             <div className="flex justify-end my-[4px]">
                                 <div className="border-[1px] border-zinc-400 w-[20vw] rounded flex flex-row items-center justify-between mr-2 bg-white">
                                     <input 
-                                        className="w-[15vw] focus:outline-none rounded pl-[2px]"
+                                        className="w-[15vw] focus:outline-none rounded pl-[2px] desktop-xl:text-lg"
                                         placeholder="Buscar..."
                                         type="text"
                                         value={inputSearchVac}
@@ -1336,8 +1353,8 @@ const InscriptosMov = ()=>{
                             </div>
                         </div>
                         {/* ORDENAMIENTO POR CAMPOS SEGUN FILTRO BUSQUEDA */}
-                        <div className="flex flex-row">
-                            <div className="flex flex-row items-center justify-center w-[2vw] border-r-[1px] border-zinc-200 hover:text-sky-500">
+                        <div className="flex flex-row desktop-xl:text-lg">
+                            <div className="flex flex-row items-center justify-center w-[2vw] border-r-[1px] border-zinc-200 hover:text-sky-500 ">
                                 <label className="font-base">ID</label>
                             </div>
                             <div 
@@ -1449,7 +1466,7 @@ const InscriptosMov = ()=>{
                                     listadoVacantesDispMov?.map((vacante, index)=>{
                                         return(
                                             <tr
-                                                className={`text-lg font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 `}
+                                                className={`text-lg desktop-xl:text-xl font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 `}
                                                         key={index}
                                             >
                                                 <td className="w-[2vw] pl-[4px] font-light">{vacante.id_vacante_mov
@@ -1496,7 +1513,7 @@ const InscriptosMov = ()=>{
                 <div>
                     {(estadoAsignadoInscripto==='' || estadoAsignadoInscripto===null)
                         ?<button
-                            className="border-2 border-[#7C8EA6] mt-2 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                            className="border-2 border-[#7C8EA6] mt-2 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2 desktop-xl:text-lg"
                             onClick={submitCloseModalVac}
                             translate='no'
                         >CERRAR</button>
@@ -1521,60 +1538,94 @@ const InscriptosMov = ()=>{
 
         {/* MODAL DE ASIGNACION */}
         <ModalEdit isOpen={isOpenModalAsign} closeModal={closeModalAsign}>
-            <div className="h-100 w-100  flex flex-col items-center">
+            <div className="h-100 w-[55vw] desktop-xl:w-[55vw] flex flex-col items-center">
                 <label 
-                    className="text-xl text-center font-bold " 
+                    className="text-xl text-center font-bold desktop-xl:text-2xl" 
                     translate='no'
                 >
                 {`ASIGNACION VACANTE (
                     ${datosInscriptoSelect.tipoinscripto} ) `}
                 </label>
                 {/* DATOS DEL INSCRIPTO */}
-                <div className="border-[1px] border-purple-400 flex flex-col justify-center rounded-md shadow font-semibold text-lg bg-purple-100 mb-2">
+                <div className="border-[1px] border-purple-400 flex flex-col justify-center rounded-md shadow font-semibold text-lg bg-purple-100 mb-2 desktop-xl:text-2xl my-2">
                     <div className="flex flex-row">
                         <label className="mx-4 text-zinc-800">Docente: {datosInscriptoSelect.apellido} {datosInscriptoSelect.nombre}</label>
                         <label className="mr-4 text-zinc-800">DNI: {datosInscriptoSelect.dni}</label>
                         <label className="mr-4 text-zinc-800">Puntaje: {datosInscriptoSelect.total}</label>
                     </div>
                 </div>
-                {/* AVISO ESPECIALIDA DIFIERE DE LA SOLICITADA */}
-                {(datosInscriptoSelect.cargo_solicitado!=datosVacanteSelect.cargo) &&
-                    <div className="border-[2px] border-red-500 flex flex-col justify-center rounded-md shadow font-semibold text-lg bg-red-100 mb-2 blink">
-                        <label className="mx-4">{`El cargo solicitado: ${datosInscriptoSelect.cargo_solicitado}, es distinto al cargo a tomar: ${datosVacanteSelect.cargo}`}</label>
+                {/* AVISO ESPECIALIDAd DIFIERE DE LA SOLICITADA */}
+                {/* PARA TRASLADO */}
+                {((datosInscriptoSelect.cargo_solicitado!=datosVacanteSelect.cargo) && (datosInscriptoSelect.id_tipo_inscripto===2))
+                    ?<div className="flex flex-row items-center">
+                        <FiAlertTriangle  className="mr-2 text-xl desktop-xl:text-3xl  text-red-500"/>
+                        <div className="border-[2px] border-red-500 flex flex-row justify-center rounded-md shadow font-semibold text-lg bg-red-100 mb-2 desktop-xl:text-xl animate-parpadeoborde">
+                            <label className="mx-2">El cargo solicitado: </label>
+                            <label className="mr-2 font-bold">{datosInscriptoSelect.cargo_solicitado}</label>
+                            <label className="mr-2">, es distinto al cargo a tomar: </label>
+                            <label className="mr-2 font-bold">{datosVacanteSelect.cargo}</label>
+                        </div>
+                        {/* <FiAlertTriangle  className="ml-2 text-xl desktop-xl:text-3xl blink text-red-500"/> */}
                     </div>
+                    :``
+                }
+                {/* PARA CAMBIO FUNCION */}
+                {/* {((datosInscriptoSelect.cargo_solicitado===datosVacanteSelect.cargo) && (datosInscriptoSelect.id_tipo_inscripto===3)) &&
+                    <div className="border-[2px] border-red-500 flex flex-row justify-center rounded-md shadow font-semibold text-lg bg-red-100 mb-2 desktop-xl:text-xl blink">
+                    <label className="mx-2">El cargo solicitado: </label>
+                    <label className="mr-2 font-bold">{datosInscriptoSelect.cargo_solicitado}</label>
+                    <label className="mr-2">, es igual al cargo a tomar: </label>
+                    <label className="mr-2 font-bold">{datosVacanteSelect.cargo}</label>
+                </div>
+                } */}
+                {/* PARA TURNOS DIFERENTES */}
+                {(datosInscriptoSelect.turno_actual!=datosVacanteSelect.turno)
+                    ?<div className="flex flex-row items-center ">
+                        <FiAlertTriangle  className="mr-2 text-xl desktop-xl:text-3xl  text-red-500"/>
+                        <div className="border-[2px] border-red-500 flex flex-row justify-center rounded-md shadow font-semibold text-lg bg-red-100 mb-2 desktop-xl:text-xl animate-parpadeoborde">
+                            <label className="mx-2">El Turno Origen: </label>
+                            <label className="mr-2 font-bold">{datosInscriptoSelect.turno_actual}</label>
+                            <label className="mr-2">, difiere al Turno del Cargo a Tomar: </label>
+                            <label className="mr-2 font-bold">{datosVacanteSelect.turno}</label>
+                        </div>
+                        {/* <FiAlertTriangle  className="ml-2 text-xl desktop-xl:text-3xl blink text-red-500"/> */}
+                    </div>
+                    :``
                 }
                 {/* DATOS DE LOS CARGOS */}
-                <div className="flex flex-row h-[54vh] w-[50vw]">
+                <div className="flex flex-row  w-[55vw]">
                     {/* CARGO ORIGEN */}
-                    <div className="flex flex-col border-[5px] border-red-500 w-[50%] items-center m-y-[4px] rounded-md shadow-lg bg-red-100">
-                        <label className="font-bold text-lg">ANTES</label>
-                        <div>
-                            <label className="mb-0 font-semibold text-sm ">Escuela</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosInscriptoSelect.nro_escuela}</div>
-                        </div>
-                        <div>
-                            <label className="font-semibold text-sm">Cargo</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosInscriptoSelect.cargo_actual}</div>
-                        </div>
-                        <div>
-                            <label className="font-semibold text-sm">Modalidad</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50"></div>
-                        </div>
-                        <div>
-                            <label className="font-semibold text-sm">Turno</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50"></div>
-                        </div>
-                        <div>
-                            <label className="font-semibold text-sm">Region</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50"></div>
-                        </div>
-                        <div>
-                            <label className="font-semibold text-sm">Localidad</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50"></div>
-                        </div>
-                        <div>
-                            <label className="font-semibold text-sm">Zona</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50"></div>
+                    <div className="flex flex-col border-[5px] border-red-500 w-[50%] items-center m-y-[4px] rounded-md shadow-lg bg-red-100 ">
+                        <label className="my-2 font-bold text-lg desktop-xl:text-xl">ANTES</label>
+                        <div className="flex flex-col items-end">
+                            <div className="flex flex-row items-center my-2">
+                                <label className="font-semibold mr-2 text-lg ">Escuela</label>
+                                <div className="border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl">{datosInscriptoSelect.nro_escuela}</div>
+                            </div>
+                            <div className="flex flex-row items-center  my-2">
+                                <label className="font-semibold mr-2 text-lg">Cargo</label>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl">{datosInscriptoSelect.cargo_actual}</div>
+                            </div>
+                            <div className="flex flex-row items-center  my-2">
+                                <label className="font-semibold mr-2 text-lg">Modalidad</label>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl"></div>
+                            </div>
+                            <div className="flex flex-row items-center  my-2">
+                                <label className="font-semibold mr-2 text-lg">Turno</label>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl">{datosInscriptoSelect.turno_actual}</div>
+                            </div>
+                            <div className="flex flex-row items-center  my-2">
+                                <label className="font-semibold mr-2 text-lg">Region</label>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl"></div>
+                            </div>
+                            <div className="flex flex-row items-center my-2">
+                                <label className="font-semibold mr-2 text-lg">Localidad</label>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl"></div>
+                            </div>
+                            <div className="flex flex-row items-center my-2 ">
+                                <label className="font-semibold mr-2 text-lg">Zona</label>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl"></div>
+                            </div>
                         </div>
                     </div>
                     <div className="flex items-center justify-center">
@@ -1582,51 +1633,60 @@ const InscriptosMov = ()=>{
                     </div>
                     {/* CARGO A TOMAR */}
                     <div className="flex flex-col border-[5px] border-emerald-500 w-[50%] items-center items-center m-y-[4px] ml-[9px] rounded-md shadow-lg bg-emerald-100">
-                        <label className="font-bold text-lg">DESPUES</label>
-                        <div>
-                            <label className="mb-0 font-semibold text-sm ">Escuela</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosVacanteSelect.establecimiento} {datosVacanteSelect.obs_establecimiento}</div>
-                        </div>
-                        <div>
-                            <label className="font-semibold text-sm">Cargo</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosVacanteSelect.cargo}</div>
-                        </div>
-                        <div>
-                            <label className="font-semibold text-sm">Modalidad</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosVacanteSelect.modalidad}</div>
-                        </div>
-                        <div>
-                            <label className="font-semibold text-sm">Turno</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosVacanteSelect.turno}</div>
-                        </div>
-                        <div>
-                            <label className="font-semibold text-sm">Region</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosVacanteSelect.region}</div>
-                        </div>
-                        <div>
-                            <label className="font-semibold text-sm">Localidad</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosVacanteSelect.localidad}</div>
-                        </div>
-                        <div>
-                            <label className="font-semibold text-sm">Zona</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosVacanteSelect.zona}</div>
+                        <label className="my-2 font-bold text-lg desktop-xl:text-xl">DESPUES</label>
+                        <div className="flex flex-col items-end">
+                            <div className="flex flex-row items-center my-2 ">
+                                <label className="mb-0 font-semibold mr-2 text-lg ">Escuela</label>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl">{datosVacanteSelect.establecimiento} {datosVacanteSelect.obs_establecimiento}</div>
+                            </div>
+                            <div className="flex flex-row items-center my-2 ">
+                                <label className="font-semibold mr-2 text-lg">Cargo</label>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50  text-base desktop-xl:text-xl">{datosVacanteSelect.cargo}</div>
+                            </div>
+                            <div className="flex flex-row items-center my-2 ">
+                                <label className="font-semibold mr-2 text-lg">Modalidad</label>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl">{datosVacanteSelect.modalidad}</div>
+                            </div>
+                            <div className="flex flex-row items-center my-2 ">
+                                <label className="font-semibold mr-2 text-lg">Turno</label>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl">{datosVacanteSelect.turno}</div>
+                            </div>
+                            <div className="flex flex-row items-center my-2 ">
+                                <label className="font-semibold mr-2 text-lg">Region</label>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl">{datosVacanteSelect.region}</div>
+                            </div>
+                            <div className="flex flex-row items-center my-2 ">
+                                <label className="font-semibold mr-2 text-lg">Localidad</label>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl">{datosVacanteSelect.localidad}</div>
+                            </div>
+                            <div className="flex flex-row items-center my-2 ">
+                                <label className="font-semibold mr-2 text-lg">Zona</label>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl">{datosVacanteSelect.zona}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div>
+                <div className="">
                     <button
-                        className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white shadow hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                        className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8  bg-[#7C8EA6] text-white shadow hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2 desktop-xl:h-10 desktop-xl:text-xl"
                         onClick={()=>submitAsignarVacante()}
                         translate='no'
                     >ACEPTAR</button>
                     <button
-                        className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white shadow hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                        className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white shadow hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2 desktop-xl:h-10 desktop-xl:text-xl"
                         onClick={closeModalAsign}
                         translate='no'
                     >CANCELAR</button>
-                    <button
+                    {/* <button
                         onClick={()=>procesoImpresion()}
-                    >imprimir (test)</button>
+                    >imprimir (test)</button> */}
+                    <button className="font-bold hover:text-orange-500 hover:scale-150 transition-all duration-500  ">
+                        <IoMdPrint 
+                            title="Imprimir Designacion"
+                            className="text-2xl"
+                            onClick={()=>procesoImpresion()}
+                        />
+                    </button>
                 </div>                
             </div>
         </ModalEdit>
@@ -1634,7 +1694,7 @@ const InscriptosMov = ()=>{
         
         {/* MODAL DE DATOS DEL INSCRIPTO */}
         <ModalEdit isOpen={isOpenModalEdit} closeModal={closeModalEdit}>
-            <div className="h-100 w-100  flex flex-col items-center">
+            <div className="h-100  flex flex-col items-center">
                 <label className="text-xl text-center font-semibold " translate='no'>DATOS DEL INSCRIPTO</label>
                 <div className="flex flex-row">
                     {/* DATOS INSCRIPTO IZQUIERDA */}
@@ -1752,6 +1812,15 @@ const InscriptosMov = ()=>{
                                         name="cargo_actual"
                                         className="border-[1px] border-orange-400 w-[60mm] pl-2 text-start"
                                         value={formInscripto.cargo_actual}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div className="flex flex-row mr-2 my-[2px]">
+                                    <label className="text-base mr-2">Turno: </label>
+                                    <input 
+                                        name="turno_actual"
+                                        className="border-[1px] border-orange-400 w-[60mm] pl-2 text-start"
+                                        value={formInscripto.turno_actual}
                                         onChange={handleChange}
                                     />
                                 </div>
@@ -1879,8 +1948,6 @@ const InscriptosMov = ()=>{
                         :``
                 }
 
-
-                
 
                 {/* DATOS DE CARGO ORIGINAL TOMADO POR OTRO DOCENTE */}
                 {/* Solo se muestra si su cargo original fue tomado por otro docente */}

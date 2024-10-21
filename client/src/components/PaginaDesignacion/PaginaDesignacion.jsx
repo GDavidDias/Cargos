@@ -117,7 +117,7 @@ console.log('que tiene id_nivel en PaginaDesignacion: ', id_nivel);
             {/* PIE IMPRESION */}
             <div className='flex flex-row h-[32vh] justify-start items-end'>
                 <p className='text-[0.7rem] font-semibold border-[1px] border-b-gray-500'>Nota: </p>
-                <p className='text-[0.7rem] border-[1px] border-b-gray-500'>La presente queda sujeta a la Resolucion de sumarios, recursos, impugnaciones u observaciones conformelo prevee la normativa vigente.</p>
+                <p className='text-[0.7rem] border-[1px] border-b-gray-500'>La presente queda sujeta a la Resolución de sumarios, recursos, impugnaciones u observaciones conforme lo prevee la normativa vigente.</p>
             </div>
         </div>
     )
