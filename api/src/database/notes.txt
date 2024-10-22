@@ -40,7 +40,7 @@ CREATE TABLE estado_inscripto(id_estado_inscripto INT(2) NOT NULL AUTO_INCREMENT
 ALTER TABLE inscriptos_mov ADD id_estado_inscripto INT(2);
 
 --> Agrego campo turno_actual en tabla inscriptos_mov
-ALTER TABLE inscriptos_mov ADD turno_actual_actual VARCHAR(50);
+ALTER TABLE inscriptos_mov ADD turno_actual VARCHAR(50);
 -----------------------------------------
 PERMISOS:
 1 - administrador

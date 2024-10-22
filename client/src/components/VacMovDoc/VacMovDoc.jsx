@@ -115,7 +115,7 @@ const VacMovDoc = () => {
         //Cargo las especialidades
         cargaEspecidalidades();
 
-        socket.emit('solicitud-cliente',{message:"Listado de Vacantes"});
+        //socket.emit('solicitud-cliente',{message:"Listado de Vacantes"});
 
         // // Limpia el evento al desmontar el componente
         // return () => {

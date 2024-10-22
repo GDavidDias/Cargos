@@ -172,6 +172,8 @@ const InscriptosMov = ()=>{
 
     const[estadoAsignadoInscripto, setEstadoAsignadoInscripto]=useState('');
 
+    const[cantLegajoDni, setCantLegajoDni]=useState(0);
+
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
     //-------------------------------------
@@ -607,12 +609,17 @@ const InscriptosMov = ()=>{
         //VALIDACION DNI YA TOMO CARGO
         // const datosValidate = await validaDniAsignadoListado(idListadoInscriptosMov,datos.dni);
         // console.log('que trae validaDniAsignadoListado: ', datosValidate);
+
+        //VALIDA CANTIDAD DE LEGAJOS QUE TIENE EL DNI PARA VALIDAR TURNO
+        validacantidadlegajo(datos.dni);
+
         //VALIDACION LEGAJO YA TOMO CARGO
         const datosValidate = await validaLegajoAsignadoListado(idListadoInscriptosMov, datos.legajo);
         console.log('que trae validaLegajoAsignadoListado: ', datosValidate);
         //seteo el estadoAsignadoInscripto
         console.log('QUE TIENE datos.id_estado_inscripto: ', datos.id_estado_inscripto);
         setEstadoAsignadoInscripto(datos.id_estado_inscripto);
+
 
         if(datosValidate.length!=0){
             setDatosValidaDni(datosValidate[0]);
@@ -918,6 +925,7 @@ const InscriptosMov = ()=>{
         setOrderBy('');
         setTypeOrder('');
         setEstadoAsignadoInscripto('');
+        setCantLegajoDni(0);
         closeModalVac();
     };
 
@@ -949,6 +957,16 @@ const InscriptosMov = ()=>{
             console.log('error en updateEstadoAsignadoInscripto', error);
         }
 
+    };
+
+    const validacantidadlegajo=async(dni)=>{
+        const result =  await validaDniAsignadoListado(idListadoInscriptosMov, dni);
+
+        console.log('que trae validadniasignadolistado: ', result[0].cantidad);
+
+        const cantidad = result[0].cantidad;
+
+        setCantLegajoDni(cantidad);
     };
 
 
@@ -1579,7 +1597,7 @@ const InscriptosMov = ()=>{
                 </div>
                 } */}
                 {/* PARA TURNOS DIFERENTES */}
-                {(datosInscriptoSelect.turno_actual!=datosVacanteSelect.turno)
+                {((datosInscriptoSelect.turno_actual!=datosVacanteSelect.turno) && cantLegajoDni>1)
                     ?<div className="flex flex-row items-center ">
                         <FiAlertTriangle  className="mr-2 text-xl desktop-xl:text-3xl  text-red-500"/>
                         <div className="border-[2px] border-red-500 flex flex-row justify-center rounded-md shadow font-semibold text-lg bg-red-100 mb-2 desktop-xl:text-xl animate-parpadeoborde">

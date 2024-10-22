@@ -10,13 +10,8 @@ module.exports = async(req,res)=>{
     console.log('que trae dniInscripto: ', dniInscripto);
 
 
-    let armaquery=`SELECT im.id_inscriptos_mov, im.dni, im.apellido, im.nombre, im.total, im.legajo, im.id_tipo_inscripto, ti.descripcion AS tipoinscripto, im.id_listado_inscriptos, li.descripcion, am2.id_vacante_mov AS vacante_asignada, im.id_vacante_generada_cargo_actual, vm.establecimiento AS vac_establecimiento, vm.obs_establecimiento AS vac_obs_establecimiento, vm.region AS vac_region, vm.departamento AS vac_departamento, vm.localidad AS vac_localidad, vm.cargo AS vac_cargo, vm.turno AS vac_turno, vm.modalidad AS vac_modalidad, vm.cupof AS vac_cupof
+    let armaquery=`SELECT im.dni, count(DISTINCT im.legajo) AS cantidad
             FROM inscriptos_mov AS im
-            LEFT JOIN tipo_inscripto AS ti ON im.id_tipo_inscripto = ti.id_tipo_inscripto
-            LEFT JOIN listado_inscriptos AS li ON im.id_listado_inscriptos = li.id_listado_inscriptos
-            JOIN (SELECT am.id_inscripto_mov, am.id_vacante_mov FROM asignacion_mov AS am WHERE am.obs_desactiva IS NULL) AS am2 ON im.id_inscriptos_mov = am2.id_inscripto_mov
-            LEFT JOIN vacantes_mov AS vm ON am2.id_vacante_mov = vm.id_vacante_mov
-
             `;
 
     armaquery += `WHERE im.id_listado_inscriptos = ${id_listado_inscriptos}

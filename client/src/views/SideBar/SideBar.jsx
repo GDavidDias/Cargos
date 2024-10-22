@@ -260,7 +260,7 @@ const SideBar = () => {
                         </div>
                     }
 
-                    <div 
+                    {/* <div 
                         className={` rounded p-[4px] flex flex-row justify-start items-center
                             ${(pageSG==='VacMovDoc')
                             ?'bg-[#C9D991] text-[#7C8EA6]'
@@ -271,7 +271,7 @@ const SideBar = () => {
                     >
                         <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
                         <label className="font-light desktop-xl:text-lg">Vac TEST</label>
-                    </div>
+                    </div> */}
 
                 </div>
 
