@@ -231,19 +231,16 @@ const Landing = () => {
                 </div>
             </div>
 
-            <div className="desktop:h-[50vh] flex flex-col justify-center items-center  bg-[#FFFEFC]  border-2 border-[#729DA6] desktop:w-[55vw] movil:w-full movil:h-[50vh] rounded-lg mt-10 shadow-lg  p-4 ">
+            {/* <div className="desktop:h-[50vh] flex flex-col justify-center items-center  bg-[#FFFEFC]  border-2 border-[#729DA6] desktop:w-[55vw] movil:w-full movil:h-[50vh] rounded-lg mt-10 shadow-lg  p-4 "> */}
+            <div className="desktop:h-[50vh] flex flex-col justify-center items-center  bg-[#FFFEFC]   desktop:w-[55vw] movil:w-full movil:h-[50vh] rounded-lg mt-10 shadow-lg  p-4 ">
                 <label className="text-[#729DA6] font-medium text-[20px] mb-4 desktop-xl:text-3xl " translate='no'>Ingresar al Sistema</label>
                 <div className="flex flex-row">
                     {/* PARTE IZQUIERDA INGRESO INVITADOS */}
-                    <div className="border-2 border-[#729DA6] desktop:w-[25vw] movil:w-[60vw] text-center mx-2 rounded-md">
+                    {/* <div className="border-2 border-[#729DA6] desktop:w-[25vw] movil:w-[60vw] text-center mx-2 rounded-md">
                         <h1 className="font-semibold mt-2 text-[17px] desktop-xl:text-2xl">Entrega de Cargos</h1>
                         <h1 className=" mt-2 text-[17px] desktop-xl:text-xl">(Ingreso Docentes)</h1>
                         <div className="flex flex-col mt-4">
                             <div className="my-4">
-                                {/* <span className="relative flex h-3 w-3 mb-[-2vh] ">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
-                                </span> */}
                                 <button
                                     className=" w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2 desktop-xl:h-10 desktop-xl:text-xl"
                                     onClick={submitNivelInicial}
@@ -252,10 +249,6 @@ const Landing = () => {
                                 >Sala INICIAL</button>
                             </div>
                             <div>
-                                {/* <span className="relative flex h-3 w-3 mb-[-2vh] ">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
-                                </span> */}
                                 <button
                                     className="w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2 desktop-xl:h-10 desktop-xl:text-xl"
                                     onClick={submitNivelPrimario}
@@ -265,7 +258,7 @@ const Landing = () => {
                             </div>
                         </div>
 
-                    </div>
+                    </div> */}
 
                     {/* PARTE DERECHA INGRESO USUARIOS JPCD */}
                     {/* SOLO APARECE EN MODO DESKTOP, NOVIL NO */}

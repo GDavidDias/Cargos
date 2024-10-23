@@ -350,7 +350,7 @@ const InscriptosMov = ()=>{
     const valoresInicialesFormInscripto = ()=>{
         setFormInscripto({
             cargo_actual:datosInscriptoSelect.cargo_actual, 
-            turno_actual:datosInscriptoSelect?.turno_actual, 
+            turno_actual:(datosInscriptoSelect.turno_actual===null) ?`` :datosInscriptoSelect.turno_actual, 
             cargo_solicitado:datosInscriptoSelect.cargo_solicitado, 
             dni:datosInscriptoSelect.dni, 
             apellido:datosInscriptoSelect.apellido, 
@@ -947,6 +947,7 @@ const InscriptosMov = ()=>{
     };
 
     const submitGuardarEstadoInscripto=async()=>{
+        console.log('que tiene estadoAsignadoInscripto: ', estadoAsignadoInscripto)
         try{
             const datosUpdateEstado = await updateEstadoAsignadoInscripto(datosInscriptoSelect.id_inscriptos_mov, estadoAsignadoInscripto);
             console.log('que trae datosUpdateEstado: ', datosUpdateEstado)
@@ -1231,7 +1232,14 @@ const InscriptosMov = ()=>{
                                                 <td className="text-center">{inscripto.turno_actual}</td>
                                                 <td className="text-center">{inscripto.cargo_solicitado}</td>
                                                 <td className="text-sm text-center">{inscripto.observacion}</td>
-                                                <td className="text-sm text-center">{inscripto.estado_inscripto}</td>
+                                                <td 
+                                                    className={`text-sm text-center
+                                                            ${(inscripto.estado_inscripto=='Ausente')
+                                                                ?`text-red-500`
+                                                                :``
+                                                            }
+                                                        `}
+                                                >{inscripto.estado_inscripto}</td>
                                                 <td>
                                                     <div className="flex flex-row items-center justify-center  ">
                                                         {(inscripto.vacante_asignada===null && inscripto.id_vacante_generada_cargo_actual!=null)
@@ -1307,6 +1315,7 @@ const InscriptosMov = ()=>{
                                 <option value='' disabled selected>Seleccione...</option>
                                 <option value={2}>No Asignado</option>
                                 <option value={3}>En Espera</option>
+                                <option value={4}>Ausente</option>
                             </select>
                         </div>
                     </div>
@@ -1804,7 +1813,7 @@ const InscriptosMov = ()=>{
                                         disabled={true}
                                     />
                                 </div>
-                                {(datosInscriptoSelect.estado_inscripto==='' || datosInscriptoSelect.estado_inscripto===null)
+                                {(datosInscriptoSelect.estado_inscripto==='' || datosInscriptoSelect.estado_inscripto===null || datosInscriptoSelect.estado_inscripto=='Ausente')
                                 ?``
                                 :<div className="flex flex-row items-center mr-2">
                                     <label className="text-sm italid">Asistencia</label>
