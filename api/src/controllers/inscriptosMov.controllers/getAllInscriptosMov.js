@@ -20,7 +20,7 @@ module.exports = async(req,res)=>{
     const offset = (page-1)*limit;
 
 
-    let armaquery=`SELECT im.id_inscriptos_mov, im.cargo_actual, im.turno_actual, im.cargo_solicitado, im.dni, im.apellido, im.nombre, im.observacion, im.total, im.orden, im.nro_escuela, im.legajo, im.id_especialidad, e.descripcion AS especialidad, im.id_tipo_inscripto, ti.descripcion AS tipoinscripto, im.id_listado_inscriptos, li.descripcion, am2.id_vacante_mov AS vacante_asignada, im.id_vacante_generada_cargo_actual, im.id_estado_inscripto, ei.descripcion AS estado_inscripto, imCompara.dni AS dniEnOtroNivel
+    let armaquery=`SELECT im.id_inscriptos_mov, im.cargo_actual, im.turno_actual, im.cargo_solicitado, im.dni, im.apellido, im.nombre, im.observacion, im.total, im.orden, im.nro_escuela, im.legajo, im.id_especialidad, e.descripcion AS especialidad, im.id_tipo_inscripto, ti.descripcion AS tipoinscripto, im.id_listado_inscriptos, li.descripcion, am2.id_vacante_mov AS vacante_asignada, im.id_vacante_generada_cargo_actual, im.id_estado_inscripto, ei.descripcion AS estado_inscripto, imCompara.legajo AS legajoEnOtroNivel
             FROM inscriptos_mov AS im
             LEFT JOIN especialidad AS e ON im.id_especialidad = e.id_especialidad 
             LEFT JOIN tipo_inscripto AS ti ON im.id_tipo_inscripto = ti.id_tipo_inscripto
@@ -31,13 +31,22 @@ module.exports = async(req,res)=>{
             `;
 
     //arma subonsulta para saber si se encuentra en otro listado con alguna asignacion.
+    // if(idListadoInscriptosCompara && idListadoInscriptosCompara!=''){
+    //     armaquery += ` LEFT JOIN (SELECT DISTINCT im2.dni
+    //                      FROM inscriptos_mov AS im2 
+    //                      JOIN (SELECT am3.id_inscripto_mov 
+    //                                 FROM asignacion_mov AS am3 
+    //                                 WHERE am3.obs_desactiva IS NULL) AS am4 ON im2.id_inscriptos_mov = am4.id_inscripto_mov
+    //                      WHERE im2.id_listado_inscriptos = ${idListadoInscriptosCompara} ) AS imCompara ON im.dni = imCompara.dni
+    //                     `;
+    // };
     if(idListadoInscriptosCompara && idListadoInscriptosCompara!=''){
-        armaquery += ` LEFT JOIN (SELECT DISTINCT im2.dni
+        armaquery += ` LEFT JOIN (SELECT DISTINCT im2.legajo
                          FROM inscriptos_mov AS im2 
                          JOIN (SELECT am3.id_inscripto_mov 
                                     FROM asignacion_mov AS am3 
                                     WHERE am3.obs_desactiva IS NULL) AS am4 ON im2.id_inscriptos_mov = am4.id_inscripto_mov
-                         WHERE im2.id_listado_inscriptos = ${idListadoInscriptosCompara} ) AS imCompara ON im.dni = imCompara.dni
+                         WHERE im2.id_listado_inscriptos = ${idListadoInscriptosCompara} ) AS imCompara ON im.legajo = imCompara.legajo
                         `;
     };
 

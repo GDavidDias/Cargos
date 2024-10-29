@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { IoMdMenu } from "react-icons/io";
 import { FaRegUserCircle, FaPowerOff  } from "react-icons/fa";
 import { outUser } from "../../redux/userSlice";
+import { setIntervalActive } from "../../redux/intervalSlice";
 
 const SideBar = () => {
     const dispatch = useDispatch();
@@ -80,46 +81,34 @@ const SideBar = () => {
     };
     
     const submitNivelInicial = async() =>{
-        // let formInvitado = {
-        //     username:'invitadoIni',
-        //     password:'invitadoIni'
-        // };
 
-        console.log('Presiono Docente Inicial');
+        console.log('Presiono Nivel Inicial');
         const datosNivel=[{id_nivel:1, descripcion:'INICIAL'}];
+        console.log('Que tiene datosNivel: ', datosNivel);
         dispatch(setNivel(datosNivel));
+        resetInterval();
         navigate('/home');
 
-
-
-        // const datavalida = await conexion(formInvitado);
-        // if(datavalida.length!=0){
-        //     dispatch(setUser(datavalida));
-        //     navigate('/home');
-        // }else{
-        //     dispatch(outUser());
-        // }
     };
 
     const submitNivelPrimario = async()=>{
-        // let formInvitado = {
-        //     username:'invitadoPri',
-        //     password:'invitadoPri'
-        // };
 
         console.log('Presiono Nivel Primario');
         const datosNivel=[{id_nivel:2, descripcion:'PRIMARIO'}];
+        console.log('Que tiene datosNivel: ', datosNivel);
         dispatch(setNivel(datosNivel));
+        resetInterval();
         navigate('/home');
 
-        // const datavalida = await conexion(formInvitado);
-        // if(datavalida.length!=0){
-        //     dispatch(setUser(datavalida));
-        //     navigate('/home');
-        // }else{
-        //     dispatch(outUser());
-        // }
     };
+
+    const resetInterval =()=>{
+        dispatch(setIntervalActive(false)); //Detener el intervalo
+
+        setTimeout(()=>{
+            dispatch(setIntervalActive(true)); //Reactiva Intervalo
+        },1); //0 el tiempo que consideres necesario
+    };    
 
 
     useEffect(()=>{

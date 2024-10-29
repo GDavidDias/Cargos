@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllInscriptosMov } from "../../utils/fetchAllInscriptosMov";
 import { useNavigate } from "react-router-dom";
@@ -47,6 +47,9 @@ const InscriptosMov = ()=>{
     //E.G que trae la configuracion de sistema
     const configSG = useSelector((state)=>state.config);
     const userSG = useSelector((state)=>state.user);
+    const nivelSG = useSelector((state)=>state.config.nivel);
+
+    const isIntervalActive = useSelector((state)=>state.interval.isIntervalActive);
 
     //E.L. de Ventanas Modales
     const[isOpenModalConfirm,openModalConfirm,closeModalConfirm]=useModal(false);
@@ -160,8 +163,6 @@ const InscriptosMov = ()=>{
     const[orderBy, setOrderBy]=useState('');
     //E.L. guarda el tipo de orden
     const[typeOrder, setTypeOrder]=useState('');
-
-    const[isIntervalActive, setIsIntervalActive]=useState(true);
 
     const[totalVacantes, setTotalVacantes]=useState({
         disponibles:0,
@@ -891,6 +892,7 @@ const InscriptosMov = ()=>{
         //Cargo las especialidades
         cargaEspecidalidades();
 
+        //setIsIntervalActive(true);
 
     };
 
@@ -970,6 +972,11 @@ const InscriptosMov = ()=>{
         setCantLegajoDni(cantidad);
     };
 
+    // const resetInterval = useCallback(()=>{
+    //     console.log('INGRESO A RESET INTERVALO')
+    //     setIsIntervalActive(false);
+    //     setTimeout(()=>setIsIntervalActive(true),0);
+    // },[]);
 
     useEffect(()=>{
         console.log('que tiene CONTADOR: ',totalVacantes);
@@ -1019,18 +1026,32 @@ const InscriptosMov = ()=>{
     useEffect(()=>{
         if (!isIntervalActive) return;
 
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
+
         const intervalId = setInterval(()=>{
+            console.log('ACTIVO INTERVALO')
             getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
         }, 10000);
-
+        
         return()=>clearInterval(intervalId);
 
-    },[formInscripto, tipoInscripto, estadoInscripto, inputSearch, currentPage])
+    },[isIntervalActive, nivelSG, formInscripto, tipoInscripto, estadoInscripto, inputSearch, currentPage])
 
+    useEffect(()=>{
+        console.log('que tiene isIntervalActive: ', isIntervalActive);
+    },[isIntervalActive])
 
     useEffect(()=>{
         console.log('que tiene asignacionCargoOriginal: ', asignacionCargoOriginal);
     },[asignacionCargoOriginal])
+
+    //ADMIN CAMBIA DE NIVEL
+    // useEffect(()=>{
+    //     //resetInterval();
+    //     //setIsIntervalActive(false);
+    //     console.log('>>que tiene nivelSG: ', nivelSG);
+    //     //cargaInicialListados(nivelSG.id_nivel);
+    // },[nivelSG])
 
 
     //VEO EL LISTADO DE VACANTES DE MOVIMIENTO
@@ -1052,6 +1073,7 @@ const InscriptosMov = ()=>{
     useEffect(()=>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
         console.log('que tiene configSG en InscriptosMov (CARGA INICIAL): ', configSG);
+        
         cargaInicialListados(configSG.nivel.id_nivel);
     },[configSG])
 
