@@ -21,7 +21,7 @@ const Home = () =>{
     const[content, setContent]=useState(null);
 
     useEffect(()=>{
-        console.log('en que pagina estoy: ', pageSG);
+        //console.log('en que pagina estoy: ', pageSG);
         switch(pageSG){
             case 'InscriptosMov': //Pantalla de Inscriptos para Movimientos segun Nivel
                 setContent(<InscriptosMov/>);
@@ -54,7 +54,7 @@ const Home = () =>{
     },[pageSG]);
 
     useEffect(()=>{
-        console.log('que tiene userSG: ', userSG);
+        //console.log('que tiene userSG: ', userSG);
         // if(userSG && userSG.permiso===3){
         //     //Si es un invitado
         //     dispatch(setPage('VacantesMov'));
@@ -65,7 +65,7 @@ const Home = () =>{
     
     //AL RENDERIZAR AL INICIO
     useEffect(()=>{
-        console.log('que tiene userSG Home al REnderizar: ', userSG);
+        //console.log('que tiene userSG Home al REnderizar: ', userSG);
     },[])
     return(
         <div className="h-full w-full fixed ">

@@ -7,7 +7,7 @@ export const validaLegajoAsignadoListado = async(id_listado,legajo) => {
         "id_listado_inscriptos":id_listado,
         "legajoInscripto":legajo
     };
-    console.log('que tiene datos que pasa a body en validaLegajoAsignadoListado: ', dataBody);
+    //console.log('que tiene datos que pasa a body en validaLegajoAsignadoListado: ', dataBody);
 
     try{
         const {data} = await axios.post(`${URL}/api/validatelegajoasignado`,dataBody);

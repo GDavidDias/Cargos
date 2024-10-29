@@ -9,7 +9,7 @@ export const updateIdVacanteGenerada = async(idInscriptoMov, idVacanteGenerada) 
 
     try{
         const {data} = await axios.put(`${URL}/api/updatevacantegenerada/${idInscriptoMov}`,dataBody);
-        console.log('que trae data de updateIdVacanteGenerada: ', data);
+        //console.log('que trae data de updateIdVacanteGenerada: ', data);
         return data;
         
     }catch(error){

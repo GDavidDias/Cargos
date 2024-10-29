@@ -188,19 +188,19 @@ const InscriptosMov = ()=>{
     const buscoIdlistadoInscrip = async(id_nivel) =>{
         //Filtro configuracion para el nivel
         const configFilterNivel = await configSG.config.filter((configNivel)=>configNivel.id_nivel==id_nivel);
-        console.log('que trae configFilterNivel: ', configFilterNivel);
+        //console.log('que trae configFilterNivel: ', configFilterNivel);
 
         //Traigo el id_listado cargado en configuracion para:
         //LISTADO DE INSCRIPTOS DE MOVIMIENTOS -> id_listado_inscriptos_mov
         const idFilterListado = configFilterNivel[0]?.id_listado_inscriptos_mov;
-        console.log('que tiene idFilterListado: ',idFilterListado);
+        //console.log('que tiene idFilterListado: ',idFilterListado);
 
         //Guardo el id del listado de inscriptos
         setIdListadoInscriptosMov(idFilterListado);
 
         //Traigo el id del listado con cual comparar inscriptos
         const idFilterListadoCompara = configFilterNivel[0]?.id_listado_inscriptos_mov_compara;
-        console.log('que tiene ID LISTADO COMPARA: ', idFilterListadoCompara);
+        //console.log('que tiene ID LISTADO COMPARA: ', idFilterListadoCompara);
         //Guardo id del Listado que compara
         setIdListadoInscriptosMovCompara(idFilterListadoCompara)
 
@@ -213,7 +213,7 @@ const InscriptosMov = ()=>{
     const getInscriptosMov = async(id_listado,page,idTipoInscripto,filtroAsignacion,valorBusqueda,idListadoCompara) =>{
         let data;
         const limit=10;
-        console.log('que trae id_listado getInscriptosMovListado: ', id_listado);
+        //console.log('que trae id_listado getInscriptosMovListado: ', id_listado);
         if(id_listado){
             //paso id_listado, limit y page
             data = await fetchAllInscriptosMov(id_listado, limit, page,idTipoInscripto,filtroAsignacion, valorBusqueda, idListadoCompara);
@@ -243,11 +243,11 @@ const InscriptosMov = ()=>{
         
         dataVacAsignadas = await fetchAllVacantesMov(id_listado,limit,page,'asignadas',filtroBusqueda,filtroEspecialidad);
 
-        console.log('que trae DATA ASIGNADAS de fetchVacantesDispMov: ', dataVacAsignadas);
+        //console.log('que trae DATA ASIGNADAS de fetchVacantesDispMov: ', dataVacAsignadas);
 
         dataVacDisponibles = await fetchAllVacantesMov(id_listado,limit,page,'disponibles',filtroBusqueda,filtroEspecialidad);
 
-        console.log('que trae DATA DISPONIBLES de fetchVacantesDispMov: ', dataVacDisponibles);
+        //console.log('que trae DATA DISPONIBLES de fetchVacantesDispMov: ', dataVacDisponibles);
 
         setTotalVacantes({
             asignadas:dataVacAsignadas?.paginacion.totalItems,
@@ -260,12 +260,12 @@ const InscriptosMov = ()=>{
     const buscoIDListadoVacantes = async(id_nivel) =>{
         //Filtro configuracion para el nivel
         const configFilterNivel = await configSG.config.filter((configNivel)=>configNivel.id_nivel==id_nivel);
-        console.log('que trae configFilterNivel: ', configFilterNivel);
+        //console.log('que trae configFilterNivel: ', configFilterNivel);
 
         //Traigo el id del listado cargado en configuracion para:
         //LISTADO DE VACANTES DE MOVIMIENTOS -> id_listado_vacantes_mov
         const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_mov;
-        console.log('que tiene idFilterListado: ',idFilterListado);
+        //console.log('que tiene idFilterListado: ',idFilterListado);
 
         //Guardo id_listado_vacantes_mov para usarlo en Movimientos Rulos
         setIdListVacMov(idFilterListado);
@@ -281,7 +281,7 @@ const InscriptosMov = ()=>{
         //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
             data = await fetchVacantesDispMov(id_listado,limit,page,valorBusqueda,filtroEspecialidad,orderBy, typeOrder);
-            console.log('que trae data de fetchVacantesDispMov: ', data);
+            //console.log('que trae data de fetchVacantesDispMov: ', data);
 
             if(data.result?.length!=0){
                 setListadoVacantesDispMov(data.result); 
@@ -296,11 +296,11 @@ const InscriptosMov = ()=>{
 
     //Proc al presionar icono "Ver Datos", setea en E.L los datos del inscripto
     const submitVerDatosInscripto = async(datos) =>{
-        console.log('que recibe datos inscripto: ', datos);
+        //console.log('que recibe datos inscripto: ', datos);
         setDatosInscriptoSelect(datos);
 
         //seteo el estadoAsignadoInscripto
-        console.log('QUE TIENE datos.id_estado_inscripto: ', datos.id_estado_inscripto);
+        //console.log('QUE TIENE datos.id_estado_inscripto: ', datos.id_estado_inscripto);
         if(datos.id_estado_inscripto!=null){
             setEstadoAsignadoInscripto(datos.id_estado_inscripto);
         }else{
@@ -310,9 +310,9 @@ const InscriptosMov = ()=>{
 
         //traigo los datos del cargo (vacante) asignado
         if (datos.vacante_asignada!=null && datos.vacante_asignada!=''){
-            console.log('TIENE CARGO ASIGNADO');
+            //console.log('TIENE CARGO ASIGNADO');
             const data = await fetchVacantesAsignadaMov(datos.vacante_asignada);
-            console.log('que trae data de fetchVacantesAsignadaMov: ', data[0]);
+            //console.log('que trae data de fetchVacantesAsignadaMov: ', data[0]);
             setCargoAsignado(data[0]);
             setDatosVacanteSelect(data[0]);
         }else{
@@ -322,7 +322,7 @@ const InscriptosMov = ()=>{
         //Traigo los datos de asignacion de su cargo original y docente quien lo tomo
         
         const datosAsignacion = await fetchAsignacionByVacante(datos.id_vacante_generada_cargo_actual);
-        console.log('que tra datosAsignacion de vacante generada: ', datosAsignacion);
+        //console.log('que tra datosAsignacion de vacante generada: ', datosAsignacion);
         setAsignacionCargoOriginal(datosAsignacion);
 
         openModalEdit();
@@ -371,10 +371,10 @@ const InscriptosMov = ()=>{
     //Proc al guardar cambios en los datos del inscripto
     const submitGuardarCambiosFormInscripto = async() =>{
         const idInscripto = datosInscriptoSelect.id_inscriptos_mov;
-        console.log(' que tiene idInscripto: ', idInscripto);
+        //console.log(' que tiene idInscripto: ', idInscripto);
         await axios.put(`${URL}/api/editinscriptosmov/${idInscripto}`,formInscripto)
             .then(async res=>{
-                console.log('que trae res de editinscriptosmov: ', res);
+                //console.log('que trae res de editinscriptosmov: ', res);
                 //MOSTRAR MENSAJE DE DATOS ACTUALIZADOS
                 setMensajeModalInfo('Datos Modificados Correctamente')
                 openModal();
@@ -498,7 +498,7 @@ const InscriptosMov = ()=>{
     //Proc: ejecuta la busqueda, filtrando datos de input busqueda en los campos
     //del listado de inscriptos filtrado
     const submitSearch = async()=>{
-        console.log('presiono buscar con este input: ', inputSearch);
+        //console.log('presiono buscar con este input: ', inputSearch);
         const valorBusqueda = inputSearch;
         // let searchDoc;
         // searchDoc = await filterListadoInscriptosMov.filter(inscripto=>inscripto.nombre.toLowerCase().includes(inputSearch.toLowerCase()) || inscripto.apellido.toLowerCase().includes(inputSearch.toLowerCase()) || inscripto.nro_escuela.toLowerCase().includes(inputSearch.toLowerCase()) || inscripto.dni.includes(inputSearch));
@@ -593,13 +593,13 @@ const InscriptosMov = ()=>{
     //------------ PROCESO DE FILTRO POR ESPECIALIDAD -----------------
     const filterEspecialidad =async(idEspecialidad)=>{
         setInputSearchVac("")
-        console.log('que ingresa a idEspecialidad: ', idEspecialidad);
-        console.log('que tiene listado a filtrar: ', filterListadoVacantesDispMov);
+        //console.log('que ingresa a idEspecialidad: ', idEspecialidad);
+        //console.log('que tiene listado a filtrar: ', filterListadoVacantesDispMov);
         if(idEspecialidad===""){
             setFilterListadoVacantesDispMov(listadoVacantesDispMov);
         }else{
             const filterListadoVacantes = await listadoVacantesDispMov.filter(vac=>vac.id_especialidad==idEspecialidad);
-            console.log('como filtra listado: ', filterListadoVacantes);
+            //console.log('como filtra listado: ', filterListadoVacantes);
             setFilterListadoVacantesDispMov(filterListadoVacantes);
         }
     };
@@ -616,21 +616,21 @@ const InscriptosMov = ()=>{
 
         //VALIDACION LEGAJO YA TOMO CARGO
         const datosValidate = await validaLegajoAsignadoListado(idListadoInscriptosMov, datos.legajo);
-        console.log('que trae validaLegajoAsignadoListado: ', datosValidate);
+        //console.log('que trae validaLegajoAsignadoListado: ', datosValidate);
         //seteo el estadoAsignadoInscripto
-        console.log('QUE TIENE datos.id_estado_inscripto: ', datos.id_estado_inscripto);
+        //console.log('QUE TIENE datos.id_estado_inscripto: ', datos.id_estado_inscripto);
         setEstadoAsignadoInscripto(datos.id_estado_inscripto);
 
 
         if(datosValidate.length!=0){
             setDatosValidaDni(datosValidate[0]);
-            console.log('Inscripto ya tomo cargo');
+            //console.log('Inscripto ya tomo cargo');
             setMensajeModalDatos(`El Docente ${datosValidate[0].apellido}, ${datosValidate[0].nombre} con DNI(${datosValidate[0].dni}) ya tomo el siguiente cargo:`);
             openModalDatos();
         }else{
             //vacion input busqueda
             setInputSearchVac('')
-            console.log('que recibe datos inscripto al Ver Vacantes: ', datos);
+            //console.log('que recibe datos inscripto al Ver Vacantes: ', datos);
             setDatosInscriptoSelect(datos);
             //cargo listado original de vacantes disponibles
             setFilterListadoVacantesDispMov(listadoVacantesDispMov);
@@ -640,7 +640,7 @@ const InscriptosMov = ()=>{
 
     //Proc prsiona sobre icono asignar en Vacantes disponibles
     const submitAsignar = (vacante)=>{
-        console.log('datos recibidos de Vacante: ', vacante);
+        //console.log('datos recibidos de Vacante: ', vacante);
         setDatosVacanteSelect(vacante);
         openModalAsign();
     };
@@ -654,7 +654,7 @@ const InscriptosMov = ()=>{
             openModal();
         }else{
 
-            console.log('Asignacion Simple');
+            //console.log('Asignacion Simple');
     
             const fechaHoraActual = await traeFechaHoraActual();
             const formAsignacion={
@@ -663,14 +663,16 @@ const InscriptosMov = ()=>{
                 datetime_asignacion:fechaHoraActual, 
                 id_estado_asignacion:1 //estado Asignada
             }
-            console.log('como arma form para Asignacion: ', formAsignacion);
+            //console.log('como arma form para Asignacion: ', formAsignacion);
+
+            //?REALIZO ASIGNACION
             await axios.post(`${URL}/api/createasignacionmov`,formAsignacion)
                 .then(async res=>{
                     //Antes de continuar Actualizo el ESTADO DEL INSCRIPTO A: 1-"Asignado"
                     await updateEstadoAsignadoInscripto(datosInscriptoSelect.id_inscriptos_mov, 1);
 
-                    console.log('que trae res de createasignacionmov: ', res);
-                    //?Verifico que tipo de Asignacion es
+                    //console.log('que trae res de createasignacionmov: ', res);
+                    //?Verifico que tipo de Asignacion es para mensajes u otra validacion
                     if(datosInscriptoSelect.id_tipo_inscripto===1){
                         //?INSCRIPTO EN DISPONIBILIDAD -> Solo Asigna Vacante a Inscripto
                         //Mostrar Notificacion de Movimiento realizado
@@ -682,7 +684,16 @@ const InscriptosMov = ()=>{
                         //?INSCRIPTO ACTIVO -> Una vez asignada vacante, deebe Generar Nueva Vacante del cargo que deja el inscripto
                         //?SOLO CREA NUEVA VACANTE SI NO ESTA GENERADA -> id_vacante_generada_cargo_actual IS NULL
                         if(datosInscriptoSelect.id_vacante_generada_cargo_actual===null){
-                            creaNuevaVacante();
+
+                            //!VERIFICA SI SU CARGO GENENERA O NO VACANTE
+                            if(datosInscriptoSelect.genera_vacante==='NO'){
+                                setMensajeModalConfirm('Movimiento Asignado Correctamente, ¿Imprime Designacion?');
+                                openModalConfirm();
+                            }else{
+
+                                creaNuevaVacante();
+                            };
+
                         }else{
                             // setMensajeModalInfo('Movimiento Asignado Correctamente')
                             // openModal();
@@ -721,17 +732,17 @@ const InscriptosMov = ()=>{
             datetime_creacion:fechaHoraActualNuevaVac, //VARCHAR
             zona:'' //VARCHAR
         }
-        console.log('como arma formBody para Nueva Vacante: ', formNuevaVacante);
+        //console.log('como arma formBody para Nueva Vacante: ', formNuevaVacante);
         await axios.post(`${URL}/api/vacantemov`,formNuevaVacante)
         .then(async res=>{
-            console.log('que trae res de createVacantesMov: ', res);
+            //console.log('que trae res de createVacantesMov: ', res);
             //Mostrar Notificacion de Movimiento realizado
             //Una vez creada la vacante, se debe actualizar el id_vacante_mov generada del cargo que dejo el inscripto
             const idVacanteGenerada = res.data.id_vacantes_mov;
-            console.log('cual es el id de la vacante creada: ', idVacanteGenerada);
+            //console.log('cual es el id de la vacante creada: ', idVacanteGenerada);
 
             const resUpdIdVacGen = await updateIdVacanteGenerada(datosInscriptoSelect.id_inscriptos_mov,idVacanteGenerada);
-            console.log('que trae resUpdIdVacGen: ', resUpdIdVacGen);
+            //console.log('que trae resUpdIdVacGen: ', resUpdIdVacGen);
 
             // setMensajeModalInfo('Movimiento Asignado Correctamente')
             // openModal();
@@ -747,13 +758,13 @@ const InscriptosMov = ()=>{
 
     //Proceso para Imprimir la designacion
     const procesoImpresion = async()=>{
-        console.log('ingresa a Impresion');
+        //console.log('ingresa a Impresion');
         await handlePrint();
     };
 
     //Proceso para Imprimir la designacion
     const procesoImpresionAsistencia = async()=>{
-        console.log('ingresa a Impresion de Asistencia');
+        //console.log('ingresa a Impresion de Asistencia');
         await handlePrintAsistencia();
     };
 
@@ -776,7 +787,7 @@ const InscriptosMov = ()=>{
 
 
     const submitEliminarTomaCargo = async(idAsignacion) =>{
-        console.log('que trae idAsignacion: ', idAsignacion);
+        //console.log('que trae idAsignacion: ', idAsignacion);
         const fechaHoraActual = traeFechaHoraActual();
         const datosBody={
             obsDesactiva:`Se desactiva la Asignacion por Eliminacion ${fechaHoraActual}`
@@ -787,7 +798,7 @@ const InscriptosMov = ()=>{
             .then(async res=>{
                 //Si se elimina la Asignacion, se debe volver a Actualizar el Estado del Inscrpto a NULL
                 await updateEstadoAsignadoInscripto(datosInscriptoSelect.id_inscriptos_mov, null);
-                console.log('que trae res de delasignacionmov: ', res);
+                //console.log('que trae res de delasignacionmov: ', res);
                 //Mostrar Notificacion de Eliminacion de Asignacion
                 setMensajeModalInfo('Toma de Cargo Eliminada');
                 openModal();
@@ -807,7 +818,7 @@ const InscriptosMov = ()=>{
     //- Eliminar vacante de vacantes_mov
     //- Actualizar inscriptos_mov en su campo: id_vacante_generada_cargo_actual a NULL
     const submitEliminarVacanteMov = async(idVacanteMov)=>{
-        console.log('que trae idVacanteMo: ', idVacanteMov);
+        //console.log('que trae idVacanteMo: ', idVacanteMov);
         const fechaHoraActual = traeFechaHoraActual();
         const datosBody={
             obsDesactiva:`Se desactiva la VACANTE por Eliminacion ${fechaHoraActual}`
@@ -815,11 +826,11 @@ const InscriptosMov = ()=>{
         try{
             await axios.put(`${URL}/api/delvacantemov/${idVacanteMov}`,datosBody)
             .then(async res=>{
-                console.log('que trae res de delvacantemov: ', res);
+                //console.log('que trae res de delvacantemov: ', res);
                 //Actualizar campo id_vacante_generada_cargo_actual en Inscriptos_mov
                 const idVacanteGenerada=null;
                 const resUpdIdVacGen = await updateIdVacanteGenerada(datosInscriptoSelect.id_inscriptos_mov,idVacanteGenerada);
-                console.log('que trae resUpdIdVacGen: ', resUpdIdVacGen);
+                //console.log('que trae resUpdIdVacGen: ', resUpdIdVacGen);
 
                 //Mostrar Notificacion de Eliminacion de Vacante
                 setMensajeModalInfo('Vacante Eliminada');
@@ -842,38 +853,59 @@ const InscriptosMov = ()=>{
     };
 
     //PAGINA OFICIO
-    // const handlePrint = useReactToPrint({
-    //     content:() => componentRef.current,
-    //     pageStyle:`
-    //     @page {
-    //       size: LEGAL; /* Tamaño del papel */
-    //       orientation: portrait; /* Orientación vertical */
-    //     }
-    //   `,
-    // });
-
-    //PAGINA MITAD OFICIO
     const handlePrint = useReactToPrint({
         content:() => componentRef.current,
         pageStyle:`
         @page {
-          size: 16.51cm 21.59cm   ; /* Tamaño del papel */
-          margin: 0cm;
+          size: LEGAL; /* Tamaño del papel */
+          margin:0.4cm;
+          orientation: portrait; /* Orientación vertical */
+        }
+        body {
+            margin: 0.4
+        }
+      `,
+    });
+
+    const handlePrintAsistencia = useReactToPrint({
+        content:() => componentRefAsistencia.current,
+        pageStyle:`
+        @page {
+          size: LEGAL; /* Tamaño del papel */
+          margin:0.4cm;
+          orientation: portrait; /* Orientación vertical */
+        }
+        body {
+            margin: 0.4
         }
       `,
     });
 
     //PAGINA MITAD OFICIO
-    const handlePrintAsistencia = useReactToPrint({
-        content:() => componentRefAsistencia.current,
-        pageStyle:`
-        @page {
-          size: 21.59cm 17.78cm; /* Tamaño del papel */
-          margin:0.4cm;
-          orientation: portrait; /* Orientación vertical */
-        }
-      `,
-    });
+    // const handlePrint = useReactToPrint({
+    //     content:() => componentRef.current,
+    //     pageStyle:`
+    //     @page {
+    //       size: 16.8cm 20cm   ; /* Tamaño del papel */
+          
+    //       }
+    //       body{
+    //         margin: 0cm;
+    //       }
+    //   `,
+    // });
+
+    //PAGINA MITAD OFICIO
+    // const handlePrintAsistencia = useReactToPrint({
+    //     content:() => componentRefAsistencia.current,
+    //     pageStyle:`
+    //     @page {
+    //       size: 21.59cm 17.78cm; /* Tamaño del papel */
+    //       margin:0.4cm;
+    //       orientation: portrait; /* Orientación vertical */
+    //     }
+    //   `,
+    // });
 
     const submitCloseModalConfirm = () =>{
 
@@ -899,7 +931,7 @@ const InscriptosMov = ()=>{
     //Este Proc carga el listado de especialidades en E.L.
     const cargaEspecidalidades=async()=>{
         const data = await fetchAllEspecialidades();
-        console.log('que tiene especialidades: ', data);
+        //console.log('que tiene especialidades: ', data);
         if(data?.length!=0){
             setListadoEspecialidades(data);
         }
@@ -912,7 +944,7 @@ const InscriptosMov = ()=>{
 
     const handleSelectFiltroEspecialidad=(event)=>{
         const{value} = event.target;
-        console.log('que tiene filtroEspecialidad: ', value);
+        //console.log('que tiene filtroEspecialidad: ', value);
         setFiltroEspecialidadVac(value);
         
         setCurrentPageVac(1);
@@ -944,15 +976,15 @@ const InscriptosMov = ()=>{
 
     const HandleSelectEstadoAsignadoInscripto=(event)=>{
         const{value} = event.target;
-        console.log('que viene en handleSelectEstadoAsignadoInscripto: ', value);
+        //console.log('que viene en handleSelectEstadoAsignadoInscripto: ', value);
         setEstadoAsignadoInscripto(value);
     };
 
     const submitGuardarEstadoInscripto=async()=>{
-        console.log('que tiene estadoAsignadoInscripto: ', estadoAsignadoInscripto)
+        //console.log('que tiene estadoAsignadoInscripto: ', estadoAsignadoInscripto)
         try{
             const datosUpdateEstado = await updateEstadoAsignadoInscripto(datosInscriptoSelect.id_inscriptos_mov, estadoAsignadoInscripto);
-            console.log('que trae datosUpdateEstado: ', datosUpdateEstado)
+            //console.log('que trae datosUpdateEstado: ', datosUpdateEstado)
             setMensajeModalInfo('Estado del Inscripto Actualizado');
             openModal();
             setEstadoAsignadoInscripto('');
@@ -965,7 +997,7 @@ const InscriptosMov = ()=>{
     const validacantidadlegajo=async(dni)=>{
         const result =  await validaDniAsignadoListado(idListadoInscriptosMov, dni);
 
-        console.log('que trae validadniasignadolistado: ', result[0].cantidad);
+        //console.log('que trae validadniasignadolistado: ', result[0].cantidad);
 
         const cantidad = result[0].cantidad;
 
@@ -979,7 +1011,7 @@ const InscriptosMov = ()=>{
     // },[]);
 
     useEffect(()=>{
-        console.log('que tiene CONTADOR: ',totalVacantes);
+        //console.log('que tiene CONTADOR: ',totalVacantes);
     },[totalVacantes])
 
     useEffect(()=>{
@@ -999,9 +1031,9 @@ const InscriptosMov = ()=>{
     // },[inputSearchVac])
 
     useEffect(()=>{
-        console.log('que especialidad de Vacante selecciono: ', filtroEspecialidadVac);
+        //console.log('que especialidad de Vacante selecciono: ', filtroEspecialidadVac);
         //filterEspecialidad(filtroEspecialidadVac);
-        console.log('APLICO FILTRO LISTADO VACANTES')
+        //console.log('APLICO FILTRO LISTADO VACANTES')
         getVacantesDisponiblesMov(idListVacMov,currentPageVac,inputSearchVac,filtroEspecialidadVac,orderBy,typeOrder)
     },[filtroEspecialidadVac,inputSearchVac,orderBy,typeOrder])
 
@@ -1013,13 +1045,13 @@ const InscriptosMov = ()=>{
     },[datosInscriptoSelect]);
 
     useEffect(()=>{
-        console.log('como queda el listado filtrado filterListadoInscriptosMov: ', filterListadoInscriptosMov);
+        //console.log('como queda el listado filtrado filterListadoInscriptosMov: ', filterListadoInscriptosMov);
     },[filterListadoInscriptosMov])
 
 
     //APLICO FILTROS de tipoInscripto (Activos / Disponibilidad), estadoInscripto(todos/sinasignar/asignados) y busquedadinamica(inputSearch)
     useEffect(()=>{
-        console.log('APLICO FILTRO')
+        //console.log('APLICO FILTRO')
         getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
     },[tipoInscripto,estadoInscripto,inputSearch])
 
@@ -1029,7 +1061,7 @@ const InscriptosMov = ()=>{
         getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
 
         const intervalId = setInterval(()=>{
-            console.log('ACTIVO INTERVALO')
+            //console.log('ACTIVO INTERVALO')
             getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
         }, 10000);
         
@@ -1038,11 +1070,11 @@ const InscriptosMov = ()=>{
     },[isIntervalActive, nivelSG, formInscripto, tipoInscripto, estadoInscripto, inputSearch, currentPage])
 
     useEffect(()=>{
-        console.log('que tiene isIntervalActive: ', isIntervalActive);
+        //console.log('que tiene isIntervalActive: ', isIntervalActive);
     },[isIntervalActive])
 
     useEffect(()=>{
-        console.log('que tiene asignacionCargoOriginal: ', asignacionCargoOriginal);
+        //console.log('que tiene asignacionCargoOriginal: ', asignacionCargoOriginal);
     },[asignacionCargoOriginal])
 
     //ADMIN CAMBIA DE NIVEL
@@ -1057,12 +1089,12 @@ const InscriptosMov = ()=>{
     //VEO EL LISTADO DE VACANTES DE MOVIMIENTO
     useEffect(()=>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
-        console.log('que tiene listadoVacantesMov (CARGA INICIAL): ', listadoVacantesDispMov);
+        //console.log('que tiene listadoVacantesMov (CARGA INICIAL): ', listadoVacantesDispMov);
     },[listadoVacantesDispMov])
 
     //VEO EL LISTADO DE INSCRIPTOS DE MOVIMIENTO
     useEffect(()=>{
-        console.log('que tiene listadoInscriptosMov (CARGA INICIAL): ', listadoInscriptosMov);
+        //console.log('que tiene listadoInscriptosMov (CARGA INICIAL): ', listadoInscriptosMov);
         //?PROCESO SE EJECUTA EN CARGA INICIAL
         //NI BIEN CARGO EL LISTADO DE INSCRIPTOS FILTRO CON ESTADO ACTIVO
         //FILTRO EL LISTADO DE INSCRIPTOS DE MOVIMIENTO
@@ -1072,7 +1104,7 @@ const InscriptosMov = ()=>{
     //VEO LA CONFIGURACION GLOBAL
     useEffect(()=>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
-        console.log('que tiene configSG en InscriptosMov (CARGA INICIAL): ', configSG);
+        //console.log('que tiene configSG en InscriptosMov (CARGA INICIAL): ', configSG);
         
         cargaInicialListados(configSG.nivel.id_nivel);
     },[configSG])
@@ -1082,7 +1114,6 @@ const InscriptosMov = ()=>{
     useEffect(()=>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
         cargaInicialListados(configSG.nivel.id_nivel);
-
     },[]);
 
     return(
@@ -1237,7 +1268,7 @@ const InscriptosMov = ()=>{
                                 {
                                     // filterListadoInscriptosMov?.map((inscripto, index)=>{
                                     listadoInscriptosMov?.map((inscripto, index)=>{
-                                        const colorFila = (inscripto.vacante_asignada || inscripto.dniEnOtroNivel) ?`bg-red-200` :(((inscripto.id_inscriptos_mov % 2)===0) ?`bg-zinc-200` :``)
+                                        const colorFila = (inscripto.vacante_asignada || inscripto.legajoEnOtroNivel) ?`bg-red-200` :(((inscripto.id_inscriptos_mov % 2)===0) ?`bg-zinc-200` :``)
                                         return(
                                             <tr 
                                                 className={`text-lg desktop-xl:text-xl font-medium border-b-[1px] border-zinc-500 h-[5vh] desktop-xl:h-[5.5vh] hover:bg-orange-300 ${colorFila}`}
@@ -1276,7 +1307,7 @@ const InscriptosMov = ()=>{
                                                             onClick={()=>submitVerDatosInscripto(inscripto)}
                                                         />
                                                         {
-                                                            ((inscripto.vacante_asignada===null || inscripto.vacante_asignada==='' ) && inscripto.dniEnOtroNivel===null)
+                                                            ((inscripto.vacante_asignada===null || inscripto.vacante_asignada==='' ) && inscripto.legajoEnOtroNivel===null)
                                                             ?<BiTransferAlt 
                                                                 className="text-2xl hover:cursor-pointer hover:text-[#83F272] ml-2"      
                                                                 title="Vacantes"
@@ -1853,7 +1884,10 @@ const InscriptosMov = ()=>{
                         </div>
 
                         <div className="flex flex-col mx-2 my-2">
-                            <label className="text-base font-bold">{(datosInscriptoSelect.id_vacante_generada_cargo_actual!=null) ?`Cargo que dejó` :`Cargo Actual`}</label>
+                            <div className="flex flex-row">
+                                <label className="text-base font-bold">{(datosInscriptoSelect.id_vacante_generada_cargo_actual!=null) ?`Cargo que dejó` :`Cargo Actual`}</label>
+                                <label className="ml-2 italic text-red-500">{(datosInscriptoSelect.genera_vacante==='NO') ?`Su cargo no genera vacante` :``}</label>
+                            </div>
                             <div className="flex flex-col border-[1px] border-orange-500 rounded py-[2px] bg-orange-50 items-end">
                                 <div className="flex flex-row mr-2 my-[2px]">
                                     <label className="text-base mr-2">Cargo Actual: </label>
@@ -1990,7 +2024,7 @@ const InscriptosMov = ()=>{
                         :<div className="w-[50vw]">
                             <label className="text-red-500 font-semibold ">Su Cargo Original genero una Vacante Disponible, elimine la vacante generada o realice Toma de Cargo de una Vacante</label>
                         </div>
-                    :(datosInscriptoSelect.dniEnOtroNivel!=null)
+                    :(datosInscriptoSelect.legajoEnOtroNivel!=null)
                         ?<div className="w-[50vw]">
                             <label className="text-red-500 font-semibold ">EL DOCENTE YA TOMO CARGO EN OTRO NIVEL.</label>
                         </div>

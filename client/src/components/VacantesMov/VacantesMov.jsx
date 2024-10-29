@@ -165,12 +165,12 @@ const VacantesMov = () =>{
      const buscoIDListadoVacantes = async(id_nivel) =>{
         //Filtro configuracion para el nivel
         const configFilterNivel = await configSG.config.filter((configNivel)=>configNivel.id_nivel==id_nivel);
-        console.log('que trae configFilterNivel: ', configFilterNivel);
+        //console.log('que trae configFilterNivel: ', configFilterNivel);
 
         //Traigo el id del listado cargado en configuracion para:
         //LISTADO DE VACANTES DE MOVIMIENTOS -> id_listado_vacantes_mov
         const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_mov;
-        console.log('que tiene idFilterListado: ',idFilterListado);
+        //console.log('que tiene idFilterListado: ',idFilterListado);
 
         //Guardo id_listado_vacantes_mov para usarlo en nueva Vacante
         setIdListVacMov(idFilterListado);
@@ -183,12 +183,12 @@ const VacantesMov = () =>{
     const getVacantesMov = async(id_listado,page,filtroAsignacion,valorBusqueda,filtroEspecialidad) =>{
         let data;
         const limit=10;
-        console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
+        //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
             //paso idListado, limit y page
             data = await fetchAllVacantesMov(id_listado,limit,page,filtroAsignacion,valorBusqueda,filtroEspecialidad);
 
-            console.log('que trae data de fetchVacantesDispMov: ', data);
+            //console.log('que trae data de fetchVacantesDispMov: ', data);
 
             if(data.result?.length!=0){
                 setListadoVacantesMov(data.result); 
@@ -215,11 +215,11 @@ const VacantesMov = () =>{
 
         dataVacAsignadas = await fetchAllVacantesMov(id_listado,limit,page,'asignadas',filtroBusqueda,filtroEspecialidad);
 
-        console.log('que trae DATA ASIGNADAS de fetchVacantesDispMov: ', dataVacAsignadas);
+        //console.log('que trae DATA ASIGNADAS de fetchVacantesDispMov: ', dataVacAsignadas);
 
         dataVacDisponibles = await fetchAllVacantesMov(id_listado,limit,page,'disponibles',filtroBusqueda,filtroEspecialidad);
 
-        console.log('que trae DATA DISPONIBLES de fetchVacantesDispMov: ', dataVacDisponibles);
+        //console.log('que trae DATA DISPONIBLES de fetchVacantesDispMov: ', dataVacDisponibles);
 
         setTotalVacantes({
             asignadas:dataVacAsignadas?.paginacion.totalItems,
@@ -231,7 +231,7 @@ const VacantesMov = () =>{
     //Proceso para filtrar el listado de vacantes por todos/disponibles/asignado
     const aplicoFiltroListadoVacantes = async(data)=>{
         setInputSearch('');
-        console.log('que tiene listado: ', data);
+        //console.log('que tiene listado: ', data);
         let dataFilter = await data.filter(item=>{
             if(estadoVacantes==='todas'){
                 return(item.datetime_asignacion===null || item.datetime_asignacion!=null)
@@ -246,16 +246,16 @@ const VacantesMov = () =>{
 
     const submitVerDatosVacante = async(datosVacante) => {
         setInscriptoAsignado([]);
-        console.log('presiono en submitVerDatosVacante');
-        console.log('que tiene datos de vacante: ', datosVacanteSelect)
+        //console.log('presiono en submitVerDatosVacante');
+        //console.log('que tiene datos de vacante: ', datosVacanteSelect)
         await setDatosVacanteSelect(datosVacante);
         //busco datos de inscripto asignado si datetime_asignacion no es null
         if(datosVacante.datetime_asignacion!=null){
-            console.log('Busco datos del inscripto asignado')
+            //console.log('Busco datos del inscripto asignado')
             try{
                 await axios.post(`${URL}/api/vacanteasignadainscripto/${datosVacante.id_vacante_mov}`)
                     .then(async res=>{
-                        console.log('que trae res de vacanteasignadainscripto: ', res.data);
+                        //console.log('que trae res de vacanteasignadainscripto: ', res.data);
                         if(res.data.length!=0){
                             setInscriptoAsignado(res.data);
                             //setMensajeModalInfo(`Para eliminar la Vacante generada del Movimiento de: ${res.data[0].apellido}, ${res.data[0].nombre} (DNI: ${res.data[0].dni}), dirigase a Inscriptos`);
@@ -288,11 +288,11 @@ const VacantesMov = () =>{
     };
 
     const submitGuardarFormVacante = async() => {
-        console.log('presiono en submitGuardarFormVacante');
+        //console.log('presiono en submitGuardarFormVacante');
         const idVacanteMov=idVacanteSelect;
         await axios.put(`${URL}/api/editvacantemov/${idVacanteMov}`,formVacante)
             .then(async res=>{
-                console.log('que trae res de editvacantemov: ', res);
+                //console.log('que trae res de editvacantemov: ', res);
                 //Mostar mensaje de datos actualizados.
                 setMensajeModalInfo('Datos Modificados Correctamente')
                 openModal();
@@ -305,13 +305,13 @@ const VacantesMov = () =>{
     const submitEliminarVacante = async(datos) => {
         setIdVacanteSelect(datos.id_vacante_mov);
         setDatosVacanteSelect(datos);
-        console.log('presiono en submitEliminarVacante');
-        console.log('que trae datos de vacante a eliminar: ', datos);
+        //console.log('presiono en submitEliminarVacante');
+        //console.log('que trae datos de vacante a eliminar: ', datos);
 
         try{
             await axios.post(`${URL}/api/vacantedeinscripto/${datos.id_vacante_mov}`)
                 .then(async res=>{
-                    console.log('que trae res de vacantedeinscripto: ', res.data);
+                    //console.log('que trae res de vacantedeinscripto: ', res.data);
                     if(res.data.length===0){
                         setMensajeModalConfirm('¿Seguro Elimina la Vacante?');
                         openModalConfirm();
@@ -327,9 +327,9 @@ const VacantesMov = () =>{
     };
     
     const procesoEliminarVacante = async() => {
-        console.log('Ingresa a procesoEliminarVacante');
+        //console.log('Ingresa a procesoEliminarVacante');
         const idVacanteMov = idVacanteSelect;
-        console.log('que tiene idVacanteMov: ', idVacanteMov);
+        //console.log('que tiene idVacanteMov: ', idVacanteMov);
         const fechaHoraActual = traeFechaHoraActual();
         let datosBody={}
         if(obsEliminaVacante===""){
@@ -341,7 +341,7 @@ const VacantesMov = () =>{
         try{
             await axios.put(`${URL}/api/delvacantemov/${idVacanteMov}`,datosBody)
             .then(async res=>{
-                console.log('que trae res de delvacantemov: ', res);
+                //console.log('que trae res de delvacantemov: ', res);
 
                 //Mostrar Notificacion de Eliminacion de Vacante
                 setMensajeModalInfo('Vacante Eliminada');
@@ -416,12 +416,12 @@ const VacantesMov = () =>{
 
     const submitGuardarFormNuevaVacante = async() => {
 
-        console.log('presiono en submitGuardarFormNuevaVacante');
-        console.log('como queda formNuevaVacante: ', formNuevaVacante);
+        //console.log('presiono en submitGuardarFormNuevaVacante');
+        //console.log('como queda formNuevaVacante: ', formNuevaVacante);
         // const idVacanteMov=idVacanteSelect;
         await axios.post(`${URL}/api/vacantemov`,formNuevaVacante)
             .then(async res=>{
-                console.log('que trae res de vacantemov: ', res);
+                //console.log('que trae res de vacantemov: ', res);
                 //Mostar mensaje de datos actualizados.
                 setMensajeModalInfo('Vacante Creada Correctamente')
                 openModal();
@@ -469,7 +469,7 @@ const VacantesMov = () =>{
     //Este Proc carga el listado de especialidades en E.L.
     const cargaEspecidalidades=async()=>{
         const data = await fetchAllEspecialidades();
-        console.log('que tiene especialidades: ', data);
+        //console.log('que tiene especialidades: ', data);
         if(data?.length!=0){
             setListadoEspecialidades(data);
         }
@@ -477,7 +477,7 @@ const VacantesMov = () =>{
 
     const handleSelectFiltroEspecialidad=(event)=>{
         const{value} = event.target;
-        console.log('que tiene filtroEspecialidad: ', value);
+        //console.log('que tiene filtroEspecialidad: ', value);
         setFiltroEspecialidadVac(value);
         
         setCurrentPage(1);
@@ -495,7 +495,7 @@ const VacantesMov = () =>{
     };
 
     useEffect(()=>{
-        console.log('que tiene CONTADOR: ',totalVacantes);
+        //console.log('que tiene CONTADOR: ',totalVacantes);
     },[totalVacantes])
 
     useEffect(()=>{
@@ -503,7 +503,7 @@ const VacantesMov = () =>{
     },[obsEliminaVacante])
 
     useEffect(()=>{
-        console.log('que tiene inscriptoAsignado: ', inscriptoAsignado);
+        //console.log('que tiene inscriptoAsignado: ', inscriptoAsignado);
     },[inscriptoAsignado])
 
     // useEffect(()=>{
@@ -524,7 +524,7 @@ const VacantesMov = () =>{
 
     //cada vez que aplco filtro, 
     useEffect(()=>{
-        console.log('APLICO FILTRO');
+        //console.log('APLICO FILTRO');
         //console.log('que tiene estado local estadoVacantes: ', estadoVacantes);
         //aplicoFiltroListadoVacantes(listadoVacantesMov);
         getVacantesMov(idListVacMov,currentPage,estadoVacantes,inputSearch,filtroEspecialidadVac)
@@ -548,7 +548,7 @@ const VacantesMov = () =>{
     //VEO CONFIGURACION GLOBAL
     useEffect(()=>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
-        console.log('que tiene configSG en VacantesMov (CARGA INICIAL): ', configSG);
+        //console.log('que tiene configSG en VacantesMov (CARGA INICIAL): ', configSG);
     },[configSG]);
 
     //CARGO LISTADO DE VACANTES AL RENDERIZAR

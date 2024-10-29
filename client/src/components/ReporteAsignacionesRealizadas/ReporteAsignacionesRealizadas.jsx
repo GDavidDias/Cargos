@@ -44,7 +44,7 @@ const ReporteAsignacionesRealizadas = ({listado})=>{
                     {
                         listado?.map((item,index)=>{
                             const formattedDateTime = formatDateTime(item.datetime_asignacion);
-                            console.log(formattedDateTime); // Salida: "12/09/2024 - 11:03:42"
+                            //console.log(formattedDateTime); // Salida: "12/09/2024 - 11:03:42"
                             return(
                             <tr key={index} className="border-[1px] border-gray-500 bg-white text-sm text-center break-inside-avoid">
                                 <td className="border-x-[1px] border-gray-500">{item.legajo}</td>

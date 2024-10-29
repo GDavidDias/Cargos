@@ -11,7 +11,7 @@ export const fetchAllVacantesTit = async(id_listado,limit,page,filtroAsignacion,
         "filtroEspecialidad":filtroEspecialidad,
         "filtroBusqueda":valorBusqueda
     };
-    console.log('que tiene datos que pasa a body en fetchAllVacantesTit: ', dataBody);
+    //console.log('que tiene datos que pasa a body en fetchAllVacantesTit: ', dataBody);
 
     try{
         const {data} = await axios.post(`${URL}/api/allvacantestit`,dataBody);

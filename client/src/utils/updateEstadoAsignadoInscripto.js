@@ -9,7 +9,7 @@ export const updateEstadoAsignadoInscripto = async(idInscriptoMov, idEstado) => 
 
     try{
         const {data} = await axios.put(`${URL}/api/updateestadoinscripto/${idInscriptoMov}`,dataBody);
-        console.log('que trae data de updateEstadoAsignadoInscripto: ', data);
+        //console.log('que trae data de updateEstadoAsignadoInscripto: ', data);
         return data;
         
     }catch(error){

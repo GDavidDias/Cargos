@@ -9,7 +9,7 @@ export const deleteVacanteMov = async(idVacanteMov, obsDesactiva) => {
 
     try{
         const {data} = await axios.put(`${URL}/api/delvacantemov/${idVacanteMov}`,dataBody);
-        console.log('que trae data de deleteVacanteMov: ', data);
+        //console.log('que trae data de deleteVacanteMov: ', data);
         return data;
         
     }catch(error){

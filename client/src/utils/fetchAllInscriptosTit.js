@@ -12,11 +12,11 @@ export const fetchAllInscriptosTit = async(id_listado,limit,page,filtroAsignacio
         "filtroBusqueda":valorBusqueda,
         "filtroEspecialidad":filtroEspecialidad
     };
-    console.log('que tiene datos que pasa a body en fetchAllInscriptosTit: ', dataBody);
+    //console.log('que tiene datos que pasa a body en fetchAllInscriptosTit: ', dataBody);
 
     try{
         const {data} = await axios.post(`${URL}/api/inscriptostit`,dataBody);
-        console.log('que trae data de fetchAllInscriptosTit: ', data);
+        //console.log('que trae data de fetchAllInscriptosTit: ', data);
         return data;
         
     }catch(error){

@@ -112,12 +112,12 @@ const SideBar = () => {
 
 
     useEffect(()=>{
-        console.log('que tiene pageSG: ', pageSG);
-        console.log('que tiene nivelSG: ', nivelSG);
+        //console.log('que tiene pageSG: ', pageSG);
+        //console.log('que tiene nivelSG: ', nivelSG);
     },[pageSG,nivelSG])
 
     useEffect(()=>{
-        console.log('que tiene userSG: ', userSG);
+        //console.log('que tiene userSG: ', userSG);
         if(userSG.id_user===''){
             navigate('/');
         }else{

@@ -2,7 +2,7 @@ import logo from '../../assets/logo_designacion.png';
 import { useEffect, useState } from 'react';
 
 const PaginaDesignacion = ({datosInscripto, datosVacante,id_nivel}) =>{
-console.log('que tiene id_nivel en PaginaDesignacion: ', id_nivel);
+//console.log('que tiene id_nivel en PaginaDesignacion: ', id_nivel);
 
     const fechaActual = new Date();
     const dia = fechaActual.getDate();
@@ -30,7 +30,7 @@ console.log('que tiene id_nivel en PaginaDesignacion: ', id_nivel);
 
     
     return(
-        <div className='notranslate h-[96vh] border-2 border-zinc-300 p-4'>
+        <div className='notranslate h-[49vh] border-2 border-gray-300 p-4'>
             {/* ENCABEZADO */}
             <div className="w-full flex flex-row items-center justify-between">
                 <div className="w-[25%] flex">
@@ -58,7 +58,7 @@ console.log('que tiene id_nivel en PaginaDesignacion: ', id_nivel);
                     {/* <p className='text-justify indent-8'>JPCD - Sala Primaria hace constar que el/la Prof.  DNI N°   con el cargo         de la    con un puntaje     , Acepta el        en el cargo de     Titular en     . correspondiente al turno      </p> */}
                     <div className='flex flex-row mb-[4px]'>
                         <p className='font-medium'>Resolucion N°:</p>   
-                        <p className='border-b-[1px] border-black border-dotted w-[300px] text-center'>{datosVacante.resolucion}</p>
+                        <p className='border-b-[1px] border-black border-dotted w-[300px] text-center'>{(datosVacante.resolucion) ?datosVacante.resolucion :`---------------------------------------------`}</p>
                     </div>
                     <div className='flex flex-row'>
                         <p className='font-medium'>Fecha: {dia} de {mes} de {año}</p>
@@ -93,7 +93,7 @@ console.log('que tiene id_nivel en PaginaDesignacion: ', id_nivel);
                         <p className='ml-2 font-medium'>Movimiento:</p>
                         <p className='border-b-[1px] border-black border-dotted w-[180px] text-center'>{leyendaMovimiento(datosInscripto.id_tipo_inscripto)}</p>
                         <p className='ml-2 font-medium'>Modalidad:</p>
-                        <p className='border-b-[1px] border-black border-dotted w-[110px] text-center'>{datosVacante.modalidad}</p>
+                        <p className='border-b-[1px] border-black border-dotted w-[110px] text-center'>{(datosVacante.modalidad) ?datosVacante.modalidad :`--------------`}</p>
                         <p className='ml-2 font-medium'>Cargo de Destino:</p>
                         <p className='border-b-[1px] border-black border-dotted w-[110px] text-center'>{datosVacante.cargo}</p>
 
@@ -107,15 +107,19 @@ console.log('que tiene id_nivel en PaginaDesignacion: ', id_nivel);
                     
                     <div className='flex flex-row mt-[2px]'>
                         <p className='ml-2 font-medium'>Turno:</p>
-                        <p className='border-b-[1px] border-black border-dotted w-[200px] text-center'>{datosVacante.turno}</p>
+                        {(datosVacante.turno)
+                            ?<p className='border-b-[1px] border-black border-dotted w-[200px] text-center'>{datosVacante.turno}</p>
+                            :<p className='border-b-[1px] border-black border-dotted w-[200px] text-start'>-----------------------------</p>
+                        }
+                        {/* <p className='border-b-[1px] border-black border-dotted w-[200px] text-center'>{(datosVacante.turno) ?datosVacante.turno :`----`}</p> */}
                         <p className='font-medium'>Cupof:</p>
-                        <p className='border-b-[1px] border-black border-dotted w-[100px] text-center'>{datosVacante.cupof}</p>
+                        <p className='border-b-[1px] border-black border-dotted w-[100px] text-center'>{(datosVacante.cupof) ?datosVacante.cupof :`-------------`}</p>
 
                     </div>
                 </div>
             </div>
             {/* PIE IMPRESION */}
-            <div className='flex flex-row h-[32vh] justify-start items-end'>
+            <div className='flex flex-row h-[18vh] justify-start items-end '>
                 <p className='text-[0.7rem] font-semibold border-[1px] border-b-gray-500'>Nota: </p>
                 <p className='text-[0.7rem] border-[1px] border-b-gray-500'>La presente queda sujeta a la Resolución de sumarios, recursos, impugnaciones u observaciones conforme lo prevee la normativa vigente.</p>
             </div>

@@ -12,7 +12,7 @@ function App() {
   const userSG = useSelector((state)=>state.user);
 
   useEffect(()=>{
-    console.log('que tiene userSG en APP: ', userSG);
+    //console.log('que tiene userSG en APP: ', userSG);
   },[userSG])
 
 

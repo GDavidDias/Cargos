@@ -12,7 +12,7 @@ export const fetchVacantesDispMov = async(id_listado,limit,page,valorBusqueda,fi
         "orderBy":orderBy,
         "typeOrder":typeOrder
     };
-    console.log('que tiene datos que pasa a body en fetchVacantesDispMov: ', dataBody);
+    //console.log('que tiene datos que pasa a body en fetchVacantesDispMov: ', dataBody);
 
     try{
         const {data} = await axios.post(`${URL}/api/vacantesdisp`,dataBody);

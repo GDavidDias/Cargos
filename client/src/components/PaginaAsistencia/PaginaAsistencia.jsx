@@ -8,7 +8,7 @@ const PaginaAsistencia = ({datosInscripto,id_nivel})=>{
     const año = fechaActual.getFullYear();
 
     return(
-        <div className='notranslate h-[96vh] border-2 border-zinc-300 p-4'>
+        <div className='notranslate h-[49vh] border-2 border-zinc-300 p-4'>
             {/* ENCABEZADO */}
             <div className="w-full flex flex-row items-center justify-between">
                 <div className="w-[25%] flex">

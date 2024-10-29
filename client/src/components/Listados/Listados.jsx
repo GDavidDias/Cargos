@@ -37,12 +37,12 @@ const Listados = () => {
     const buscoIDListadoVacantes = async(id_nivel) =>{
         //Filtro configuracion para el nivel
         const configFilterNivel = await configSG.config.filter((configNivel)=>configNivel.id_nivel==id_nivel);
-        console.log('que trae configFilterNivel: ', configFilterNivel);
+        //console.log('que trae configFilterNivel: ', configFilterNivel);
 
         //Traigo el id del listado cargado en configuracion para:
         //LISTADO DE VACANTES DE MOVIMIENTOS -> id_listado_vacantes_mov
         const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_mov;
-        console.log('que tiene idFilterListado: ',idFilterListado);
+        //console.log('que tiene idFilterListado: ',idFilterListado);
 
         //Guardo id_listado_vacantes_mov para usarlo en nueva Vacante
         setIdListVacMov(idFilterListado);
@@ -59,7 +59,7 @@ const Listados = () => {
         const orderBy="";
         const typeOrder="";
         const data = await fetchVacantesDispMov(idListVacMov,limit,page,filtroBusqueda,filtroEspecialidad,orderBy,typeOrder);
-        console.log('que trae data de fetchVacantesDispMov: ', data);
+        //console.log('que trae data de fetchVacantesDispMov: ', data);
         if(data.result.length!=0){
             setlistado(data.result);
         }
@@ -71,7 +71,7 @@ const Listados = () => {
         //setlistado([])
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE ASIGNACIONES REALIZADAS
         const data = await fetchRepoAsignacionesRealizadas(idListVacMov);
-        console.log('que trae data de fetchRepoAsignacionesRealizadas: ', data);
+        //console.log('que trae data de fetchRepoAsignacionesRealizadas: ', data);
         if(data.length!=0){
             setlistado(data);
         }
@@ -235,7 +235,7 @@ const Listados = () => {
                                 :``
                             }
                             `}
-                        onClick={()=>setReporte('asignacionesRealizadas')}
+                        onClick={()=>{setlistado([]);setReporte('asignacionesRealizadas')}}
                     >Asignaciones Realizadas</button>
                     <button 
                         className={`ml-2 px-[2px] border-[1px] border-[#73685F] rounded hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] shadow
@@ -244,7 +244,7 @@ const Listados = () => {
                                 :``
                             }
                             `}
-                        onClick={()=>setReporte('vacantesDisponibles')}
+                        onClick={()=>{setlistado([]);setReporte('vacantesDisponibles')}}
                     >Vacantes Disponibles</button>
                 </div>
                 <div className="flex flex-row mr-4">
@@ -269,17 +269,22 @@ const Listados = () => {
             <div 
                 className="h-[79vh] overflow-y-auto m-2 border-[1px] border-[#7C8EA6] "
                 ref={componentRef}
-            >
-                {(reporte==='vacantesDisponibles') &&
-                    <ReporteVacantesDisponibles
-                        listado={listado}
-                    />
-                }
-                {(reporte==='asignacionesRealizadas') &&
-                    <ReporteAsignacionesRealizadas
-                        listado={listado}
-                    />
-                }
+            >{
+                (listado.length!=0)
+                ?<div>
+                    {(reporte==='vacantesDisponibles') &&
+                        <ReporteVacantesDisponibles
+                            listado={listado}
+                        />
+                    }
+                    {(reporte==='asignacionesRealizadas') &&
+                        <ReporteAsignacionesRealizadas
+                            listado={listado}
+                        />
+                    }
+                 </div>
+                :`cargando...`
+            }
                 
             </div>
         </div>

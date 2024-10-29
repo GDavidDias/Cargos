@@ -18,11 +18,11 @@ export const fetchAllInscriptosMov = async(id_listado,limit,page,idTipoInscripto
         "filtroBusqueda":valorBusqueda,
         "idListadoInscriptosCompara":idListadoCompara
     };
-    console.log('que tiene datos que pasa a body en fetchAllInscriptosMov: ', dataBody);
+    //console.log('que tiene datos que pasa a body en fetchAllInscriptosMov: ', dataBody);
 
     try{
         const {data} = await axios.post(`${URL}/api/inscriptosmov`,dataBody);
-        console.log('que trae data de fetchAllInscriptosMov: ', data);
+        //console.log('que trae data de fetchAllInscriptosMov: ', data);
         return data;
         
     }catch(error){

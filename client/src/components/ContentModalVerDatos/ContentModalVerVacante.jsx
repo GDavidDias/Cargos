@@ -1,5 +1,5 @@
 const ContentModalVerVacante = ({idVacante,formVacante,closeModal,handleChangeFormVacante,estadoForm,datosVacante,submitGuardarFormVacante,inscriptoAsignado, userSG})=>{
-    console.log('ingreso a ContentModalVerVacante')
+    //console.log('ingreso a ContentModalVerVacante')
     //console.log('datos completo de Vacante Seleccionada: ', datosVacante);
     return(
         <div className="notranslate h-100 w-100  flex flex-col items-center">

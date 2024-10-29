@@ -7,7 +7,7 @@ export const validaDniAsignadoListado = async(id_listado,dni) => {
         "id_listado_inscriptos":id_listado,
         "dniInscripto":dni
     };
-    console.log('que tiene datos que pasa a body en validaDniAsignadoListado: ', dataBody);
+    //console.log('que tiene datos que pasa a body en validaDniAsignadoListado: ', dataBody);
 
     try{
         const {data} = await axios.post(`${URL}/api/validatedniasignado`,dataBody);

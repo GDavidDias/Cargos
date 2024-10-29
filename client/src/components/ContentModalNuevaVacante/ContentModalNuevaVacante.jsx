@@ -1,6 +1,6 @@
 const ContentModalNuevaVacante = ({formNuevaVacante,closeModalNuevaVacante,handleChangeFormVacante,valida,submitGuardarFormNuevaVacante,listadoEspecialidades})=>{
     //console.log('que tiene Valida: ', valida);
-    console.log('ingresa a ContentModalNuevaVacante');
+    //console.log('ingresa a ContentModalNuevaVacante');
     return(
         <div className="notranslate h-100 w-100  flex flex-col items-center">
             <label 

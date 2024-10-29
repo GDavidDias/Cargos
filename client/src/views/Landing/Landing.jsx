@@ -74,13 +74,13 @@ const Landing = () => {
     };
 
     const submitHandler = async()=>{
-        console.log('que tiene form: ', form);
+        //console.log('que tiene form: ', form);
         if(form.username==="" || form.password===""){
             setMensajeLogin("Ingrese Usuario y Contraseña");
         }else{
 
             const datavalida = await conexion(form);
-            console.log('que tiene datavalida: ', datavalida);
+            //console.log('que tiene datavalida: ', datavalida);
             if(datavalida.length!=0){
                 dispatch(setUser(datavalida));
                 if(datavalida[0].nivel===1){
@@ -146,7 +146,7 @@ const Landing = () => {
 
     const getConfiguracion = async() =>{
         const data = await fetchConfig();
-        console.log('que trae configuracion: ', data);
+        //console.log('que trae configuracion: ', data);
         dispatch(setConfig(data));
     };
 
@@ -167,10 +167,10 @@ const Landing = () => {
             setErrorValida(true);
         }else{
             const datavalida = await conexion(formChangePass);
-            console.log('que trae datavalida: ', datavalida);
+            //console.log('que trae datavalida: ', datavalida);
             if(datavalida.length!=0){
                 //dispatch(setUser(datavalida));
-                console.log('que tiene formChangePass: ', formChangePass);
+                //console.log('que tiene formChangePass: ', formChangePass);
                 //SI VALIDA USUARIO
                 const result = await changepass(formChangePass);
                 if(result.length!=0){
@@ -209,7 +209,7 @@ const Landing = () => {
 
 
     useEffect(()=>{
-        console.log('que tiene configSG: ', configSG);
+        //console.log('que tiene configSG: ', configSG);
     },[configSG])
         
     useEffect(()=>{ 

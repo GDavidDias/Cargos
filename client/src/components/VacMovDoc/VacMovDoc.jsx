@@ -126,7 +126,7 @@ const VacMovDoc = () => {
     //VEO CONFIGURACION GLOBAL
     useEffect(()=>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
-        console.log('que tiene configSG en VacantesMov (CARGA INICIAL): ', configSG);
+        //console.log('que tiene configSG en VacantesMov (CARGA INICIAL): ', configSG);
     },[configSG]);
 
   return (
