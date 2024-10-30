@@ -102,7 +102,7 @@ const PaginaDesignacion = ({datosInscripto, datosVacante,id_nivel}) =>{
                     </div>
                     <div className='flex flex-row mt-[2px]'>
                         <p className='ml-2 font-medium'>Institucion de Destino:</p>
-                        <p className='border-b-[1px] border-black border-dotted w-[400px] text-center'>{datosVacante.establecimiento}</p>
+                        <p className='border-b-[1px] border-black border-dotted w-[400px] text-center'>{datosVacante.establecimiento} - {datosVacante.obs_establecimiento}</p>
                     </div>
                     
                     <div className='flex flex-row mt-[2px]'>

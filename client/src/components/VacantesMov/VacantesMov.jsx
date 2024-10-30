@@ -477,7 +477,7 @@ const VacantesMov = () =>{
 
     const handleSelectFiltroEspecialidad=(event)=>{
         const{value} = event.target;
-        //console.log('que tiene filtroEspecialidad: ', value);
+        console.log('que tiene filtroEspecialidad: ', value);
         setFiltroEspecialidadVac(value);
         
         setCurrentPage(1);

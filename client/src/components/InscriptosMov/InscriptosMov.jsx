@@ -715,6 +715,7 @@ const InscriptosMov = ()=>{
     const creaNuevaVacante = async() => {
         //Creo una nueva Vacante con los datos del cargo que deja el Inscripto
         //id_listado_vac_mov, orden, establecimiento, obs_establecimiento, region, departamento, localidad, cargo, turno, modalidad, cupof, id_especialidad, datetime_creacion, zona
+        //console.log('que tiene datosInscriptoSelect: ', datosInscriptoSelect);
         const fechaHoraActualNuevaVac = await traeFechaHoraActual();
         const formNuevaVacante={
             id_listado_vac_mov:idListVacMov, //INT
@@ -725,7 +726,7 @@ const InscriptosMov = ()=>{
             departamento:'', //VARCHAR
             localidad:'', //VARCHAR
             cargo:datosInscriptoSelect.cargo_actual, //VARCHAR
-            turno:'', //VARCHAR
+            turno:(datosInscriptoSelect.turno_actual) ?datosInscriptoSelect.turno_actual :``, //VARCHAR
             modalidad:'', //VARCHAR
             cupof:'', //VARCHAR
             id_especialidad:null, //INTEGER
@@ -1434,11 +1435,14 @@ const InscriptosMov = ()=>{
                         </div>
                         {/* ORDENAMIENTO POR CAMPOS SEGUN FILTRO BUSQUEDA */}
                         <div className="flex flex-row desktop-xl:text-lg">
-                            <div className="flex flex-row items-center justify-center w-[2vw] border-r-[1px] border-zinc-200 hover:text-sky-500 ">
-                                <label className="font-base">ID</label>
+                            <div className="flex flex-row items-center justify-center w-[2vw] border-r-[1px] border-zinc-200 ">
+                                <label className="font-base text-sm">ID</label>
+                            </div>
+                            <div className="flex flex-row items-center justify-center w-[3vw] border-r-[1px] border-zinc-200  ">
+                                <label className="font-base font-semibold">Orden</label>
                             </div>
                             <div 
-                                className={`flex flex-row items-center justify-center w-[15vw] border-r-    [1px] border-zinc-200 hover:text-sky-500  cursor-pointer
+                                className={`flex flex-row items-center justify-center w-[30vw] border-r-    [1px] border-zinc-200 hover:text-sky-500  cursor-pointer
                                     ${(campoOrderVac==='establecimiento')
                                         ?`text-sky-500`
                                         :``
@@ -1549,12 +1553,12 @@ const InscriptosMov = ()=>{
                                                 className={`text-lg desktop-xl:text-xl font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 `}
                                                         key={index}
                                             >
-                                                <td className="w-[2vw] pl-[4px] font-light">{vacante.id_vacante_mov
-                                                }</td>
-                                                <td className="w-[15vw] pl-[4px] text-center">{vacante.establecimiento} - {vacante.obs_establecimiento}</td>
+                                                <td className="w-[2vw] pl-[4px] text-sm font-light">{vacante.id_vacante_mov}</td>
+                                                <td className="w-[2vw] pl-[4px] font-semibold">{vacante.orden}</td>
+                                                <td className="w-[30vw] pl-[4px] text-center">{vacante.establecimiento} - {vacante.obs_establecimiento}</td>
                                                 <td className="w-[10vw] pl-[4px] text-center">{vacante.cargo}</td>
                                                 <td className="w-[13vw] pl-[4px] text-center">{vacante.modalidad}</td>
-                                                <td className="w-[10vw] pl-[4px]">{vacante.turno}</td>
+                                                <td className="w-[10vw] pl-[4px] text-center">{vacante.turno}</td>
                                                 <td className="w-[10vw] pl-[4px] text-center">{vacante.region}</td>
                                                 <td className="w-[15vw] pl-[4px] text-center">{vacante.localidad}</td>
                                                 <td className="w-[8vw] pl-[4px] text-center">{vacante.zona}</td>
