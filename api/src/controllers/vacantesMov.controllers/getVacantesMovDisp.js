@@ -34,6 +34,7 @@ module.exports = async(req,res)=>{
                             OR LOWER(vm.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                             OR LOWER(vm.cargo) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                             OR LOWER(vm.modalidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                            OR LOWER(vm.cupof) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                     ) `
     };
 

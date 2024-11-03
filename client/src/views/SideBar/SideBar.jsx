@@ -234,7 +234,7 @@ const SideBar = () => {
                         <label className="font-light desktop-xl:text-lg">Vacantes</label>
                     </div>
 
-                    {(userSG.permiso!=3) &&
+                    {(userSG.permiso!=3 && userSG.permiso!=4) &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
                                 ${(pageSG==='Listados')
@@ -265,7 +265,7 @@ const SideBar = () => {
                 </div>
 
                 {/* MENU TITULARIZACION */}
-                <div className="ml-2 mt-6 text-white text-base">
+                {/* <div className="ml-2 mt-6 text-white text-base">
                     <label className="font-normal desktop-xl:text-lg">Titularizacion</label>
                     {(userSG.permiso!=3) &&
                         <div 
@@ -307,11 +307,11 @@ const SideBar = () => {
                             <label className="font-light desktop-xl:text-lg">Listados</label>
                         </div>
                     }
-                </div>
+                </div> */}
 
 
                 {/* MENU PROVISIONALES Y REEMPLAZANTES */}
-                <div className="ml-2 mt-6 text-white text-base">
+                {/* <div className="ml-2 mt-6 text-white text-base">
                     <label className="font-normal">Provisionales y Reemplazantes</label>
                     {(userSG.permiso!=3) &&
                         <div 
@@ -339,7 +339,7 @@ const SideBar = () => {
                         <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
                         <label className="font-light">Vacantes</label>
                     </div>
-                </div>
+                </div> */}
 
 
                 {/* MENU ADMINISTRADORES */}

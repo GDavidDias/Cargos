@@ -570,7 +570,7 @@ const VacantesMov = () =>{
                     <div className="flex flex-col">
                         <div className="flex flex-row mb-2">
                             <label className="ml-4 text-lg font-sans font-bold">VACANTES</label>
-                            {(userSG.permiso!=3) &&
+                            {(userSG.permiso!=3 && userSG.permiso!=4) &&
                                 <button 
                                     className="ml-2 px-[2px] border-[1px] border-[#73685F] rounded hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] shadow"
                                     onClick={submitNuevaVacante}
@@ -731,7 +731,7 @@ const VacantesMov = () =>{
                                                             onClick={()=>submitVerDatosVacante(vacante)}
                                                         />
                                                         {
-                                                            (vacante.datetime_asignacion===null && userSG.permiso!=3)
+                                                            (vacante.datetime_asignacion===null && (userSG.permiso!=3 && userSG.permiso!=4))
                                                             ?<IoTrash 
                                                                 className="font-bold text-xl text-red-500 hover:scale-150 transition-all duration-500 cursor-pointer"
                                                                 title="Eliminar Vaante"

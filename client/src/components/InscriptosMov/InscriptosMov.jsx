@@ -151,8 +151,14 @@ const InscriptosMov = ()=>{
     //E.L. donde se almacena el listado de especialidades
     const[listadoEspecialidades, setListadoEspecialidades]=useState([]);
 
+    //E.L. donde se almacena el listado de especialidades de LUOM
+    const[listadoEspecialidadesLuom, setListadoEspecialidadesLuom]=useState([]);
+
     //E.L. donde guarda la especialidad seleccionada
     const[filtroEspecialidadVac, setFiltroEspecialidadVac]=useState("");
+
+    //E.L. donde guarda la especialidad seleccionada del LUOM
+    const[filtroEspecialidadLuom, setFiltroEspecialidadLuom]=useState("");
 
     //E.L. guarda la pagina actual de listado Vacantes
     const[currentPageVac, setCurrentPageVac]=useState(1);
@@ -206,18 +212,18 @@ const InscriptosMov = ()=>{
 
 
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO
-        await getInscriptosMov(idFilterListado,currentPage,tipoInscripto,estadoInscripto,inputSearch,idFilterListadoCompara);
+        await getInscriptosMov(idFilterListado,currentPage,tipoInscripto,estadoInscripto,inputSearch,idFilterListadoCompara,filtroEspecialidadLuom);
     };
 
     //Este Proc carga el listado de inscriptos_mov al E.L
-    const getInscriptosMov = async(id_listado,page,idTipoInscripto,filtroAsignacion,valorBusqueda,idListadoCompara) =>{
+    const getInscriptosMov = async(id_listado,page,idTipoInscripto,filtroAsignacion,valorBusqueda,idListadoCompara,especialidadLuom) =>{
         let data;
         const limit=10;
         //console.log('que trae id_listado getInscriptosMovListado: ', id_listado);
         if(id_listado){
             //paso id_listado, limit y page
-            data = await fetchAllInscriptosMov(id_listado, limit, page,idTipoInscripto,filtroAsignacion, valorBusqueda, idListadoCompara);
-            //console.log('que trae data de fetchAllInscriptosMov: ', data);
+            data = await fetchAllInscriptosMov(id_listado, limit, page,idTipoInscripto,filtroAsignacion, valorBusqueda, idListadoCompara,especialidadLuom);
+            console.log('que trae data de fetchAllInscriptosMov: ', data);
 
             if(data.result?.length!=0){
                 setListadoInscriptosMov(data.result); 
@@ -293,6 +299,7 @@ const InscriptosMov = ()=>{
             };
         };
     };  
+
 
     //Proc al presionar icono "Ver Datos", setea en E.L los datos del inscripto
     const submitVerDatosInscripto = async(datos) =>{
@@ -402,7 +409,7 @@ const InscriptosMov = ()=>{
         //Cargo de nuevo listado de inscriptos con datos actualizados,
         //aplico los filtros y traigo dato si fue asignado o no
         //recargaListadoInscriptos();
-        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara,filtroEspecialidadLuom);
     };
 
     
@@ -913,7 +920,7 @@ const InscriptosMov = ()=>{
         closeModalConfirm();
         closeModalAsign();
         closeModalVac();
-        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara,filtroEspecialidadLuom);
     };
 
 
@@ -935,6 +942,8 @@ const InscriptosMov = ()=>{
         //console.log('que tiene especialidades: ', data);
         if(data?.length!=0){
             setListadoEspecialidades(data);
+            setListadoEspecialidadesLuom(data);
+
         }
     };
     
@@ -942,11 +951,25 @@ const InscriptosMov = ()=>{
     const handleCancelFiltroEspecialidadVac =()=>{
         setFiltroEspecialidadVac("");
     };
+    const handleCancelFiltroEspecialidadLuom =()=>{
+        setFiltroEspecialidadLuom("");
+        setCurrentPage(1);
+    };
 
     const handleSelectFiltroEspecialidad=(event)=>{
         const{value} = event.target;
         //console.log('que tiene filtroEspecialidad: ', value);
         setFiltroEspecialidadVac(value);
+        
+        setCurrentPageVac(1);
+        //al seleccionar una especialidad, regrso a la primer pagina, por si no hay tantos inscriptos
+        
+    };
+
+    const handleSelectFiltroEspecialidadLuom=(event)=>{
+        const{value} = event.target;
+        console.log('que tiene filtroEspecialidad: ', value);
+        setFiltroEspecialidadLuom(value);
         
         setCurrentPageVac(1);
         //al seleccionar una especialidad, regrso a la primer pagina, por si no hay tantos inscriptos
@@ -1022,7 +1045,7 @@ const InscriptosMov = ()=>{
 
     useEffect(()=>{
         //recargo listado de inscriptos con la nueva pagina
-        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara,filtroEspecialidadLuom);
     },[currentPage])
 
     //A medida que se escribe en el Input de BUsqueda de Vacantes Disponibles se ejecuta
@@ -1053,22 +1076,22 @@ const InscriptosMov = ()=>{
     //APLICO FILTROS de tipoInscripto (Activos / Disponibilidad), estadoInscripto(todos/sinasignar/asignados) y busquedadinamica(inputSearch)
     useEffect(()=>{
         //console.log('APLICO FILTRO')
-        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara,filtroEspecialidadLuom);
     },[tipoInscripto,estadoInscripto,inputSearch])
 
     useEffect(()=>{
         if (!isIntervalActive) return;
 
-        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
+        getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara,filtroEspecialidadLuom);
 
         const intervalId = setInterval(()=>{
             //console.log('ACTIVO INTERVALO')
-            getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara);
+            getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara,filtroEspecialidadLuom);
         }, 10000);
         
         return()=>clearInterval(intervalId);
 
-    },[isIntervalActive, nivelSG, formInscripto, tipoInscripto, estadoInscripto, inputSearch, currentPage])
+    },[isIntervalActive, nivelSG, formInscripto, tipoInscripto, estadoInscripto, inputSearch, currentPage,filtroEspecialidadLuom])
 
     useEffect(()=>{
         //console.log('que tiene isIntervalActive: ', isIntervalActive);
@@ -1090,7 +1113,7 @@ const InscriptosMov = ()=>{
     //VEO EL LISTADO DE VACANTES DE MOVIMIENTO
     useEffect(()=>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
-        //console.log('que tiene listadoVacantesMov (CARGA INICIAL): ', listadoVacantesDispMov);
+        //console.log('que tiene listadoVacantesMov: ', listadoVacantesDispMov);
     },[listadoVacantesDispMov])
 
     //VEO EL LISTADO DE INSCRIPTOS DE MOVIMIENTO
@@ -1110,6 +1133,9 @@ const InscriptosMov = ()=>{
         cargaInicialListados(configSG.nivel.id_nivel);
     },[configSG])
 
+    useEffect(()=>{
+        console.log('que tiene userSG: ',userSG);
+    },[userSG])
 
     //AL INGRESAR SE CARGA EL LISTADO DE INSCRIPTOS
     useEffect(()=>{
@@ -1122,7 +1148,7 @@ const InscriptosMov = ()=>{
             {/* ENCABEZADO DE PAGINA */}
             <div className="bg-[#C9D991] h-[12vh] flex flex-row">
                 {/* TITULOS - BOTONES - NIVEL */}
-                <div className="w-[40vw] flex justify-center items-start flex-col ">
+                <div className="w-[20vw] flex justify-center items-start flex-col ">
                     <label className="ml-4 text-base desktop-xl:text-xl font-semibold">NIVEL {configSG.nivel.descripcion}</label>
                     <div className="flex flex-row">
                         <label className="ml-4 text-lg desktop-xl:text-xl font-sans font-bold">INSCRIPTOS - LUOM</label>
@@ -1146,8 +1172,38 @@ const InscriptosMov = ()=>{
                         >Disponibilidad</button>
                     </div>
                 </div>
-                {/* SECCION CONTADOR INFORMATIVO */}
+                {/* SECCION FILTRO ESPECIALIDAD */}
                 <div className="w-[30vw] flex justify-center items-start flex-col ">
+                    <label className=" ">Especialidad Luom: </label>
+                    <div className="border-[1px] rounded border-gray-500 bg-neutral-50">
+                        <select
+                            className="w-[27vw] border-[1px] rounded focus:outline-none focus:ring-0 focus:border-none"
+                            name="filtroEspecialidad"
+                            onChange={handleSelectFiltroEspecialidadLuom}
+                            value={filtroEspecialidadLuom}
+                        >
+                            <option value='' selected disabled>Seleccione...</option>
+                            {
+                                listadoEspecialidadesLuom?.map((especialidad,index)=>(
+                                    <option 
+                                        key={index} 
+                                        value={especialidad.id_especialidad}
+                                        className="text-base"
+                                    >{especialidad.abreviatura} - {especialidad.descripcion}</option>
+                                ))
+                            }
+                        </select>
+                        {(filtroEspecialidadLuom!="") &&
+                            <label 
+                                className="font-bold mx-2 cursor-pointer"
+                                onClick={handleCancelFiltroEspecialidadLuom}
+                            >X</label>
+                        }
+                    </div>
+                </div>
+
+                {/* SECCION CONTADOR INFORMATIVO */}
+                <div className="w-[15vw] flex justify-center items-start flex-col ">
                     <div className="ml-8 text-base italic font-semibold">
                         {/* <label> Vacantes Disp: {totalVacantes.disponibles}</label>
                         <label> / Asignadas: {totalVacantes.asignadas}</label> */}
@@ -1173,7 +1229,7 @@ const InscriptosMov = ()=>{
                     </div>
                 </div>
                 {/* SECCION DATOS USUARIO */}
-                <div className=" w-[30vw] flex items-center justify-end ">
+                <div className=" w-[20vw] flex items-center justify-end ">
                     <label className="mr-2 italic text-sm">{userSG.nombre}</label>
                     <FaRegUserCircle className="mr-2 text-2xl text-[#73685F] " />
                     <FaPowerOff 
@@ -1250,7 +1306,8 @@ const InscriptosMov = ()=>{
                         <table className="border-[1px] bg-slate-50 w-full">
                             <thead>
                                 <tr className="sticky top-0 text-sm desktop-xl:text-lg border-b-[1px] border-zinc-300 bg-zinc-200">
-                                    <th className="border-r-[1px] border-zinc-300">Ord.</th>
+                                    <th className="border-r-[1px] font-semibold text-purple-500 border-zinc-300">ID</th>
+                                    {/* <th className="border-r-[1px] border-zinc-300">Ord.</th> */}
                                     <th className="border-r-[1px] border-zinc-300">Puntaje</th>
                                     <th className="border-r-[1px] border-zinc-300">Apellido</th>
                                     <th className="border-r-[1px] border-zinc-300">Nombre</th>
@@ -1275,7 +1332,8 @@ const InscriptosMov = ()=>{
                                                 className={`text-lg desktop-xl:text-xl font-medium border-b-[1px] border-zinc-500 h-[5vh] desktop-xl:h-[5.5vh] hover:bg-orange-300 ${colorFila}`}
                                                 key={index}
                                             >
-                                                <td className="text-center font-light">{inscripto.orden}</td>
+                                                <td className="text-center text-sm font-light">{inscripto.id_inscriptos_mov}</td>
+                                                {/* <td className="text-center font-light">{inscripto.orden}</td> */}
                                                 <td className="text-center font-bold text-sky-800">{inscripto.total}</td>
                                                 <td className="pl-2">{inscripto.apellido}</td>
                                                 <td className="pl-2">{inscripto.nombre}</td>
@@ -1308,7 +1366,7 @@ const InscriptosMov = ()=>{
                                                             onClick={()=>submitVerDatosInscripto(inscripto)}
                                                         />
                                                         {
-                                                            ((inscripto.vacante_asignada===null || inscripto.vacante_asignada==='' ) && inscripto.legajoEnOtroNivel===null)
+                                                            ((inscripto.vacante_asignada===null || inscripto.vacante_asignada==='' ) && inscripto.legajoEnOtroNivel===null && (userSG.permiso!=3 && userSG.permiso!=4))
                                                             ?<BiTransferAlt 
                                                                 className="text-2xl hover:cursor-pointer hover:text-[#83F272] ml-2"      
                                                                 title="Vacantes"
@@ -1480,6 +1538,10 @@ const InscriptosMov = ()=>{
                                 {/* <LuArrowUpDown className="ml-2"/> */}
                             </div>
                             <div className="flex flex-row items-center justify-center w-[10vw] border-r-[1px] border-zinc-200">
+                                <label className="font-semibold">CUPOF</label>
+                                {/* <LuArrowUpDown className="ml-2"/> */}
+                            </div>
+                            <div className="flex flex-row items-center justify-center w-[10vw] border-r-[1px] border-zinc-200">
                                 <label className="font-semibold">Region</label>
                                 {/* <LuArrowUpDown className="ml-2"/> */}
                             </div>
@@ -1559,6 +1621,7 @@ const InscriptosMov = ()=>{
                                                 <td className="w-[10vw] pl-[4px] text-center">{vacante.cargo}</td>
                                                 <td className="w-[13vw] pl-[4px] text-center">{vacante.modalidad}</td>
                                                 <td className="w-[10vw] pl-[4px] text-center">{vacante.turno}</td>
+                                                <td className="w-[10vw] pl-[4px] text-center">{vacante.cupof}</td>
                                                 <td className="w-[10vw] pl-[4px] text-center">{vacante.region}</td>
                                                 <td className="w-[15vw] pl-[4px] text-center">{vacante.localidad}</td>
                                                 <td className="w-[8vw] pl-[4px] text-center">{vacante.zona}</td>
@@ -1699,6 +1762,10 @@ const InscriptosMov = ()=>{
                                 <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl">{datosInscriptoSelect.turno_actual}</div>
                             </div>
                             <div className="flex flex-row items-center  my-2">
+                                <label className="font-semibold mr-2 text-lg">CUPOF</label>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl"></div>
+                            </div>
+                            <div className="flex flex-row items-center  my-2">
                                 <label className="font-semibold mr-2 text-lg">Region</label>
                                 <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl"></div>
                             </div>
@@ -1721,7 +1788,11 @@ const InscriptosMov = ()=>{
                         <div className="flex flex-col items-end">
                             <div className="flex flex-row items-center my-2 ">
                                 <label className="mb-0 font-semibold mr-2 text-lg ">Escuela</label>
-                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl">{datosVacanteSelect.establecimiento} {datosVacanteSelect.obs_establecimiento}</div>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl">
+                                    <p className="truncate ...">
+                                        {datosVacanteSelect.establecimiento} {datosVacanteSelect.obs_establecimiento}
+                                    </p>
+                                </div>
                             </div>
                             <div className="flex flex-row items-center my-2 ">
                                 <label className="font-semibold mr-2 text-lg">Cargo</label>
@@ -1734,6 +1805,10 @@ const InscriptosMov = ()=>{
                             <div className="flex flex-row items-center my-2 ">
                                 <label className="font-semibold mr-2 text-lg">Turno</label>
                                 <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl">{datosVacanteSelect.turno}</div>
+                            </div>
+                            <div className="flex flex-row items-center my-2 ">
+                                <label className="font-semibold mr-2 text-lg">CUPOF</label>
+                                <div className="mt-[4px] border-[1px] border-zinc-300 rounded w-[15vw] h-[4vh] pl-[4px] bg-neutral-50 text-base desktop-xl:text-xl">{datosVacanteSelect.cupof}</div>
                             </div>
                             <div className="flex flex-row items-center my-2 ">
                                 <label className="font-semibold mr-2 text-lg">Region</label>
@@ -1890,7 +1965,7 @@ const InscriptosMov = ()=>{
                         <div className="flex flex-col mx-2 my-2">
                             <div className="flex flex-row">
                                 <label className="text-base font-bold">{(datosInscriptoSelect.id_vacante_generada_cargo_actual!=null) ?`Cargo que dejó` :`Cargo Actual`}</label>
-                                <label className="ml-2 italic text-red-500">{(datosInscriptoSelect.genera_vacante==='NO') ?`Su cargo no genera vacante` :``}</label>
+                                <label className="ml-2 italic text-red-500">{(datosInscriptoSelect.genera_vacante==='NO') ?`No genera vacante RES N°2914` :``}</label>
                             </div>
                             <div className="flex flex-col border-[1px] border-orange-500 rounded py-[2px] bg-orange-50 items-end">
                                 <div className="flex flex-row mr-2 my-[2px]">
@@ -1969,12 +2044,14 @@ const InscriptosMov = ()=>{
                                         onClick={()=>procesoImpresion()}
                                     />
                                 </button>
-                                <button className="font-bold text-lg mr-4 hover:text-red-500 hover:scale-150 transition-all duration-500">
-                                    <IoTrash 
-                                        title="ELIMINAR"
-                                        onClick={()=>submitEliminarTomaCargo(cargoAsignado.id_asignacion_mov)}
-                                    />
-                                </button>
+                                {(userSG.permiso!=3 && userSG.permiso!=4) &&
+                                    <button className="font-bold text-lg mr-4 hover:text-red-500 hover:scale-150 transition-all duration-500">
+                                        <IoTrash 
+                                            title="ELIMINAR"
+                                            onClick={()=>submitEliminarTomaCargo(cargoAsignado.id_asignacion_mov)}
+                                        />
+                                    </button>
+                                }
                             </div>
                         </div>
                         {/* Datos a mostrar: Escuela, cargo, modalidad, turno, region, localidad, zona */}
@@ -1985,7 +2062,11 @@ const InscriptosMov = ()=>{
                             </div>
                             <div className="text-start mr-2 flex flex-row my-[2px]">
                                 <label className="font-semibold text-base mr-2">Escuela: </label>
-                                <div className="border-[1px] border-zinc-400  w-[40mm] h-[7mm] pl-[4px] bg-neutral-50">{cargoAsignado.establecimiento} {cargoAsignado.obs_establecimiento}</div>
+                                <div className="border-[1px] border-zinc-400  w-[40mm] h-[7mm] pl-[4px] bg-neutral-50">
+                                    <p className="truncate ...">
+                                        {cargoAsignado.establecimiento} {cargoAsignado.obs_establecimiento}
+                                    </p>
+                                </div>
                             </div>
                             <div className="text-start mr-2 flex flex-row my-[2px]">
                                 <label className="font-semibold text-base mr-2">Cargo: </label>
@@ -2134,29 +2215,35 @@ const InscriptosMov = ()=>{
             <div className="mt-10 w-full flex flex-col items-center">
                 <h1 className="text-xl text-center font-bold">{mensajeModalDatos}</h1>
                 <div className="flex flex-col mt-4 items-end border-[1px] border-orange-500 p-2 rounded bg-orange-50">
-                    <div className="text-start mx-2 flex flex-row items-center my-[2px]">
+                    <div className="text-start mx-2 flex flex-row items-center my-[2px] ">
                         <label className="font-semibold text-base mr-2">Establecimiento:</label>
-                        <div className="border-[1px] border-zinc-400  w-[35mm] h-[7mm] pl-[4px] flex items-center">{datosValidaDni?.vac_establecimiento} {datosValidaDni?.vac_obs_establecimiento}</div>
+                        <div className="border-[1px] border-zinc-400  w-[45mm] h-[7mm] pl-[4px] flex items-center">
+                            <p className="truncate ...">{datosValidaDni?.vac_establecimiento} {datosValidaDni?.vac_obs_establecimiento}</p>
+                        </div>
                     </div>
                     <div className="text-start mx-2 flex flex-row items-center my-[2px]">
                         <label className="font-semibold text-base mr-2">Cargo:</label>
-                        <div className="border-[1px] border-zinc-400  w-[35mm] h-[7mm] pl-[4px] flex items-center">{datosValidaDni?.vac_cargo}</div>
+                        <div className="border-[1px] border-zinc-400  w-[45mm] h-[7mm] pl-[4px] flex items-center">{datosValidaDni?.vac_cargo}</div>
                     </div>
                     <div className="text-start mx-2 flex flex-row items-center my-[2px]">
                         <label className="font-semibold text-base mr-2">Modalidad:</label>
-                        <div className="border-[1px] border-zinc-400  w-[35mm] h-[7mm] pl-[4px] flex items-center">{datosValidaDni?.vac_modalidad}</div>
+                        <div className="border-[1px] border-zinc-400  w-[45mm] h-[7mm] pl-[4px] flex items-center">{datosValidaDni?.vac_modalidad}</div>
                     </div>
                     <div className="text-start mx-2 flex flex-row items-center my-[2px]">
                         <label className="font-semibold text-base mr-2">Turno:</label>
-                        <div className="border-[1px] border-zinc-400  w-[35mm] h-[7mm] pl-[4px] flex items-center">{datosValidaDni?.vac_turno}</div>
+                        <div className="border-[1px] border-zinc-400  w-[45mm] h-[7mm] pl-[4px] flex items-center">{datosValidaDni?.vac_turno}</div>
                     </div>
                     <div className="text-start mx-2 flex flex-row items-center my-[2px]">
                         <label className="font-semibold text-base mr-2">Region:</label>
-                        <div className="border-[1px] border-zinc-400  w-[35mm] h-[7mm] pl-[4px] flex items-center">{datosValidaDni?.vac_region}</div>
+                        <div className="border-[1px] border-zinc-400  w-[45mm] h-[7mm] pl-[4px] flex items-center">{datosValidaDni?.vac_region}</div>
                     </div>
                     <div className="text-start mx-2 flex flex-row items-center my-[2px]">
                         <label className="font-semibold text-base mr-2">Localidad:</label>
-                        <div className="border-[1px] border-zinc-400  w-[35mm] h-[7mm] pl-[4px] flex items-center">{datosValidaDni?.vac_localidad}</div>
+                        <div className="border-[1px] border-zinc-400  w-[45mm] h-[7mm] pl-[4px] flex items-center">
+                            <p className="truncate ...">
+                                {datosValidaDni?.vac_localidad}
+                            </p>
+                        </div>
                     </div>
                 </div>
                 <div className="flex justify-center">

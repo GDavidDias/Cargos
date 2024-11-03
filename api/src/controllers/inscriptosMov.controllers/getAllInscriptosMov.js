@@ -4,7 +4,7 @@ module.exports = async(req,res)=>{
     //TRAE TODOS LOS INSCRIPTOS DE LA TABLA inscriptos_mov
     //QUE SEAN DEL NIVEL INDICADO EN EL LISTADO id_listado_inscriptos
     console.log('ingresa a getAllInscriptosMov');
-    const {id_listado_inscriptos,limit,page,idTipoInscripto,filtroAsignacion,filtroBusqueda,idListadoInscriptosCompara} = req.body;
+    const {id_listado_inscriptos,limit,page,idTipoInscripto,filtroAsignacion,filtroBusqueda,idListadoInscriptosCompara,idEspecialidadLuom} = req.body;
 
     console.log('que trae id_listado_inscriptos: ', id_listado_inscriptos);
     console.log('que trae limit: ', limit);
@@ -15,6 +15,9 @@ module.exports = async(req,res)=>{
     //este idListadoInscriptosCompara, sirve para comparar contra que listado, el dni de un docente ya tiene asignado un cargo.
     //traigo todas las asignaciones realizadas con ese idListadoInscriptosCompara y con su dni puedo buscar si existe en el listado de id_listado_inscriptos
     console.log('que trae idListadoInscriptosCompara: ', idListadoInscriptosCompara);
+
+    //Filtro Especialidad Luom
+    console.log('que trae idEspecialidadLuom: ', idEspecialidadLuom);
 
 
     const offset = (page-1)*limit;
@@ -73,6 +76,11 @@ module.exports = async(req,res)=>{
                         OR LOWER(im.cargo_solicitado) LIKE '%${filtroBusqueda.toLowerCase()}%'
                         OR LOWER(im.nro_escuela) LIKE '%${filtroBusqueda.toLowerCase()}%'
                         )`
+    };
+
+    //Filtro Luom Especialidad
+    if(idEspecialidadLuom && idEspecialidadLuom!=''){
+        armaquery+=` AND im.id_especialidad = ${idEspecialidadLuom} `;
     };
 
     armaquery+=` ORDER BY im.id_inscriptos_mov ASC `

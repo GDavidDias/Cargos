@@ -47,8 +47,9 @@ ALTER TABLE inscriptos_mov ADD genera_vacante VARCHAR(2) DEFAULT NULL;
 -----------------------------------------
 PERMISOS:
 1 - administrador
-2 - usernormal
+2 - userasignador (asignan cargos, modifican vacantes, modifican inscriptos, asignan estado, impresion)
 3 - invitado (docentes que no tienen usuario en sistema)
+4 - userconsultor (asigna solo turno, consulta vacantes, consulta inscriptos, impresion)
 ---------------
 NIVEL:
 1 - inicial
@@ -65,15 +66,41 @@ INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('invitad
 'invitadoPri', 'invitadoPri',3,2);
 INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Martin Ezequiel Contreras', 'MECONTRERAS', '123',2,1);
 INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Christian Franco Di Grazia', 'CDIGRAZIA', '123',2,1);
-INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Anibal Javier Paredes', 'AJPAREDES', '123',2,2);
 Matin Ezequiel Contreras:
 username: MECONTRERAS / PASS: 123
 
 Christian Franco Di Grazia
 username: CDIGRAZIA / PASS: 123
 
+PERMISOS:
+1 - administrador
+2 - userasignador (asignan cargos, modifican vacantes, modifican inscriptos, asignan estado, impresion)
+3 - invitado (docentes que no tienen usuario en sistema)
+4 - userconsultor (asigna solo turno, consulta vacantes, consulta inscriptos, impresion)
+
 Anibal Javier Paredes
 username: AJPAREDES / PASS: 123
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Anibal Javier Paredes', 'AJPAREDES', '31753418',2,2);
+
+USUARIOS Primaria
+PATRICIA GUTIERREZ -> username: PGUTIERREZ / PASS: 18593439
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Patricia Gutierrez', 'PGUTIERREZ', '18593439',4,2);
+EZEQUIEL DAZA -> username: EDAZA / PASS: 26675704
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Ezequiel Daza', 'EDAZA', '26675704',4,2);
+MARIBEL BRANDAN -> username: MBRANDAN / PASS: 28738149
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Maribel Brandan', 'MBRANDAN', '28738149',4,2);
+SEBASTIAN ORTIZ -> username: SORTIZ / PASS: 38746100
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Sebastian Ortiz', 'SORTIZ', '38746100',2,2);
+CARINA PEÑARANDA -> username: CPEÑARANDA / PASS: 28786751
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Carina Peñaranda', 'CPEÑARANDA', '28786751',4,2);
+AGUSTINA VIÑAVAL -> username: AVIÑAVAL / PASS: 28157159
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Agustina Viñaval', 'AVIÑAVAL', '28157159',4,2);
+GABRIELA MENACHO -> username: GMENACHO / PASS: 28537246
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Gabriela Menacho', 'GMENACHO', '28537246',4,2);
+ABIGAIL DIAZ -> username: ADIAZ / PASS: 39231868
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Abigail Diaz', 'ADIAZ', '39231868',4,2);
+GUILLERMO DIAS -> username: GDIAS / PASS: 28073497
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Guillermo Dias', 'GDIAS', '28073497',1,2);
 
 --------------------------------
 --PARA INSERT configuracion
