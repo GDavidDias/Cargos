@@ -181,6 +181,8 @@ const InscriptosMov = ()=>{
 
     const[cantLegajoDni, setCantLegajoDni]=useState(0);
 
+    const[isSubmitting, setIsSubmitting] = useState(false);
+
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
     //-------------------------------------
@@ -223,7 +225,7 @@ const InscriptosMov = ()=>{
         if(id_listado){
             //paso id_listado, limit y page
             data = await fetchAllInscriptosMov(id_listado, limit, page,idTipoInscripto,filtroAsignacion, valorBusqueda, idListadoCompara,especialidadLuom);
-            console.log('que trae data de fetchAllInscriptosMov: ', data);
+            //console.log('que trae data de fetchAllInscriptosMov: ', data);
 
             if(data.result?.length!=0){
                 setListadoInscriptosMov(data.result); 
@@ -234,7 +236,7 @@ const InscriptosMov = ()=>{
             };
 
             //LLAMO A PROC PARA CONTADOR DE VACANTES ASIGNADAS Y DISPONIBLES
-            traeVacantesTotales(id_listado);
+            //traeVacantesTotales(id_listado);
         };
     }; 
 
@@ -249,11 +251,11 @@ const InscriptosMov = ()=>{
         
         dataVacAsignadas = await fetchAllVacantesMov(id_listado,limit,page,'asignadas',filtroBusqueda,filtroEspecialidad);
 
-        //console.log('que trae DATA ASIGNADAS de fetchVacantesDispMov: ', dataVacAsignadas);
+        console.log('que trae DATA ASIGNADAS de fetchVacantesDispMov: ', dataVacAsignadas);
 
         dataVacDisponibles = await fetchAllVacantesMov(id_listado,limit,page,'disponibles',filtroBusqueda,filtroEspecialidad);
 
-        //console.log('que trae DATA DISPONIBLES de fetchVacantesDispMov: ', dataVacDisponibles);
+        console.log('que trae DATA DISPONIBLES de fetchVacantesDispMov: ', dataVacDisponibles);
 
         setTotalVacantes({
             asignadas:dataVacAsignadas?.paginacion.totalItems,
@@ -303,7 +305,7 @@ const InscriptosMov = ()=>{
 
     //Proc al presionar icono "Ver Datos", setea en E.L los datos del inscripto
     const submitVerDatosInscripto = async(datos) =>{
-        //console.log('que recibe datos inscripto: ', datos);
+        console.log('que recibe datos inscripto: ', datos);
         setDatosInscriptoSelect(datos);
 
         //seteo el estadoAsignadoInscripto
@@ -656,6 +658,9 @@ const InscriptosMov = ()=>{
     //?  -  -  -  PROCESO DE ASIGNACION
     //?---------------------------------------------------------------
     const submitAsignarVacante = async() => {
+        //Deshabilito boton para no ejecutar muchas veces.
+        setIsSubmitting(true);
+        
         if(datosInscriptoSelect.id_vacante_generada_cargo_actual === datosVacanteSelect.id_vacante_mov){
             setMensajeModalInfo('No puede seleccionar la misma vacante de su cargo original, seleccione otra vacante');
             openModal();
@@ -712,7 +717,14 @@ const InscriptosMov = ()=>{
                 })
                 .catch(error=>{
                     console.log('que trae error createasignacionmov: ', error)
-                });
+                })
+                .finally(()=>{
+                    //Espero 2 segundos ants de habilitar boton
+                    setTimeout(()=>{
+                        console.log('finaliza asignacion');
+                        setIsSubmitting(false); //Vuelvo a habilitar boton
+                    },5000)
+                })
     
             //Al final del Proceso de Asignacion recargo el listado de Vacantes Disponibles
             await buscoIDListadoVacantes(configSG.nivel.id_nivel);
@@ -1134,7 +1146,7 @@ const InscriptosMov = ()=>{
     },[configSG])
 
     useEffect(()=>{
-        console.log('que tiene userSG: ',userSG);
+        //console.log('que tiene userSG: ',userSG);
     },[userSG])
 
     //AL INGRESAR SE CARGA EL LISTADO DE INSCRIPTOS
@@ -1204,9 +1216,7 @@ const InscriptosMov = ()=>{
 
                 {/* SECCION CONTADOR INFORMATIVO */}
                 <div className="w-[15vw] flex justify-center items-start flex-col ">
-                    <div className="ml-8 text-base italic font-semibold">
-                        {/* <label> Vacantes Disp: {totalVacantes.disponibles}</label>
-                        <label> / Asignadas: {totalVacantes.asignadas}</label> */}
+                    {/* <div className="ml-8 text-base italic font-semibold">
                     </div>
                     <div className="p-[1px] border-[2px] border-[#7C8EA6] rounded-md shadow">
                         <table >
@@ -1226,7 +1236,7 @@ const InscriptosMov = ()=>{
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+                    </div> */}
                 </div>
                 {/* SECCION DATOS USUARIO */}
                 <div className=" w-[20vw] flex items-center justify-end ">
@@ -1292,10 +1302,11 @@ const InscriptosMov = ()=>{
                                             onClick={()=>handleCancelSearch()}
                                         />
                                     }
-                                    <FaSearch 
+                                    {/* <FaSearch 
                                         className="text-zinc-500 cursor-pointer mr-2"
                                         onClick={()=>submitSearch()}
-                                    />
+                                        //onClick={()=>handleInputSearchChange()}
+                                    /> */}
                                 </div>
                             </div>
                         </div>
@@ -1830,6 +1841,7 @@ const InscriptosMov = ()=>{
                         className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8  bg-[#7C8EA6] text-white shadow hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2 desktop-xl:h-10 desktop-xl:text-xl"
                         onClick={()=>submitAsignarVacante()}
                         translate='no'
+                        disabled={isSubmitting}
                     >ACEPTAR</button>
                     <button
                         className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white shadow hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2 desktop-xl:h-10 desktop-xl:text-xl"

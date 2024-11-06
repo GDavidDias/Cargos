@@ -436,6 +436,7 @@ const VacantesMov = () =>{
     const handleInputSearchChange = (event) =>{
         const {value} = event.target;
         setInputSearch(value);
+        setCurrentPage(1);
     };
 
     // const busquedaDinamica=()=>{

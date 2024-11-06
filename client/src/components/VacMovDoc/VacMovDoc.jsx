@@ -17,9 +17,9 @@ const connectSocketServer = () =>{
     return socket;
 };
 
-const socket = io(`${URL}`,{
-    transports: ['websocket']
-});
+// const socket = io(`${URL}`,{
+//     transports: ['websocket']
+// });
 
 //const socket = io.connect(`${URL}`);
 

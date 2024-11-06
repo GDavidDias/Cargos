@@ -38,12 +38,14 @@ module.exports = async(req,res)=>{
                     ) `
     };
 
-    if(orderBy && orderBy!=''){
-        armaquery += ` ORDER BY vm.${orderBy} ${typeOrder}`
-    }else{
+    // if(orderBy && orderBy!=''){
+    //     armaquery += ` ORDER BY vm.${orderBy} ${typeOrder}`
+    // }else{
 
-        armaquery+= ` ORDER BY vm.id_vacante_mov ASC`;
-    }
+    //     armaquery+= ` ORDER BY vm.id_vacante_mov ASC`;
+    // }
+
+    armaquery+= ` ORDER BY vm.id_vacante_mov ASC`
 
 
     try{
