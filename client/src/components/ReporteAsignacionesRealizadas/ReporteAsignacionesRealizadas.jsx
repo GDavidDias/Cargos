@@ -1,4 +1,5 @@
 const ReporteAsignacionesRealizadas = ({listado})=>{
+    console.log('que tieen listado: ', listado);
     function formatDateTime(dateString) {
         const date = new Date(dateString);
         
@@ -12,7 +13,7 @@ const ReporteAsignacionesRealizadas = ({listado})=>{
       
         return `${day}/${month}/${year} - ${hours}:${minutes}:${seconds}`;
       }
-
+ 
     return(
         <div>
             <table className="border-[1px] bg-slate-50 w-full page-break-after border">
@@ -25,11 +26,13 @@ const ReporteAsignacionesRealizadas = ({listado})=>{
                         <th className="border-x-[1px] border-gray-500">Nombre</th>
                         <th className="border-x-[1px] border-gray-500">Observacion</th>
                         <th className="border-x-[1px] border-gray-500">N° Escuela Actual</th>
-                        <th className="border-x-[1px] border-gray-500">Cargo Actual</th>
+                        <th className="border-x-[1px] border-gray-500">Cargo que Deja</th>
+                        <th className="border-x-[1px] border-gray-500">Turno que Deja</th>
+                        <th className="border-x-[1px] border-gray-500">Genera Vacante</th>
                         <th className="border-x-[1px] border-gray-500">Cargo Solicitado</th>
                         <th className="border-x-[1px] border-gray-500">Fecha y Hora Designacion</th>
                         <th className="border-x-[1px] border-gray-500">Cargo que Toma</th>
-                        <th className="border-x-[1px] border-gray-500">Turno</th>
+                        <th className="border-x-[1px] border-gray-500">Turno que Toma</th>
                         <th className="border-x-[1px] border-gray-500">Modalidad</th>
                         <th className="border-x-[1px] border-gray-500">Cupof</th>
                         <th className="border-x-[1px] border-gray-500">N° Escuela que Toma</th>
@@ -55,6 +58,8 @@ const ReporteAsignacionesRealizadas = ({listado})=>{
                                 <td className="border-x-[1px] border-gray-500">{item.observacion}</td>
                                 <td className="border-x-[1px] border-gray-500">{item.nro_escuela_actual}</td>
                                 <td className="border-x-[1px] border-gray-500">{item.cargo_actual}</td>
+                                <td className="border-x-[1px] border-gray-500">{item.turno_actual}</td>
+                                <td className="border-x-[1px] border-gray-500">{item.genera_vacante}</td>
                                 <td className="border-x-[1px] border-gray-500">{item.cargo_solicitado}</td>
                                 {/* <td className="border-x-[1px] border-gray-500">{item.datetime_asignacion}</td> */}
                                 <td className="border-x-[1px] border-gray-500">{formattedDateTime}</td>

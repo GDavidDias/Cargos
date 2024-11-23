@@ -17,11 +17,11 @@ module.exports = async(req,res)=>{
             WHERE (vm.obs_desactiva IS NULL OR vm.obs_desactiva = "")
             AND vm.id_listado_vac_mov=${idListadoVacMov}
             `;
-    
+
     if(filtroEspecialidad && filtroEspecialidad!=''){
         armaquery += ` AND vm.id_especialidad IN(${filtroEspecialidad}) `
     };
-    
+
     if(filtroAsignacion==='asignadas'){
         armaquery+=` AND am2.datetime_asignacion IS NOT NULL`;
     }else if(filtroAsignacion==='disponibles'){

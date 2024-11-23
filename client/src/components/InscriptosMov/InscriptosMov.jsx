@@ -192,6 +192,7 @@ const InscriptosMov = ()=>{
         navigate('/')
     };
 
+
     //Proc que trae el ID del listado configurado
     const buscoIdlistadoInscrip = async(id_nivel) =>{
         //Filtro configuracion para el nivel
@@ -305,7 +306,7 @@ const InscriptosMov = ()=>{
 
     //Proc al presionar icono "Ver Datos", setea en E.L los datos del inscripto
     const submitVerDatosInscripto = async(datos) =>{
-        console.log('que recibe datos inscripto: ', datos);
+        //console.log('que recibe datos inscripto: ', datos);
         setDatosInscriptoSelect(datos);
 
         //seteo el estadoAsignadoInscripto
@@ -472,8 +473,6 @@ const InscriptosMov = ()=>{
                 }
             };
         });
-
-
 
         setFilterListadoInscriptosMov(dataFilter)
     };
@@ -1507,10 +1506,13 @@ const InscriptosMov = ()=>{
                             <div className="flex flex-row items-center justify-center w-[2vw] border-r-[1px] border-zinc-200 ">
                                 <label className="font-base text-sm">ID</label>
                             </div>
-                            <div className="flex flex-row items-center justify-center w-[3vw] border-r-[1px] border-zinc-200  ">
+                            <div className="flex flex-row items-center justify-center w-[4vw] border-r-[1px] border-zinc-200  ">
                                 <label className="font-base font-semibold">Orden</label>
                             </div>
-                            <div 
+                            <div className="flex flex-row items-center justify-center w-[30vw] border-r-[1px] border-zinc-200  ">
+                                <label className="font-base font-semibold">Escuela</label>
+                            </div>
+                            {/* <div 
                                 className={`flex flex-row items-center justify-center w-[30vw] border-r-    [1px] border-zinc-200 hover:text-sky-500  cursor-pointer
                                     ${(campoOrderVac==='establecimiento')
                                         ?`text-sky-500`
@@ -1535,7 +1537,7 @@ const InscriptosMov = ()=>{
                                     />
                                 }
                                 
-                            </div>
+                            </div> */}
                             <div className="flex flex-row items-center justify-center w-[10vw] border-r-[1px] border-zinc-200">
                                 <label className="font-semibold">Cargo</label>
                                 {/* <LuArrowUpDown className="ml-2"/> */}
@@ -1627,8 +1629,16 @@ const InscriptosMov = ()=>{
                                                         key={index}
                                             >
                                                 <td className="w-[2vw] pl-[4px] text-sm font-light">{vacante.id_vacante_mov}</td>
-                                                <td className="w-[2vw] pl-[4px] font-semibold">{vacante.orden}</td>
-                                                <td className="w-[30vw] pl-[4px] text-center">{vacante.establecimiento} - {vacante.obs_establecimiento}</td>
+                                                <td className="w-[4vw] pl-[4px] font-light">{vacante.orden}</td>
+                                                {/* <td className="w-[10vw] pl-[4px] text-center">{vacante.establecimiento}</td>
+                                                <td className="w-[30vw] pl-[4px] text-start">{vacante.obs_establecimiento}</td> */}
+                                                <td className="w-[30vw] pl-[4px] text-start">
+                                                    <div className="flex flex-row">
+                                                        <p className="text-purple-700">{vacante.establecimiento}</p>
+                                                        <p className="ml-2">{vacante.obs_establecimiento}</p>
+                                                    </div>
+                                                </td>
+                                                {/* <td className="w-[30vw] pl-[4px] text-center">{vacante.obs_establecimiento}</td> */}
                                                 <td className="w-[10vw] pl-[4px] text-center">{vacante.cargo}</td>
                                                 <td className="w-[13vw] pl-[4px] text-center">{vacante.modalidad}</td>
                                                 <td className="w-[10vw] pl-[4px] text-center">{vacante.turno}</td>
@@ -1977,7 +1987,7 @@ const InscriptosMov = ()=>{
                         <div className="flex flex-col mx-2 my-2">
                             <div className="flex flex-row">
                                 <label className="text-base font-bold">{(datosInscriptoSelect.id_vacante_generada_cargo_actual!=null) ?`Cargo que dejó` :`Cargo Actual`}</label>
-                                <label className="ml-2 italic text-red-500">{(datosInscriptoSelect.genera_vacante==='NO') ?`No genera vacante RES N°2914` :``}</label>
+                                <label className="ml-2 italic text-red-500">{(datosInscriptoSelect.genera_vacante==='NO') ?`No genera vacante` :``}</label>
                             </div>
                             <div className="flex flex-col border-[1px] border-orange-500 rounded py-[2px] bg-orange-50 items-end">
                                 <div className="flex flex-row mr-2 my-[2px]">

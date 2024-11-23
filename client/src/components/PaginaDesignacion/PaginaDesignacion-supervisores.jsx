@@ -84,7 +84,7 @@ const PaginaDesignacion = ({datosInscripto, datosVacante,id_nivel}) =>{
 
                     <div className='flex flex-row mt-[2px]'>
                         <p className='ml-2 font-medium'>Institucion de Origen:</p>
-                        <p className='border-b-[1px] border-black border-dotted w-[300px] text-center'>{datosInscripto.nro_escuela}</p>
+                        <p className='border-b-[1px] border-black border-dotted w-[300px] text-center'>{(datosInscripto.nro_escuela) ?datosInscripto.nro_escuela :`----------------------------`}</p>
                     </div>
                     <p className='font-semibold mt-[10px]'>DATOS DEL CARGO</p>
                     <div className='flex flex-row'>
@@ -92,12 +92,12 @@ const PaginaDesignacion = ({datosInscripto, datosVacante,id_nivel}) =>{
                         <p className='border-b-[1px] border-black w-[100px] text-center'>{datosVacante.orden}</p> */}
                         <p className='ml-2 font-medium'>Movimiento:</p>
                         {/* <p className='border-b-[1px] border-black border-dotted w-[180px] text-center'>{leyendaMovimiento(datosInscripto.id_tipo_inscripto)}</p> */}
-                        <p className='border-b-[1px] border-black border-dotted w-[180px] text-center'>ASCENSO</p>
+                        <p className='border-b-[1px] border-black border-dotted w-[120px] text-center'>ASCENSO</p>
                         {/* <p className='ml-2 font-medium'>Modalidad:</p> */}
                         <p className='ml-2 font-medium'>Caracter:</p>
                         <p className='border-b-[1px] border-black border-dotted w-[110px] text-center'>{(datosVacante.modalidad) ?datosVacante.modalidad :`--------------`}</p>
                         <p className='ml-2 font-medium'>Cargo de Destino:</p>
-                        <p className='border-b-[1px] border-black border-dotted w-[110px] text-center'>{datosVacante.cargo}</p>
+                        <p className='border-b-[1px] border-black border-dotted w-[180px] text-center'>{datosVacante.cargo}</p>
 
                     </div>
                     <div className='flex flex-row mt-[2px]'>

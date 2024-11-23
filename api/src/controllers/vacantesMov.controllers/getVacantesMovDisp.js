@@ -30,13 +30,22 @@ module.exports = async(req,res)=>{
     if(filtroBusqueda && filtroBusqueda!=''){
         armaquery+=` AND (LOWER(vm.establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                             OR LOWER(vm.obs_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vm.departamento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                             OR LOWER(vm.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vm.cargo) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                             OR LOWER(vm.modalidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                             OR LOWER(vm.cupof) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                            OR LOWER(vm.region) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                     ) `
     };
+    // if(filtroBusqueda && filtroBusqueda!=''){
+    //     armaquery+=` AND (LOWER(vm.establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+    //                         OR LOWER(vm.obs_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+    //                         OR LOWER(vm.departamento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+    //                         OR LOWER(vm.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+    //                         OR LOWER(vm.cargo) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+    //                         OR LOWER(vm.modalidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+    //                         OR LOWER(vm.cupof) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+    //                 ) `
+    // };
 
     // if(orderBy && orderBy!=''){
     //     armaquery += ` ORDER BY vm.${orderBy} ${typeOrder}`

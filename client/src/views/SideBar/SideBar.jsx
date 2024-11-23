@@ -265,7 +265,7 @@ const SideBar = () => {
                 </div>
 
                 {/* MENU TITULARIZACION */}
-                {/* <div className="ml-2 mt-6 text-white text-base">
+                <div className="ml-2 mt-6 text-white text-base">
                     <label className="font-normal desktop-xl:text-lg">Titularizacion</label>
                     {(userSG.permiso!=3) &&
                         <div 
@@ -299,7 +299,7 @@ const SideBar = () => {
                                 ${(pageSG==='ListadosTit')
                                 ?'bg-[#C9D991]'
                                 :'hover:bg-[#C9D991]'
-                            }
+                                }
                                 `}
                             onClick={()=>submitListadosTit()}
                         >
@@ -307,7 +307,7 @@ const SideBar = () => {
                             <label className="font-light desktop-xl:text-lg">Listados</label>
                         </div>
                     }
-                </div> */}
+                </div>
 
 
                 {/* MENU PROVISIONALES Y REEMPLAZANTES */}
