@@ -302,7 +302,24 @@ const InscriptosTit = () =>{
         //getInscriptosTit(idListadoInscriptosTit,currentPage,estadoInscripto,inputSearch,value);
     };
 
+    const handleSelectFiltroEspecialidadVac=(event)=>{
+        const{value} = event.target;
+        console.log('que tiene filtroEspecialidad: ', value);
+        //setSelectFiltroEspecialidad(value);
+        setFiltroEspecialidadVac(value);
+        setCurrentPageVac(1);
+        //al seleccionar una especialidad, regrso a la primer pagina, por si no hay tantos inscriptos
+        setCurrentPage(1);
+        //getInscriptosTit(idListadoInscriptosTit,currentPage,estadoInscripto,inputSearch,value);
+    };
+
+    const handleCancelFiltroEspecialidadVac=()=>{
+        //
+        setFiltroEspecialidadVac("");
+    }
+
     const submitVerVacantes = (datosInscripto) =>{
+        console.log('que tien datosInscriptos: ', datosInscripto);
         //setCurrentPageVac(1);
         setDatosInscriptoSelect(datosInscripto);
         //cargo listado de vacantes disponibles
@@ -579,8 +596,8 @@ const InscriptosTit = () =>{
                                 <tr className="sticky top-0 text-sm border-b-[1px] border-zinc-300 bg-zinc-200">
                                     <th className="border-r-[1px] border-zinc-300">Orden</th>
                                     <th className="border-r-[1px] border-zinc-300">Puntaje</th>
-                                    <th className="border-r-[1px] border-zinc-300">Apellido</th>
-                                    <th className="border-r-[1px] border-zinc-300">Nombre</th>
+                                    {/* <th className="border-r-[1px] border-zinc-300">Apellido</th> */}
+                                    <th className="border-r-[1px] border-zinc-300">Nombre Docente</th>
                                     <th className="border-r-[1px] border-zinc-300">DNI</th>
                                     <th className="border-r-[1px] border-zinc-300">Especialidad</th>
                                     <th className="">Acciones</th>
@@ -598,8 +615,8 @@ const InscriptosTit = () =>{
                                             >
                                                 <td className="text-center">{inscripto.orden}</td>
                                                 <td className="text-center">{inscripto.total}</td>
-                                                <td>{inscripto.apellido}</td>
-                                                <td>{inscripto.nombre}</td>
+                                                {/* <td>{inscripto.apellido}</td> */}
+                                                <td>{inscripto.apellido} {inscripto.nombre}</td>
                                                 <td>{inscripto.dni}</td>
                                                 <td>{inscripto.especialidad}</td>
                                                 <td>
@@ -676,6 +693,10 @@ const InscriptosTit = () =>{
                     inputSearchVac={inputSearchVac}
                     handleInputSearchVacChange={handleInputSearchVacChange}
                     submitVerAsignacion={submitVerAsignacion}
+                    listadoEspecialidades={listadoEspecialidades}
+                    filtroEspecialidadVac={filtroEspecialidadVac}
+                    handleSelectFiltroEspecialidadVac={handleSelectFiltroEspecialidadVac}
+                    handleCancelFiltroEspecialidadVac={handleCancelFiltroEspecialidadVac}
                 />
             </ModalEdit>
 
@@ -722,7 +743,6 @@ const InscriptosTit = () =>{
                         </div>
                     </div>    
                 </div>
-
             </ModalEdit>
 
 

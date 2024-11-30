@@ -10,131 +10,133 @@ const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,i
                 translate='no'
             >Datos del Inscripto <p className="text-sm font-light ml-2">({idInscriptoSelect})</p></label>
 
-            <div>
-                {/* DATOS DEL INSCRIPTO */}
-                <div className="border-[1px] border-sky-500 rounded-md min-w-[50vw] py-2 my-2 font-semibold bg-blue-100">
-                    <div className="flex flex-row ml-2 mt-[2px] items-end justify-start">
-                        <div className="flex flex-col my-[4px] mx-2 text-start">
-                            <label className="font-semibold text-base mr-2">Orden:</label>
-                            <input 
-                                name="dni"
-                                className="border-[1px] border-zinc-500 w-[6vw] h-[4vh] text-start pl-2 bg-neutral-50 rounded"
-                                value={datosFormInscripto?.orden}
-                                disabled={true}
-                            />
-                        </div>
-
-                        <div className="flex flex-col my-[4px] mx-2 text-start">
-                            <label className="font-semibold text-base mr-2">Apellido:</label>
-                            <input 
-                                name="apellido"
-                                className="border-[1px] border-zinc-500 w-[16vw] h-[4vh] pl-2 text-start pl-2 bg-neutral-50 rounded"
-                                value={datosFormInscripto?.apellido}
-                                onChange={handleChangeFormInscripto}
-                                disabled={(datosInscriptoSelect.vacante_asignada!=null)}
-                            />
-                        </div>
-                        <div className="flex flex-col my-[4px] mx-2 text-start">
-                            <label className="font-semibold text-base mr-2">Nombre:</label>
-                            <input 
-                                name="nombre"
-                                className="border-[1px] border-zinc-500 w-[20vw] h-[4vh] pl-2 text-start pl-2 bg-neutral-50 rounded"
-                                value={datosFormInscripto?.nombre}
-                                onChange={handleChangeFormInscripto}
-                                disabled={(datosInscriptoSelect.vacante_asignada!=null)}
-                            />
-                        </div>
-
-                    </div>
-                    <div className="flex flex-row ml-2 mt-[2px] items-end justify-start">
-
-                        <div className="flex flex-col my-[4px] mx-2 text-start">
-                            <label className="font-semibold text-base mr-2">Dni:</label>
-                            <input 
-                                name="dni"
-                                className="border-[1px] border-zinc-500 w-[12vw] h-[4vh] text-start pl-2 bg-neutral-50 rounded"
-                                value={datosFormInscripto?.dni}
-                                onChange={handleChangeFormInscripto}
-                                disabled={(datosInscriptoSelect.vacante_asignada!=null)}
-                            />
-                        </div>
-
-                        <div className="flex flex-col my-[4px] mx-2 text-start">
-                            <label className="font-semibold text-base mr-2">Total:</label>
-                            <input 
-                                name="total"
-                                className="border-[1px] border-zinc-500 w-[6vw] h-[4vh] pl-2 text-start pl-2 bg-neutral-50 rounded"
-                                value={datosFormInscripto?.total}
-                                onChange={handleChangeFormInscripto}
-                                disabled={(datosInscriptoSelect.vacante_asignada!=null)}
-                            />
-                        </div>
-
-                    </div>
-                </div>
-
-                {/* DATOS DE SU ASIGNACION */}
-                {(datosInscriptoSelect.vacante_asignada!=null && datosInscriptoSelect.vacante_asignada!='')  &&
-                <div className="h-[19vh] min-w-[50vw] mt-5 border-[1px] border-emerald-500 text-center rounded bg-emerald-50">
-                    <div className="flex flex-row ">
-                        <div className="w-[20%] "></div>
-                        <div className="w-[60%] ">
-                            <label className="text-xl text-center font-bold text-green-700" translate='no'>Vacante que Titularizó</label>
-                        </div>
-                        <div className="flex flex-row w-[20%] justify-end">
-                            <button className="font-bold text-xl mr-2 hover:text-sky-500 hover:scale-150 transition-all duration-500">
-                                <IoMdPrint 
-                                    title="IMPRIMIR DESIGNACION"
-                                    onClick={()=>procesoImpresion()}
+            <div className="flex flex-col">
+                <div className="flex flex-row">
+                    {/* DATOS DEL INSCRIPTO */}
+                    <div className="border-[1px] border-sky-500 rounded-md w-[95mm] h-[65mm] py-2 my-2 font-semibold bg-blue-100 ">
+                        <div className="flex flex-col ml-2 mt-[2px] items-end justify-start">
+                            <div className="flex flex-row my-[4px] mx-2 text-start items-center">
+                                <label className="font-semibold text-base mr-2">Orden:</label>
+                                <input 
+                                    name="dni"
+                                    className="border-[1px] border-zinc-500 w-[70mm] h-[4vh] text-start pl-2 bg-neutral-50 rounded"
+                                    value={datosFormInscripto?.orden}
+                                    disabled={true}
                                 />
-                            </button>
-                            <button className="font-bold text-lg mr-4 hover:text-red-500 hover:scale-150 transition-all duration-500">
-                                <IoTrash 
-                                    title="ELIMINAR"
-                                    onClick={()=>submitEliminarTomaCargo(cargoAsignado.id_asignacion_tit)}
+                            </div>
+
+                            <div className="flex flex-row my-[4px] mx-2 text-start items-center">
+                                <label className="font-semibold text-base mr-2">Apellido:</label>
+                                <input 
+                                    name="apellido"
+                                    className="border-[1px] border-zinc-500 w-[70mm] h-[4vh] pl-2 text-start pl-2 bg-neutral-50 rounded"
+                                    value={datosFormInscripto?.apellido}
+                                    onChange={handleChangeFormInscripto}
+                                    disabled={(datosInscriptoSelect.vacante_asignada!=null)}
                                 />
-                            </button>
+                            </div>
+                            <div className="flex flex-row my-[4px] mx-2 text-start items-center">
+                                <label className="font-semibold text-base mr-2">Nombre:</label>
+                                <input 
+                                    name="nombre"
+                                    className="border-[1px] border-zinc-500 w-[70mm] h-[4vh] pl-2 text-start pl-2 bg-neutral-50 rounded"
+                                    value={datosFormInscripto?.nombre}
+                                    onChange={handleChangeFormInscripto}
+                                    disabled={(datosInscriptoSelect.vacante_asignada!=null)}
+                                />
+                            </div>
+
+                        </div>
+                        <div className="flex flex-col ml-2 mt-[2px] items-end justify-start">
+
+                            <div className="flex flex-row my-[4px] mx-2 text-start items-center">
+                                <label className="font-semibold text-base mr-2">Dni:</label>
+                                <input 
+                                    name="dni"
+                                    className="border-[1px] border-zinc-500 w-[70mm] h-[4vh] text-start pl-2 bg-neutral-50 rounded"
+                                    value={datosFormInscripto?.dni}
+                                    onChange={handleChangeFormInscripto}
+                                    disabled={(datosInscriptoSelect.vacante_asignada!=null)}
+                                />
+                            </div>
+
+                            <div className="flex flex-row my-[4px] mx-2 text-start items-center">
+                                <label className="font-semibold text-base mr-2">Total:</label>
+                                <input 
+                                    name="total"
+                                    className="border-[1px] border-zinc-500 w-[70mm] h-[4vh] pl-2 text-start pl-2 bg-neutral-50 rounded"
+                                    value={datosFormInscripto?.total}
+                                    onChange={handleChangeFormInscripto}
+                                    disabled={(datosInscriptoSelect.vacante_asignada!=null)}
+                                />
+                            </div>
+
                         </div>
                     </div>
-                    {/* Datos a mostrar: Escuela, cargo, modalidad, turno, region, localidad, zona */}
-                    <div className="flex flex-row">
-                        <div className="text-start ml-2">
-                            <label className="font-semibold text-sm">ID Vacante</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[6vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.id_vacante_tit}</div>
+
+                    {/* DATOS DE SU ASIGNACION */}
+                    {(datosInscriptoSelect.vacante_asignada!=null && datosInscriptoSelect.vacante_asignada!='')  &&
+                    <div className="h-[110mm] w-[100mm] ml-2 my-2 border-[1px] border-emerald-500 text-center rounded bg-emerald-50 ">
+                        <div className="flex flex-row ">
+                            <div className="w-[20%] "></div>
+                            <div className="w-[60%] ">
+                                <label className="text-xl text-center font-bold text-green-700" translate='no'>Vacante que Titularizó</label>
+                            </div>
+                            <div className="flex flex-row w-[20%] justify-end">
+                                <button className="font-bold text-xl mr-2 hover:text-sky-500 hover:scale-150 transition-all duration-500">
+                                    <IoMdPrint 
+                                        title="IMPRIMIR DESIGNACION"
+                                        onClick={()=>procesoImpresion()}
+                                    />
+                                </button>
+                                <button className="font-bold text-lg mr-4 hover:text-red-500 hover:scale-150 transition-all duration-500">
+                                    <IoTrash 
+                                        title="ELIMINAR"
+                                        onClick={()=>submitEliminarTomaCargo(cargoAsignado.id_asignacion_tit)}
+                                    />
+                                </button>
+                            </div>
                         </div>
-                        <div className="text-start ml-2">
-                            <label className="font-semibold text-sm">Escuela</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.nro_establecimiento} {cargoAsignado.nombre_establecimiento}</div>
-                        </div>
-                        <div className="text-start ml-2">
-                            <label className="font-semibold text-sm">Cargo</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.cargo}</div>
-                        </div>
-                        <div className="text-start mx-2">
-                            <label className="font-semibold text-sm">Modalidad</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.modalidad}</div>
-                        </div>
-                    </div>    
-                    <div className="flex flex-row">
-                        <div className="text-start ml-2">
-                            <label className="font-semibold text-sm">Turno</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[8vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.turno}</div>
-                        </div>
-                        <div className="text-start ml-2">
-                            <label className="font-semibold text-sm">Region</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[11vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.region}</div>
-                                </div>
-                        <div className="text-start ml-2">
-                            <label className="font-semibold text-sm">Localidad</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[17vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.localidad}</div>
-                        </div>
-                        <div className="text-start ml-2">
-                            <label className="font-semibold text-sm">Zona</label>
-                            <div className="mt-[-4px] border-[1px] border-zinc-500 rounded w-[10vw] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.zona}</div>
-                        </div>
-                    </div>  
+                        {/* Datos a mostrar: Escuela, cargo, modalidad, turno, region, localidad, zona */}
+                        <div className="flex flex-col items-end">
+                            <div className="text-start my-[4px] mx-2 flex flex-row items-center">
+                                <label className="font-semibold text-sm mr-2">ID Vacante:</label>
+                                <div className=" border-[1px] border-zinc-500 rounded w-[70mm] h-[4vh] pl-[4px] bg-neutral-50 ">{cargoAsignado.id_vacante_tit}</div>
+                            </div>
+                            <div className="text-start my-[4px] mx-2 flex flex-row items-center">
+                                <label className="font-semibold text-sm mr-2">Escuela:</label>
+                                <div className=" border-[1px] border-zinc-500 rounded w-[70mm] h-[4vh] pl-[4px] bg-neutral-50 ">{cargoAsignado.nro_establecimiento} {cargoAsignado.nombre_establecimiento}</div>
+                            </div>
+                            <div className="text-start my-[4px] mx-2 flex flex-row items-center">
+                                <label className="font-semibold text-sm mr-2">Cargo:</label>
+                                <div className=" border-[1px] border-zinc-500 rounded w-[70mm] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.cargo}</div>
+                            </div>
+                            <div className="text-start my-[4px] mx-2 flex flex-row items-center">
+                                <label className="font-semibold text-sm mr-2">Modalidad:</label>
+                                <div className=" border-[1px] border-zinc-500 rounded w-[70mm] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.modalidad}</div>
+                            </div>
+                        </div>    
+                        <div className="flex flex-col items-end">
+                            <div className="text-start my-[4px] mx-2 flex flex-row items-center">
+                                <label className="font-semibold text-sm mr-2">Turno:</label>
+                                <div className=" border-[1px] border-zinc-500 rounded w-[70mm] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.turno}</div>
+                            </div>
+                            <div className="text-start my-[4px] mx-2 flex flex-row items-center">
+                                <label className="font-semibold text-sm mr-2">Region:</label>
+                                <div className=" border-[1px] border-zinc-500 rounded w-[70mm] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.region}</div>
+                                    </div>
+                            <div className="text-start my-[4px] mx-2 flex flex-row items-center">
+                                <label className="font-semibold text-sm mr-2">Localidad:</label>
+                                <div className=" border-[1px] border-zinc-500 rounded w-[70mm] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.localidad}</div>
+                            </div>
+                            <div className="text-start my-[4px] mx-2 flex flex-row items-center">
+                                <label className="font-semibold text-sm mr-2">Zona:</label>
+                                <div className=" border-[1px] border-zinc-500 rounded w-[70mm] h-[4vh] pl-[4px] bg-neutral-50">{cargoAsignado.zona}</div>
+                            </div>
+                        </div>  
+                    </div>
+                    }
                 </div>
-                }
 
                 {/* VISIBILIDAD DE BOTONES */}
                 <div className="flex justify-center">

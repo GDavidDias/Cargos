@@ -42,6 +42,11 @@ ALTER TABLE inscriptos_mov ADD turno_actual VARCHAR(50);
 
 --> Agrego campo genera_vacante en tabla inscriptos_mov
 ALTER TABLE inscriptos_mov ADD genera_vacante VARCHAR(2) DEFAULT NULL;
+
+MODULO TITULARIZACIONES
+-->agrego campo estado_inscripto en tabla inscriptos_tit
+ALTER TABLE inscriptos_tit ADD id_estado_inscripto INT(2);
+
 -----------------------------------------
 PERMISOS:
 1 - administrador

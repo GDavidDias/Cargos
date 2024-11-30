@@ -168,6 +168,7 @@ const Listados = () => {
             'N° Escuela Deja':objeto.nro_escuela_actual, 
             'Cargo Deja':objeto.cargo_actual, 
             'Turno Deja':objeto.turno_actual,
+            'Genera Vacante':objeto.genera_vacante,
             'Cargo Solicitado':objeto.cargo_solicitado, 
             'Fecha y Hora Designacion':formatDateTime(objeto.datetime_asignacion),
             'Cargo que Toma':objeto.cargo_toma, 
