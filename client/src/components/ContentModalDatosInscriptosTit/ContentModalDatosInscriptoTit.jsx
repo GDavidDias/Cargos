@@ -72,6 +72,33 @@ const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,i
                             </div>
 
                         </div>
+
+                        <div className="flex flex-row my-[2px]">
+                            <div className="flex flex-row mr-2">
+                                <label className="font-semibold text-base mr-2">Estado: </label>
+                                <input 
+                                    className="border-[1px] border-zinc-400 w-[35mm] pl-2 text-start"
+                                    value={(datosInscriptoSelect?.descripcion_estado_inscripto) ?datosInscriptoSelect.descripcion_estado_inscripto :`` }
+                                    disabled={true}
+                                />
+                            </div>
+                            {(datosInscriptoSelect.descripcion_estado_inscripto==='' || datosInscriptoSelect.descripcion_estado_inscripto===null || datosInscriptoSelect.descripcion_estado_inscripto=='Ausente')
+                            ?``
+                            :<div className="flex flex-row items-center mr-2">
+                                <label className="text-sm italid">Asistencia</label>
+                                <button className="font-bold hover:text-orange-500 hover:scale-150 transition-all duration-500 ">
+                                    <IoMdPrint 
+                                        title="IMPRIMIR ASISTENCIA"
+                                        className="text-2xl"
+                                        onClick={()=>procesoImpresionAsistencia()}
+                                    />
+                                </button>
+                            </div>
+                            }
+                                
+                        </div>
+
+
                     </div>
 
                     {/* DATOS DE SU ASIGNACION */}

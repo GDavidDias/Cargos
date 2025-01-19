@@ -22,6 +22,8 @@ import { useReactToPrint } from 'react-to-print';
 import PaginaDesignacion from "../PaginaDesignacion/PaginaDesignacion";
 import PaginaDesignacionTitular from "../PaginaDesignacionTitular/PaginaDesignacionTitular";
 import { fetchVacanteAsignadaTit } from "../../utils/fetchVacanteAsignadaTit";
+import { updateEstadoAsignadoInscripto } from "../../utils/updateEstadoAsignadoInscripto";
+import { updEstadoAsignadoInscriptoTit } from "../../utils/updateEstadoAsignadoInscriptoTit";
 
 const InscriptosTit = () =>{
     
@@ -103,6 +105,8 @@ const InscriptosTit = () =>{
     const componentRef = useRef(null);
 
     const[cargoAsignado, setCargoAsignado]=useState('');
+
+    const[estadoAsignadoInscripto, setEstadoAsignadoInscripto]=useState('');
 
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
@@ -316,7 +320,7 @@ const InscriptosTit = () =>{
     const handleCancelFiltroEspecialidadVac=()=>{
         //
         setFiltroEspecialidadVac("");
-    }
+    };
 
     const submitVerVacantes = (datosInscripto) =>{
         console.log('que tien datosInscriptos: ', datosInscripto);
@@ -324,6 +328,13 @@ const InscriptosTit = () =>{
         setDatosInscriptoSelect(datosInscripto);
         //cargo listado de vacantes disponibles
         getVacantesDisponiblesTit(idListadoVacantesTit, currentPageVac,'disponibles',filtroEspecialidadVac,inputSearchVac)
+        
+        //Verifico si estado_asignacion tiene algun estado guardado lo actualizo para mostrar
+        if(datosInscripto.id_estado_inscripto!=null){
+            console.log('Asigno id_estado_inscripto guardado');
+            setEstadoAsignadoInscripto(datosInscripto.id_estado_inscripto);
+        }
+        
         //llamo a modal de vacantes
         openModalVac();
     };
@@ -348,6 +359,10 @@ const InscriptosTit = () =>{
     };
 
     const submitAsignarVacante = async() =>{
+
+        //ACTUALIZO ESTADO A INSCRIPTO -> 1=Asignado
+        await updEstadoAsignadoInscriptoTit(datosInscriptoSelect.id_inscriptos_tit, 1);
+
         const fechaHoraActual = await traeFechaHoraActual();
         const formAsignacionTit={
             id_vacante_tit:datosVacante.id_vacante_tit,
@@ -421,6 +436,10 @@ const InscriptosTit = () =>{
             await axios.post(`${URL}/api/delasignaciontit/${idAsignacion}`,datosBody)
             .then(async res=>{
                 console.log('que trae res de delasignaciontit: ', res);
+
+                //Actualizo Estado de Asignacion de Insripto
+                await updEstadoAsignadoInscriptoTit(datosInscriptoSelect.id_inscriptos_tit, null);
+
                 //Mostrar Notificacion de Eliminacion de Asignacion
                 setMensajeModalInfo('Vacante que titularizo eliminado correctamente');
                 openModal();
@@ -435,7 +454,35 @@ const InscriptosTit = () =>{
         //Al final del Proceso de Eliminar Asignacion recargo el listado de Vacantes Disponibles
         getInscriptosTit(idListadoInscriptosTit,currentPage,estadoInscripto,inputSearch,selectFiltroEspecialidad);
     };
-    
+
+    //?------   PROCESOS PARA GUARDAR ESTADO INSCRIPTOS  ---------------------------
+    const HandleSelectEstadoAsignadoInscripto=(event)=>{
+        const{value} = event.target;
+        //console.log('que viene en handleSelectEstadoAsignadoInscripto: ', value);
+        setEstadoAsignadoInscripto(value);
+    };
+
+    const submitGuardarEstadoInscripto=async()=>{
+        console.log('que tiene estadoAsignadoInscripto: ', estadoAsignadoInscripto)
+        try{
+            const datosUpdateEstado = await updEstadoAsignadoInscriptoTit(datosInscriptoSelect.id_inscriptos_tit, estadoAsignadoInscripto);
+            console.log('que trae datosUpdateEstado: ', datosUpdateEstado)
+            setMensajeModalInfo('Estado del Inscripto Actualizado');
+            openModal();
+            setEstadoAsignadoInscripto('');
+            
+
+        }catch(error){
+            console.log('error en updEstadoAsignadoInscriptoTit', error);
+        }
+
+    };
+
+    //?--------------------------------------------------
+
+    useEffect(()=>{
+        console.log('que tiene EstadoAsignadoInscriptos: ', estadoAsignadoInscripto);
+    },[estadoAsignadoInscripto])
 
     useEffect(()=>{
         console.log('que tiene Cargo Asignado: ', cargoAsignado)
@@ -600,6 +647,7 @@ const InscriptosTit = () =>{
                                     <th className="border-r-[1px] border-zinc-300">Nombre Docente</th>
                                     <th className="border-r-[1px] border-zinc-300">DNI</th>
                                     <th className="border-r-[1px] border-zinc-300">Especialidad</th>
+                                    <th className="border-r-[1px] border-zinc-300">Estado</th>
                                     <th className="">Acciones</th>
                                 </tr>
                             </thead>
@@ -619,6 +667,7 @@ const InscriptosTit = () =>{
                                                 <td>{inscripto.apellido} {inscripto.nombre}</td>
                                                 <td>{inscripto.dni}</td>
                                                 <td>{inscripto.especialidad}</td>
+                                                <td>{inscripto.descripcion_estado_inscripto}</td>
                                                 <td>
                                                     <div className="flex flex-row items-center justify-center  ">
                                                         {/* {(inscripto.vacante_asignada===null )
@@ -697,6 +746,10 @@ const InscriptosTit = () =>{
                     filtroEspecialidadVac={filtroEspecialidadVac}
                     handleSelectFiltroEspecialidadVac={handleSelectFiltroEspecialidadVac}
                     handleCancelFiltroEspecialidadVac={handleCancelFiltroEspecialidadVac}
+                    estadoAsignadoInscripto={estadoAsignadoInscripto}
+                    setEstadoAsignadoInscripto={setEstadoAsignadoInscripto}
+                    HandleSelectEstadoAsignadoInscripto={HandleSelectEstadoAsignadoInscripto}
+                    submitGuardarEstadoInscripto={submitGuardarEstadoInscripto}
                 />
             </ModalEdit>
 

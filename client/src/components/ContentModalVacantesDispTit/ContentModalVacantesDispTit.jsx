@@ -3,7 +3,7 @@ import { TbSortAscending , TbSortDescending } from "react-icons/tb";
 import Paginador from "../Paginador/Paginador";
 import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit} from "react-icons/fa";
 
-const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,listadoVacantesDispTit,currentPageVac,paginacionVac,handlePageChangeVac,inputSearchVac,handleInputSearchVacChange,submitVerAsignacion, listadoEspecialidades, filtroEspecialidadVac, handleSelectFiltroEspecialidadVac, handleCancelFiltroEspecialidadVac}) =>{
+const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,listadoVacantesDispTit,currentPageVac,paginacionVac,handlePageChangeVac,inputSearchVac,handleInputSearchVacChange,submitVerAsignacion, listadoEspecialidades, filtroEspecialidadVac, handleSelectFiltroEspecialidadVac, handleCancelFiltroEspecialidadVac, estadoAsignadoInscripto, setEstadoAsignadoInscripto, HandleSelectEstadoAsignadoInscripto, submitGuardarEstadoInscripto}) =>{
     return(
         <div className="notranslate h-100 w-100 flex flex-col items-center">
             <label 
@@ -11,12 +11,28 @@ const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,l
                 translate='no'
             >Vacantes Disponibles<p className="text-sm font-light ml-2"></p></label>
             {/* DATOS DEL INSCRIPTO */}
-            <div className="border-[1px] border-zinc-300  flex justify-center rounded-md shadow font-semibold text-2xl">
-                <label className="mx-4 text-zinc-500">Docente: {datosInscriptoSelect.apellido} {datosInscriptoSelect.nombre}</label>
-                {/* <label className="mr-4 text-red-400">Cargo Origen: {datosInscriptoSelect.cargo_actual}</label>
-                <label className="mr-4 text-sky-500">Cargo Solicitado: {datosInscriptoSelect.cargo_solicitado}</label> */}
-                <label className="mr-4 text-zinc-500">DNI: {datosInscriptoSelect.dni}</label>
-                <label className="mr-4 text-sky-500">Puntaje: {datosInscriptoSelect.total}</label>
+            <div className="flex justify-center  font-semibold text-2xl">
+                <div className="border-[1px] border-zinc-300 rounded-md shadow ">
+                    <label className="mx-4 text-zinc-500">Docente: {datosInscriptoSelect.apellido} {datosInscriptoSelect.nombre}</label>
+                    {/* <label className="mr-4 text-red-400">Cargo Origen: {datosInscriptoSelect.cargo_actual}</label>
+                    <label className="mr-4 text-sky-500">Cargo Solicitado: {datosInscriptoSelect.cargo_solicitado}</label> */}
+                    <label className="mr-4 text-zinc-500">DNI: {datosInscriptoSelect.dni}</label>
+                    <label className="mr-4 text-sky-500">Puntaje: {datosInscriptoSelect.total}</label>
+                </div>
+                <div className="ml-2 flex flex-row items-center">
+                    <label className="text-base desktop-xl:text-lg font-bold">Estado: </label>
+                    <div className="ml-2 border-[1px] border-zinc-400  flex justify-center rounded-md shadow font-semibold text-base desktop-xl:text-lg">
+                        <select 
+                            className="focus:outline-none rounded-md"
+                            value={estadoAsignadoInscripto}
+                            onChange={HandleSelectEstadoAsignadoInscripto}
+                        >
+                            <option value='' disabled selected>Seleccione...</option>
+                            <option value={2}>No Asignado</option>
+                            <option value={4}>Ausente</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div className="h-[60vh] w-[90vw] mt-2 ">
                 {/* DATOS DE VACANTES */}
@@ -26,7 +42,6 @@ const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,l
                         {/* FILTRO ESPECIALIDAD */}
                         <div className="flex flex-row my-[4px]">
                             <label className="mx-4 text-base desktop-xl:text-lg ">Especialidad: </label>
-                            <label>Admin..</label>
                             <div className="border-[1px] h-[26px] rounded border-zinc-400 bg-neutral-50 desktop-xl:h-[30px]">
                                 <select
                                     className="w-[40vw] h-[24px] border-[1px] rounded focus:outline-none focus:ring-0 focus:border-none desktop-xl:text-lg "
@@ -191,11 +206,27 @@ const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,l
                 />
             </div>
             <div>
-                <button
+                {(estadoAsignadoInscripto==='' || estadoAsignadoInscripto===null)
+                ?<button
                     className="border-2 border-[#7C8EA6] mt-4 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
-                    onClick={submitCloseModalVac}
+                    onClick={()=>submitCloseModalVac()}
                     translate='no'
                 >CERRAR</button>
+                :<div>
+                    <button
+                        className="border-2 border-[#7C8EA6] mt-2 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                        onClick={()=>{submitGuardarEstadoInscripto();submitCloseModalVac()}}
+                        translate='no'
+                    >GUARDAR ESTADO</button>
+                    <button
+                        className="border-2 border-[#7C8EA6] mt-2 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                        onClick={()=>{submitCloseModalVac();setEstadoAsignadoInscripto('')}}
+                        translate='no'
+                    >CANCELAR</button>
+                </div>
+
+                }
+                
             </div>
         </div>
     )
