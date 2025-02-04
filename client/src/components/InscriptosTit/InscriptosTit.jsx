@@ -543,7 +543,7 @@ const InscriptosTit = () =>{
                 <div className="w-[45vw] flex justify-center items-start flex-col">
                     <label className="ml-4 text-base font-semibold">NIVEL {configSG.nivel.descripcion}</label>
                     <div className="flex flex-row">
-                        <label className="ml-4 text-lg font-sans font-bold">INSCRIPTOS - LUOM TEST test</label>
+                        <label className="ml-4 text-lg font-sans font-bold">INSCRIPTOS - LUOM</label>
                     </div>
                     <div className="ml-4 flex flex-row">
                         <label className="mr-2 ">Especialidad: </label>

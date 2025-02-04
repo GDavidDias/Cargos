@@ -12,6 +12,8 @@ import Listados from "../../components/Listados/Listados";
 import InscriptosPyR from "../../components/InscriptosPyR/InscriptosPyR";
 import ListadosTit from "../../components/ListadosTit/ListadosTit";
 import VacMovDoc from "../../components/VacMovDoc/VacMovDoc";
+import ConfigPage from "../../components/ConfigPage/ConfigPage";
+import PageIni from "../../views/PageIni/PageIni";
 
 const Home = () =>{
     const dispatch = useDispatch();
@@ -49,7 +51,13 @@ const Home = () =>{
                 break;                
             case 'VacMovDoc': //Pantalla de Asignaciones Realizadas, segun tipo de movimiento y nivel
                 setContent(<VacMovDoc/>);
-                break;                
+                break;              
+            case 'ConfigPage': //Pantalla de Configuracion
+                setContent(<ConfigPage/>);
+                break;  
+            case 'PageIni'://Pantalla inicio
+                setContent(<PageIni/>);
+                break;
         }
     },[pageSG]);
 

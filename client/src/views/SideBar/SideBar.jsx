@@ -15,9 +15,11 @@ const SideBar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     
+    /**ESTADOS GLOBALES */
     const pageSG = useSelector((state)=>state.config.page);
     const nivelSG = useSelector((state)=>state.config.nivel);
     const userSG = useSelector((state)=>state.user);
+    const configCompSG = useSelector((state)=>state.config.configComponente)
 
     const[open, setOpen]=useState(false);
 
@@ -79,6 +81,12 @@ const SideBar = () => {
         console.log('Presiona sobre Vacantes Provisionales y Reemplazantes');
         dispatch(setPage('VacantesPyR'))
     };
+
+    const submitConfigPage = () =>{
+        //
+        console.log('Presiona sobre Configuracion');
+        dispatch(setPage('ConfigPage'))
+    };
     
     const submitNivelInicial = async() =>{
 
@@ -114,19 +122,24 @@ const SideBar = () => {
     useEffect(()=>{
         //console.log('que tiene pageSG: ', pageSG);
         //console.log('que tiene nivelSG: ', nivelSG);
-    },[pageSG,nivelSG])
+        console.log('que tiene configComponente: ', configCompSG);
+    },[pageSG,nivelSG,configCompSG])
 
     useEffect(()=>{
         //console.log('que tiene userSG: ', userSG);
         if(userSG.id_user===''){
             navigate('/');
         }else{
-            if(userSG.permiso===3){
-                //Si es un invitado
-                dispatch(setPage('VacantesMov'));
-            }else{
-                dispatch(setPage('InscriptosMov'));
-            }
+            dispatch(setPage('PageIni'));
+            /**
+             if(userSG.permiso===3){
+                 //Si es un invitado
+                 dispatch(setPage('VacantesMov'));
+             }else{
+                 dispatch(setPage('InscriptosMov'));
+             }
+             
+             */
         }
     },[userSG])
 
@@ -205,8 +218,13 @@ const SideBar = () => {
 
                 {/* MENU MOVIMIENTOS */}
                 <div className="ml-2 mt-2 text-white text-base">
-                    <label className="font-normal desktop-xl:text-lg">Traslados y Cambio de Funcion</label>
-                    {(userSG.permiso!=3) &&
+                    {/**TITULO TRASLADOS Y CAMBIO DE FUNCION */}
+                    {!(configCompSG[0]?.active==="" && configCompSG[1]?.active==="" && configCompSG[2]?.active==="") &&
+                        <label className="font-normal desktop-xl:text-lg">Traslados y Cambio de Funcion</label>
+                    }
+
+                    {/**ENLACE A INSCRIPTOS */}
+                    {(userSG.permiso!=3 && configCompSG[0]?.active=="1") &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
                                 ${(pageSG==='InscriptosMov')
@@ -221,20 +239,24 @@ const SideBar = () => {
                         </div>
                     }
 
-                    <div 
-                        className={` rounded p-[4px] flex flex-row justify-start items-center
-                            ${(pageSG==='VacantesMov')
-                            ?'bg-[#C9D991] text-[#7C8EA6]'
-                            :'hover:bg-[#C9D991]'
-                        }
-                            `}
-                        onClick={()=>submitVacantesMov()}
-                    >
-                        <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
-                        <label className="font-light desktop-xl:text-lg">Vacantes</label>
-                    </div>
+                    {/**ENLACE A VACANTES */}
+                    {(configCompSG[1]?.active=="1") &&
+                        <div 
+                            className={` rounded p-[4px] flex flex-row justify-start items-center
+                                ${(pageSG==='VacantesMov')
+                                ?'bg-[#C9D991] text-[#7C8EA6]'
+                                :'hover:bg-[#C9D991]'
+                            }
+                                `}
+                            onClick={()=>submitVacantesMov()}
+                        >
+                            <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
+                            <label className="font-light desktop-xl:text-lg">Vacantes</label>
+                        </div>
+                    }
 
-                    {(userSG.permiso!=3 && userSG.permiso!=4) &&
+                    {/**ENLACE A LISTADOS */}
+                    {(userSG.permiso!=3 && userSG.permiso!=4 && configCompSG[2]?.active=="1") &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
                                 ${(pageSG==='Listados')
@@ -249,25 +271,17 @@ const SideBar = () => {
                         </div>
                     }
 
-                    {/* <div 
-                        className={` rounded p-[4px] flex flex-row justify-start items-center
-                            ${(pageSG==='VacMovDoc')
-                            ?'bg-[#C9D991] text-[#7C8EA6]'
-                            :'hover:bg-[#C9D991]'
-                        }
-                            `}
-                        onClick={()=>submitVacMovDoc()}
-                    >
-                        <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
-                        <label className="font-light desktop-xl:text-lg">Vac TEST</label>
-                    </div> */}
-
                 </div>
 
                 {/* MENU TITULARIZACION */}
                 <div className="ml-2 mt-6 text-white text-base">
-                    <label className="font-normal desktop-xl:text-lg">Titularizacion</label>
-                    {(userSG.permiso!=3) &&
+                    {/**TITULO TRASLADOS Y CAMBIO DE FUNCION */}
+                    {!(configCompSG[3]?.active==="" && configCompSG[4]?.active==="" && configCompSG[5]?.active==="") &&
+                        <label className="font-normal desktop-xl:text-lg">Titularizacion</label>
+                    }
+
+                    {/**ENLACE A INSCRIPTOS */}
+                    {(userSG.permiso!=3 && configCompSG[3]?.active=="1") &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
                                 ${(pageSG==='InscriptosTit')
@@ -281,19 +295,25 @@ const SideBar = () => {
                             <label className="font-light desktop-xl:text-lg">Inscriptos</label>
                         </div>
                     }
-                    <div 
-                        className={` rounded p-[4px] flex flex-row justify-start items-center
-                            ${(pageSG==='VacantesTit')
-                            ?'bg-[#C9D991]'
-                            :'hover:bg-[#C9D991]'
-                        }
-                            `}
-                        onClick={()=>submitVacantesTit()}
-                    >
-                        <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
-                        <label className="font-light desktop-xl:text-lg">Vacantes</label>
-                    </div>
-                    {(userSG.permiso!=3) &&
+
+                    {/**ENLACE A VACANTES */}
+                    {(configCompSG[4]?.active=="1") &&
+                        <div 
+                            className={` rounded p-[4px] flex flex-row justify-start items-center
+                                ${(pageSG==='VacantesTit')
+                                ?'bg-[#C9D991]'
+                                :'hover:bg-[#C9D991]'
+                            }
+                                `}
+                            onClick={()=>submitVacantesTit()}
+                        >
+                            <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
+                            <label className="font-light desktop-xl:text-lg">Vacantes</label>
+                        </div>
+                    }
+
+                    {/**ENLACE A VACANTES */}
+                    {(userSG.permiso!=3 && configCompSG[5]?.active=="1") &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
                                 ${(pageSG==='ListadosTit')
@@ -346,6 +366,7 @@ const SideBar = () => {
                 {(userSG.permiso===1) &&
                     <div className="ml-2 mt-6 text-white text-base flex flex-col">
                         <label>Administrador</label>
+                        {/*
                         <button 
                             className="border-[1px] border-white m-2 rounded"
                             onClick={()=>submitNivelInicial()}
@@ -354,8 +375,29 @@ const SideBar = () => {
                             className="border-[1px] border-white m-2 rounded"
                             onClick={()=>submitNivelPrimario()}
                         >Primario</button>
+                        */}
+                        {(userSG.permiso!=3) &&
+                            <div 
+                                className={` rounded p-[4px] flex flex-row justify-start items-center
+                                    ${(pageSG==='ConfigPage')
+                                    ?'bg-[#C9D991]'
+                                    :'hover:bg-[#C9D991]'
+                                    }
+                                    `}
+                                onClick={()=>submitConfigPage()}
+                            >
+                                <CgList className="text-xl font-bold mr-2"/>
+                                <label className="font-light desktop-xl:text-lg">Configuracion</label>
+                            </div>
+                        }
                     </div>
                 }
+
+                <FaPowerOff 
+                    className="m-2 text-2xl text-white hover:cursor-pointer hover:text-[#7C8EA6] transition-transform duration-500 transform hover:scale-125"
+                    title="Salir"
+                    onClick={()=>logOut()}
+                />
             </div>
         </nav>
     )

@@ -20,7 +20,7 @@ const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,l
                     <label className="mr-4 text-sky-500">Puntaje: {datosInscriptoSelect.total}</label>
                 </div>
                 <div className="ml-2 flex flex-row items-center">
-                    <label className="text-base desktop-xl:text-lg font-bold">Estado: </label>
+                    <label className="text-lg desktop-xl:text-lg font-bold">Estado: </label>
                     <div className="ml-2 border-[1px] border-zinc-400  flex justify-center rounded-md shadow font-semibold text-base desktop-xl:text-lg">
                         <select 
                             className="focus:outline-none rounded-md"
@@ -37,7 +37,7 @@ const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,l
             <div className="h-[60vh] w-[90vw] mt-2 ">
                 {/* DATOS DE VACANTES */}
                 {/* PARTE SUPERIOR-FILTROS Y BUSQUEDA */}
-                <div className="border-[1px] border-zinc-400 rounded-t-lg h-[10vh] flex flex-col bg-[#dde8b7]">
+                <div className="border-[1px] border-zinc-400 rounded-t-lg h-[14vh] flex flex-col bg-[#dde8b7]">
                     <div className="flex flex-row justify-between">
                         {/* FILTRO ESPECIALIDAD */}
                         <div className="flex flex-row my-[4px]">

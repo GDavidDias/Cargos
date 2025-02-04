@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchConfig } from "../../utils/fetchConfig";
-import { setConfig, setNivel } from "../../redux/configSlice";
+import { setConfig, setConfigComp, setNivel } from "../../redux/configSlice";
 import { useNavigate } from "react-router-dom";
 import ModalUser from "../../components/ModalUser/ModalUser";
 import Modal from "../../components/Modal/Modal";
@@ -11,6 +11,7 @@ import { conexion } from "../../utils/conexion";
 import { outUser, setUser } from "../../redux/userSlice";
 import logo from '../../assets/JUNTA-04-xs.png';
 import { changepass } from "../../utils/changepass";
+import { fetchConfigComponente } from "../../utils/fetchConfigComponente";
 
 
 const Landing = () => {
@@ -145,9 +146,15 @@ const Landing = () => {
     };
 
     const getConfiguracion = async() =>{
+        /**Trae la configuracion de funcionalidad de asignacion */
         const data = await fetchConfig();
         //console.log('que trae configuracion: ', data);
         dispatch(setConfig(data));
+
+        /**Trae la configuracion de los componentes */
+        const dataComp = await fetchConfigComponente();
+        console.log('que trae fetchConfigComponente: ', dataComp);
+        dispatch(setConfigComp(dataComp));
     };
 
     const ModalChangePass = ()=>{

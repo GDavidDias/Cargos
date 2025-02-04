@@ -1,0 +1,156 @@
+import React, { useEffect, useState } from 'react'
+import { fetchConfigComponente } from '../../utils/fetchConfigComponente';
+import {URL} from '../../../varGlobal';
+import axios from "axios";
+
+import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit, FaEyeSlash} from "react-icons/fa";
+import { useDispatch, useSelector } from 'react-redux';
+import { setConfigComp } from '../../redux/configSlice';
+
+{/*Se veran todos los accesos en modo administrador y se podra configurar que modulo mostrar o no
+    Modulos:
+    - Traslado y Cambio de Funcion Nivel Primario
+    - Titularizacion
+    - Reemplazantes
+    - Supervisores
+    - ??? (JyA)
+    - 
+    */}
+const ConfigPage = () => {
+  const dispatch = useDispatch();
+
+  /**ESTADOS GLOBALES */
+  const configCompSG = useSelector((state)=>state.config.configComponente);
+
+  /**PROCESOS Y FUNCIONES */
+  const submitOcultarComponente = async(data) =>{
+    console.log('que entra a submitOcultarComponente: ', data);
+    const formUpdComp = {
+      "idComponente":data.id_component,
+      "estadoActivo":""
+    }
+  
+    /**Se desactiva el componente con vacio*/
+    try{
+        await axios.put(`${URL}/api/updactivocomponente`,formUpdComp)
+          .then(async res=>{
+              console.log('que trae res de updactivocomponente: ', res);
+          })
+          .catch(error=>{
+              console.log('que trae error updactivocomponente: ', error);
+          })
+    }catch(error){
+      console.error(error.message);
+    }
+  
+    actualizaCompSG();
+
+  };
+
+  const submitMostrarComponente = async(data) =>{
+    console.log('que ingresa a submitMostrarComponente: ', data);
+    const formUpdComp = {
+      "idComponente":data.id_component,
+      "estadoActivo":1
+    }
+
+    /**Se activa el componente con 1 */
+    try{
+        await axios.put(`${URL}/api/updactivocomponente`,formUpdComp)
+          .then(async res=>{
+              console.log('que trae res de updactivocomponente: ', res);
+          })
+          .catch(error=>{
+              console.log('que trae error updactivocomponente: ', error);
+          })
+    }catch(error){
+      console.error(error.message);
+    }
+
+    actualizaCompSG();
+
+  };
+
+  const actualizaCompSG = async() => {
+    /**Trae la configuracion de los componentes */
+    const dataComp = await fetchConfigComponente();
+    console.log('que trae fetchConfigComponente: ', dataComp);
+    dispatch(setConfigComp(dataComp));
+  };
+  
+
+  useEffect(()=>{
+    console.log('que tiene configComponente: ', configCompSG);
+  },[configCompSG]);
+
+  return (
+    <div className='m-2'>
+        {/*ENCABEZADO */}
+        <div>
+            <h1 className='font-bold'>Configuraciones</h1>
+        </div>
+
+        {/**CUERPO */}
+        <div>
+          {/* PARTE INFERIOR DE DATOS DE TABLA */}
+          <div className="h-[79vh] overflow-y-auto">
+              <table className="border-[1px] bg-slate-50 w-full">
+                  <thead>
+                      <tr className="sticky top-0 text-sm border-b-[1px] border-zinc-300 bg-zinc-200">
+                          <th className="border-r-[1px] border-zinc-300">Id</th>
+                          <th className="border-r-[1px] border-zinc-300">Componente</th>
+                          <th className="border-r-[1px] border-zinc-300">Descripcion</th>
+                          <th className="border-r-[1px] border-zinc-300">Activo</th>
+                          <th className="">Acciones</th>
+                      </tr>
+                  </thead>
+                  <tbody> 
+                      {
+                          // filterListadoInscriptosMov?.map((inscripto, index)=>{
+                          configCompSG?.map((componente, index)=>{
+                              const colorFila = (((componente.id_component % 2)===0) ?`bg-zinc-200` :``)
+                              return(
+                                  <tr 
+                                      className={`text-lg font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 ${colorFila}`}
+                                      key={index}
+                                  >
+                                      <td className="text-center">{componente.id_component}</td>
+                                      <td className="text-center">{componente.componente}</td>
+                                      {/* <td>{inscripto.apellido}</td> */}
+                                      <td>{componente.descripcion}</td>
+                                      <td>{componente.active}</td>
+                                      <td>
+                                          <div className="flex flex-row items-center justify-center  ">
+                                              {/* {(inscripto.vacante_asignada===null )
+                                                  ?<FiAlertTriangle    
+                                                      className="mr-2 blink text-red-500"
+                                                      />
+                                                  :``
+                                              } */}
+                                              {(componente.active === 1 || componente.active === "1")
+                                                ?<FaEye 
+                                                    className="hover:cursor-pointer hover:text-[#83F272]" 
+                                                    title="Componente Visible"
+                                                    onClick={()=>submitOcultarComponente(componente)}
+                                                />
+                                                :<FaEyeSlash
+                                                    className='hover:cursor-pointer hover:text-[#83F272]'
+                                                    title='Componente Oculto'
+                                                    onClick={()=>submitMostrarComponente(componente)}
+                                                  />
+                                              }
+                                          </div>
+                                      </td>
+                                  </tr>
+                              )
+                          })
+                      }
+                  </tbody>
+              </table>
+          </div>
+        </div>
+    </div>
+  )
+}
+
+export default ConfigPage

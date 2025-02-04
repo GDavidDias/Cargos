@@ -26,13 +26,19 @@ CREATE TABLE usuarios (id_usuario INT(7) NOT NULL AUTO_INCREMENT, nombre VARCHAR
 
 
 -tablas de Titularizaciones
-CREATE TABLE inscriptos_tit(id_inscriptos_tit INT(11) NOT NULL AUTO_INCREMENT, dni VARCHAR(50) DEFAULT NULL, apellido VARCHAR(250) DEFAULT NULL, nombre VARCHAR(250) DEFAULT NULL, total VARCHAR(50) DEFAULT NULL, orden INT(11) DEFAULT NULL, id_especialidad INT(7) DEFAULT NULL, id_listado_inscriptos INT(7) DEFAULT NULL,  PRIMARY KEY(id_inscriptos_tit));
+CREATE TABLE inscriptos_tit(id_inscriptos_tit INT(11) NOT NULL AUTO_INCREMENT, dni VARCHAR(50) DEFAULT NULL, apellido VARCHAR(250) DEFAULT NULL, nombre VARCHAR(250) DEFAULT NULL, total VARCHAR(50) DEFAULT NULL, orden INT(11) DEFAULT NULL, id_especialidad INT(7) DEFAULT NULL, id_listado_inscriptos INT(7) DEFAULT NULL, id_estado_inscripto INT(2) DEFAULT NULL,  PRIMARY KEY(id_inscriptos_tit));
 
 CREATE TABLE vacantes_tit(id_vacante_tit INT(11) NOT NULL AUTO_INCREMENT, id_listado_vac_tit INT(7) DEFAULT NULL, orden INT(7) DEFAULT NULL, nro_establecimiento VARCHAR(255) DEFAULT NULL, nombre_establecimiento VARCHAR(250) DEFAULT NULL, region VARCHAR(250) DEFAULT NULL, departamento VARCHAR(250) DEFAULT NULL, localidad VARCHAR(250) DEFAULT NULL, cargo VARCHAR(250) DEFAULT NULL, turno VARCHAR(50) DEFAULT NULL, modalidad VARCHAR(250) DEFAULT NULL, cupof VARCHAR(50) DEFAULT NULL, id_especialidad INT(11) DEFAULT NULL, datetime_creacion DATETIME DEFAULT NULL, obs_desactiva VARCHAR(250) DEFAULT NULL, zona VARCHAR(7) DEFAULT NULL, resolucion VARCHAR(250) DEFAULT NULL, PRIMARY KEY(id_vacante_tit));
 
 CREATE TABLE asignacion_tit(id_asignacion_tit INT(11) NOT NULL AUTO_INCREMENT, id_vacante_tit INT(11) DEFAULT NULL, id_inscripto_tit INT(11) DEFAULT NULL, datetime_asignacion DATETIME DEFAULT NULL, id_estado_asignacion INT(2) DEFAULT NULL, observaciones VARCHAR(250) DEFAULT NULL, datetime_actualizacion DATETIME DEFAULT NULL, obs_desactiva VARCHAR(250) DEFAULT NULL, PRIMARY KEY(id_asignacion_tit));
 
 CREATE TABLE estado_inscripto(id_estado_inscripto INT(2) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_estado_inscripto));
+
+----TABLAS DE configuracion
+CREATE TABLE componentes(id_component INT(5) NOT NULL AUTO_INCREMENT, )
+CREATE TABLE config_component(id_config INT(5) NOT NULL AUTO_INCREMENT, id_component INT(5) DEFAULT NULL, id_type_config INT(5) DEFAULT NULL, componente VARCHAR(150) DEFAULT NULL, descripcion VARCHAR(300) DEFAULT NULL, active VARCHAR(5) DEFAULT NULL, PRIMARY KEY(id_component));
+
+CREATE TABLE config_report_component(id_component INT(5))
 
 -->agrego campo estado_inscripto en tabla inscriptos_mov
 ALTER TABLE inscriptos_mov ADD id_estado_inscripto INT(2);
@@ -46,6 +52,7 @@ ALTER TABLE inscriptos_mov ADD genera_vacante VARCHAR(2) DEFAULT NULL;
 MODULO TITULARIZACIONES
 -->agrego campo estado_inscripto en tabla inscriptos_tit
 ALTER TABLE inscriptos_tit ADD id_estado_inscripto INT(2);
+
 
 -----------------------------------------
 PERMISOS:
@@ -222,6 +229,22 @@ INSERT INTO estado_inscripto(id_estado_inscripto, descripcion) VALUES(2,'No Asig
 INSERT INTO estado_inscripto(id_estado_inscripto, descripcion) VALUES(3,'En Espera');
 INSERT INTO estado_inscripto(id_estado_inscripto, descripcion) VALUES(4,'Ausente');
 
+--------------------------
+--- PARA INSERT config_component_active
++--------------+--------------+------+-----+---------+----------------+
+| Field        | Type         | Null | Key | Default | Extra          |
++--------------+--------------+------+-----+---------+----------------+
+| id_component | int          | NO   | PRI | NULL    | auto_increment |
+| componente   | varchar(150) | YES  |     | NULL    |                |
+| descripcion  | varchar(300) | YES  |     | NULL    |                |
+| active       | varchar(5)   | YES  |     | NULL    |                |
++--------------+--------------+------+-----+---------+----------------+
+INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(1,'InscriptosMov', 'Inscriptos de Movimientos',NULL);
+INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(2,'VacantesMov','Vacantes de Movimientos',NULL);
+INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(3,'Listados','Listados de Movimientos', NULL);
+INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(4,'InscriptosTit','Inscriptos de Titularizaciones', NULL);
+INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(5,'VacantesTit','Vacantes de Titularizaciones', NULL);
+INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(6,'ListadosTit','Listados de Titularizaciones', NULL);
 
 
 ---------------------------
