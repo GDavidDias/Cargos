@@ -108,6 +108,10 @@ const InscriptosTit = () =>{
 
     const[estadoAsignadoInscripto, setEstadoAsignadoInscripto]=useState('');
 
+    const[filtroRegionVac, setFiltroRegionVac]=useState('');
+
+    const[filtroModalidadVac, setFiltroModalidadVac]=useState('');
+
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
     //-------------------------------------
@@ -184,12 +188,12 @@ const InscriptosTit = () =>{
     };
 
     //Este Proc carga el listado de VACANTES Disponibles al E.L
-    const getVacantesDisponiblesTit = async(id_listado,page,filtroAsignacion,filtroEspecialidad,valorBusqueda) =>{
+    const getVacantesDisponiblesTit = async(id_listado,page,filtroAsignacion,filtroEspecialidad,valorBusqueda, filtroRegion, filtroModalidad) =>{
         let data;
         const limit=10;
         //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
-            data = await fetchAllVacantesTit(id_listado,limit,page, filtroAsignacion, filtroEspecialidad, valorBusqueda);
+            data = await fetchAllVacantesTit(id_listado,limit,page, filtroAsignacion, filtroEspecialidad, valorBusqueda, filtroRegion, filtroModalidad);
             console.log('que trae data de fetchAllVacantesTit: ', data);
 
             if(data.result?.length!=0){
@@ -478,6 +482,46 @@ const InscriptosTit = () =>{
 
     };
 
+    /**PROCESO QUE ELIMINA LOS SUBFILTROS APLICADOS DE REGION Y MODALIDAD 
+     * VER FACTIBILIDAD DE APLICACION
+    */
+    const submitEliminarSubFiltros = () =>{
+
+    };
+
+    /**PROCESO DE FILTRO DE REGION */
+    const handleSelectFiltroRegion = (event) => {
+        const {value}=event.target;
+        //Seleccion de Region
+        console.log('que trae value handleSelectFiltroRegion: ', value);
+        setFiltroRegionVac(value);
+        setCurrentPageVac(1);
+    };
+
+    const handleCancelFiltroRegionVac = (event) => {
+        const{value}=event.target;
+        //Cancelar Filtro de Region
+        console.log('que trae value handleCancelFiltroRegionVac: ', value);
+        setFiltroRegionVac('');
+        setCurrentPageVac(1);
+    };
+
+    /**PROCESOS DE FILTRO DE MODALIDAD */
+    const handleSelectFiltroModalidad = (event) =>{
+        const{value}=event.target;
+        //Seleccion de Modalidad
+        console.log('que trae value handleSelectFiltroModalidad: ', value);
+        setFiltroModalidadVac(value);
+        setCurrentPageVac(1);
+    };
+
+    const handleCancelFiltroModalidadVac = (event)=>{
+        //Cancelar Filtro de Modalidad
+        setFiltroModalidadVac('');
+        setCurrentPageVac(1);
+    }
+
+
     //?--------------------------------------------------
 
     useEffect(()=>{
@@ -511,12 +555,12 @@ const InscriptosTit = () =>{
     //------------Estados desde Modal Vacantes
     useEffect(()=>{
         console.log('APLICO FILTRO LISTADO VACANTES');
-        getVacantesDisponiblesTit(idListadoVacantesTit, currentPageVac,'disponibles',filtroEspecialidadVac,inputSearchVac)
-    },[filtroEspecialidadVac,inputSearchVac])
+        getVacantesDisponiblesTit(idListadoVacantesTit, currentPageVac,'disponibles',filtroEspecialidadVac,inputSearchVac, filtroRegionVac, filtroModalidadVac)
+    },[filtroEspecialidadVac,inputSearchVac, filtroRegionVac, filtroModalidadVac])
 
     useEffect(()=>{
         //Al cambiar de pagina en Vacantes Disponibles
-        getVacantesDisponiblesTit(idListadoVacantesTit, currentPageVac,'disponibles',filtroEspecialidadVac,inputSearchVac)
+        getVacantesDisponiblesTit(idListadoVacantesTit, currentPageVac,'disponibles',filtroEspecialidadVac,inputSearchVac, filtroRegionVac, filtroModalidadVac)
     },[currentPageVac])
 
 
@@ -727,6 +771,7 @@ const InscriptosTit = () =>{
                     cargoAsignado={cargoAsignado}
                     procesoImpresion={procesoImpresion}
                     submitEliminarTomaCargo={submitEliminarTomaCargo}
+                    //procesoImpresionAsistencia={procesoImpresionAsistencia}
                 />
             </ModalEdit>
 
@@ -750,6 +795,15 @@ const InscriptosTit = () =>{
                     setEstadoAsignadoInscripto={setEstadoAsignadoInscripto}
                     HandleSelectEstadoAsignadoInscripto={HandleSelectEstadoAsignadoInscripto}
                     submitGuardarEstadoInscripto={submitGuardarEstadoInscripto}
+                    submitEliminarSubFiltros = {submitEliminarSubFiltros}
+                    /**Procesos de filtros de region */
+                    handleSelectFiltroRegion = {handleSelectFiltroRegion}
+                    filtroRegionVac = {filtroRegionVac}
+                    handleCancelFiltroRegionVac = {handleCancelFiltroRegionVac}
+                    /**Procesos de Filtros de Modalidad */
+                    handleSelectFiltroModalidad={handleSelectFiltroModalidad}
+                    filtroModalidadVac={filtroModalidadVac}
+                    handleCancelFiltroModalidadVac={handleCancelFiltroModalidadVac}
                 />
             </ModalEdit>
 

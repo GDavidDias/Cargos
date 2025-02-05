@@ -3,15 +3,15 @@ import { TbSortAscending , TbSortDescending } from "react-icons/tb";
 import Paginador from "../Paginador/Paginador";
 import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit} from "react-icons/fa";
 
-const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,listadoVacantesDispTit,currentPageVac,paginacionVac,handlePageChangeVac,inputSearchVac,handleInputSearchVacChange,submitVerAsignacion, listadoEspecialidades, filtroEspecialidadVac, handleSelectFiltroEspecialidadVac, handleCancelFiltroEspecialidadVac, estadoAsignadoInscripto, setEstadoAsignadoInscripto, HandleSelectEstadoAsignadoInscripto, submitGuardarEstadoInscripto}) =>{
+const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,listadoVacantesDispTit,currentPageVac,paginacionVac,handlePageChangeVac,inputSearchVac,handleInputSearchVacChange,submitVerAsignacion, listadoEspecialidades, filtroEspecialidadVac, handleSelectFiltroEspecialidadVac, handleCancelFiltroEspecialidadVac, estadoAsignadoInscripto, setEstadoAsignadoInscripto, HandleSelectEstadoAsignadoInscripto, submitGuardarEstadoInscripto, submitEliminarSubFiltros, handleSelectFiltroRegion, filtroRegionVac, handleCancelFiltroRegionVac, handleSelectFiltroModalidad, filtroModalidadVac, handleCancelFiltroModalidadVac}) =>{
     return(
         <div className="notranslate h-100 w-100 flex flex-col items-center">
             <label 
-                className="text-2xl text-center font-bold flex flex-row items-center m-2" 
+                className="text-2xl text-center font-bold flex flex-row items-center mb-2" 
                 translate='no'
             >Vacantes Disponibles<p className="text-sm font-light ml-2"></p></label>
             {/* DATOS DEL INSCRIPTO */}
-            <div className="flex justify-center  font-semibold text-2xl">
+            <div className="flex justify-center  font-bold text-xl">
                 <div className="border-[1px] border-zinc-300 rounded-md shadow ">
                     <label className="mx-4 text-zinc-500">Docente: {datosInscriptoSelect.apellido} {datosInscriptoSelect.nombre}</label>
                     {/* <label className="mr-4 text-red-400">Cargo Origen: {datosInscriptoSelect.cargo_actual}</label>
@@ -34,10 +34,10 @@ const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,l
                     </div>
                 </div>
             </div>
-            <div className="h-[60vh] w-[90vw] mt-2 ">
+            <div className="h-[63vh] w-[90vw] mt-2 ">
                 {/* DATOS DE VACANTES */}
                 {/* PARTE SUPERIOR-FILTROS Y BUSQUEDA */}
-                <div className="border-[1px] border-zinc-400 rounded-t-lg h-[14vh] flex flex-col bg-[#dde8b7]">
+                <div className="border-[1px] border-zinc-400 rounded-t-lg h-[24mm] flex flex-col bg-[#dde8b7]">
                     <div className="flex flex-row justify-between">
                         {/* FILTRO ESPECIALIDAD */}
                         <div className="flex flex-row my-[4px]">
@@ -119,15 +119,30 @@ const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,l
                             {/* <LuArrowUpDown className="ml-2"/> */}
                         </div>
                         <div className="flex flex-col items-center justify-center w-[10vw] border-r-[1px] border-zinc-200">
-                            <select>
-                                <option>I</option>
-                                <option>II</option>
-                                <option>III</option>
-                                <option>IV</option>
-                                <option>V</option>
-                                <option>VI</option>
-                                <option>VII</option>
-                            </select>
+                            {/**Filtro de Region */}
+                            <div className="border-[1px]  h-[26px] rounded border-zinc-400 bg-neutral-50 desktop-xl:h-[30px]">
+                                <select 
+                                    className="w-[7vw] h-[24px] border-[1px] rounded focus:outline-none focus:ring-0 focus:border-none desktop-xl:text-lg"
+                                    name="filtroRegion"
+                                    onChange={handleSelectFiltroRegion}
+                                    value={filtroRegionVac}
+                                >
+                                    <option value='' selected disabled>Seleccione...</option>
+                                    <option value='I'>I</option>
+                                    <option value='II'>II</option>
+                                    <option value='III'>III</option>
+                                    <option value='IV'>IV</option>
+                                    <option value='V'>V</option>
+                                    <option value='VI'>VI</option>
+                                    <option value='VII'>VII</option>
+                                </select>
+                                {(filtroRegionVac!="") &&
+                                        <label 
+                                            className="font-bold mx-2 cursor-pointer"
+                                            onClick={handleCancelFiltroRegionVac}
+                                        >X</label>
+                                    }
+                            </div>
                             <label className="font-semibold">Region</label>
                             {/* <LuArrowUpDown className="ml-2"/> */}
                         </div>
@@ -140,14 +155,34 @@ const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,l
                             {/* <LuArrowUpDown className="ml-2"/> */}
                         </div>
                         <div className="flex flex-col items-center justify-center w-[8vw] ">
-                            <select>
-                                <option>J.S.</option>
-                                <option>J.C.</option>
-                                <option>A.A.</option>
-                            </select>
+                            {/**Filtro de Modalidad */}
+                            <div className="border-[1px]  h-[26px] rounded border-zinc-400 bg-neutral-50 desktop-xl:h-[30px]">
+                                <select
+                                    className="w-[5vw] h-[24px] border-[1px] rounded focus:outline-none focus:ring-0 focus:border-none desktop-xl:text-lg"
+                                    name="filtroModalida"
+                                    onChange={handleSelectFiltroModalidad}
+                                    value={filtroModalidadVac}
+                                >
+                                    <option value='' selected disabled>Seleccione...</option>   
+                                    <option value='J.S.'>J.S.</option>
+                                    <option value='J.C.'>J.C.</option>
+                                    <option value='A.A.'>A.A.</option>
+                                </select>
+                                {(filtroModalidadVac!="") &&
+                                    <label 
+                                        className="font-bold mx-2 cursor-pointer"
+                                        onClick={handleCancelFiltroModalidadVac}
+                                    >X</label>
+                                }
+                            </div>
                             <label className="font-semibold">Modalidad</label>
                         </div>
                         <div className="flex flex-col items-center justify-end w-[8vw] ">
+                            {/**<button 
+                                className="border-2 border-[#7C8EA6]  font-semibold w-10 h-7 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                                placeholder="eliminar filtro"
+                                onClick={()=>submitEliminarSubFiltros()}
+                            >X</button>*/}
                             <label className="font-semibold">Acciones</label>
                         </div>
                     </div>
@@ -208,7 +243,7 @@ const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,l
             <div>
                 {(estadoAsignadoInscripto==='' || estadoAsignadoInscripto===null)
                 ?<button
-                    className="border-2 border-[#7C8EA6] mt-4 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                    className="border-2 border-[#7C8EA6] mt-2 font-semibold w-40 h-8 bg-[#7C8EA6] text-white hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
                     onClick={()=>submitCloseModalVac()}
                     translate='no'
                 >CERRAR</button>

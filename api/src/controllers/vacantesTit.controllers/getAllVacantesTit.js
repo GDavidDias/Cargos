@@ -2,13 +2,15 @@ const pool = require('../../database/connection.js');
 
 module.exports = async(req,res)=>{
     //TRAE TODAS LAS VACANTES DE TITULARIZACION SEGUN EL NIVEL INDICADO EN EL LISTADO_VAC_TIT
-    const{idListadoVacTit,limit,page,filtroAsignacion,filtroEspecialidad,filtroBusqueda} = req.body;
+    const{idListadoVacTit,limit,page,filtroAsignacion,filtroEspecialidad,filtroBusqueda, filtroRegion, filtroModalidad} = req.body;
     console.log('que trae idListadoVacTit: ', idListadoVacTit);
     console.log('que trae limit: ', limit);
     console.log('que trae page: ', page);
     console.log('que trae filtroAsignacion: ', filtroAsignacion);
     console.log('que trae filtroEspecialidad: ', filtroEspecialidad);
     console.log('que trae filtroBusqueda: ', filtroBusqueda);
+    console.log('que trae filtroRegion: ', filtroRegion);
+    console.log('que trae filtroModalidad: ', filtroModalidad);
 
     const offset = (page-1)*limit;
 
@@ -28,16 +30,26 @@ module.exports = async(req,res)=>{
     }else if(filtroAsignacion==='disponibles'){
         armaquery+=` AND at2.datetime_asignacion IS NULL`;
     };
-
+    
     if(filtroBusqueda && filtroBusqueda!=''){
         armaquery+=` AND (LOWER(vt.nro_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vt.nombre_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vt.departamento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vt.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vt.cargo) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vt.modalidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                    ) `
-    }
+        OR LOWER(vt.nombre_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+        OR LOWER(vt.departamento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+        OR LOWER(vt.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+        OR LOWER(vt.cargo) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+        OR LOWER(vt.modalidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+        ) `
+    };
+    
+    /**Filtro de Region, debe ser exacto no traer I, II, III, etc si busco I */
+    if(filtroRegion && filtroRegion!=''){
+        armaquery += ` AND (LOWER(vt.region) LIKE '${filtroRegion.toLowerCase()}' ) `
+    };
+
+    /**Filtro de Modalidad, debe ser exacto */
+    if(filtroModalidad && filtroModalidad!=''){
+        armaquery += ` AND (LOWER(vt.modalidad) LIKE '${filtroModalidad.toLowerCase()}' ) `
+    };
 
     armaquery+= ` ORDER BY vt.id_vacante_tit ASC`
 

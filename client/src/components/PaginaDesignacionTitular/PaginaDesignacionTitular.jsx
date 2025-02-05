@@ -64,12 +64,14 @@ console.log('que tiene id_nivel en PaginaDesignacion: ', id_nivel);
                         <p>FECHA: {dia} de {mes} de {año}</p>
                         <p className='ml-4'>HORA: {horaActual}</p>
                     </div>
-                    <p className='font-semibold mt-[4px]'>Datos del Docente</p>
+                    <p className='font-bold mt-[4px]'>DATOS DEL DOCENTE</p>
                     <div className='flex flex-row'>
                         <p>Orden: </p>
                         <p className='border-b-[1px] border-black w-[100px] text-center'>{datosInscripto.orden}</p>
                         <p className='ml-8'>PUNTAJE:</p> 
                         <p className='border-b-[1px] border-black w-[100px] text-center'>{datosInscripto.total}</p>
+                        <p className='ml-8'>DNI N°:</p>
+                        <p className='border-b-[1px] border-black w-[100px] text-center mr-4'>{datosInscripto.dni}</p>
                     </div>
                     <div className='flex flex-row mt-[2px]'>
                         <p>APELLIDO:</p>
@@ -78,16 +80,16 @@ console.log('que tiene id_nivel en PaginaDesignacion: ', id_nivel);
                         <p className='border-b-[1px] border-black w-[300px] text-center'>{datosInscripto.nombre} </p>
                     </div>
                     <div className='flex flex-row mt-[2px]'>
-                        <p>DNI N°:</p>
+                        {/*<p>DNI N°:</p>
                         <p className='border-b-[1px] border-black w-[100px] text-center mr-4'>{datosInscripto.dni}</p>
-                        <p>CARGO DE ORIGEN:</p>
-                        <p className='border-b-[1px] border-black w-[100px] text-center'>{datosInscripto.cargo_actual} </p>
+                         <p>CARGO DE ORIGEN:</p>
+                        <p className='border-b-[1px] border-black w-[100px] text-center'>{datosInscripto.cargo_actual} </p> */}
                     </div>
                     {/* <div className='flex flex-row mt-[2px]'>
                         <p>INSTITUCION DE ORIGEN:</p>
                         <p className='border-b-[1px] border-black w-[300px] text-center'>{datosInscripto.nro_escuela}</p>
                     </div> */}
-                    <p className='font-semibold mt-[4px]'>Datos del Cargo</p>
+                    <p className='font-bold mt-[4px]'>DATOS DEL CARGO</p>
                     <div className='flex flex-row'>
                         <p>NUMERO DE CARGO: </p>
                         <p className='border-b-[1px] border-black w-[100px] text-center'>{datosVacante.orden}</p>

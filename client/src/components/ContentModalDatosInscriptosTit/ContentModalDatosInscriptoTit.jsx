@@ -1,7 +1,7 @@
 import { IoMdPrint } from "react-icons/io";
 import { IoTrash } from "react-icons/io5";
 
-const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,idInscriptoSelect,closeModal,handleChangeFormInscripto,formEstadoInscripto,submitGuardarFormInscripto,cargoAsignado,procesoImpresion,submitEliminarTomaCargo})=>{
+const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,idInscriptoSelect,closeModal,handleChangeFormInscripto,formEstadoInscripto,submitGuardarFormInscripto,cargoAsignado,procesoImpresion,submitEliminarTomaCargo, procesoImpresionAsistencia})=>{
     console.log('ingreso a ContentModalDatosInscriptoTit');
     return(
         <div className="notranslate h-100 w-100 flex flex-col items-center">
@@ -82,6 +82,7 @@ const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,i
                                     disabled={true}
                                 />
                             </div>
+
                             {(datosInscriptoSelect.descripcion_estado_inscripto==='' || datosInscriptoSelect.descripcion_estado_inscripto===null || datosInscriptoSelect.descripcion_estado_inscripto=='Ausente')
                             ?``
                             :<div className="flex flex-row items-center mr-2">
