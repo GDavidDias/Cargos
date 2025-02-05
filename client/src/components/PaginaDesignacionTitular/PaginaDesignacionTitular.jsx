@@ -74,10 +74,10 @@ console.log('que tiene id_nivel en PaginaDesignacion: ', id_nivel);
                         <p className='border-b-[1px] border-black w-[100px] text-center mr-4'>{datosInscripto.dni}</p>
                     </div>
                     <div className='flex flex-row mt-[2px]'>
-                        <p>APELLIDO:</p>
-                        <p className='border-b-[1px] border-black w-[200px] text-center'>{datosInscripto.apellido}</p> 
-                        <p>NOMBRES:</p> 
-                        <p className='border-b-[1px] border-black w-[300px] text-center'>{datosInscripto.nombre} </p>
+                        <p>APELLIDO Y NOMBRE:</p>
+                        <p className='border-b-[1px] border-black w-[540px] text-center'>{datosInscripto.apellido} {datosInscripto.nombre}</p> 
+                        {/**<p>NOMBRES:</p> 
+                        <p className='border-b-[1px] border-black w-[300px] text-center'>{datosInscripto.nombre} </p>*/}
                     </div>
                     <div className='flex flex-row mt-[2px]'>
                         {/*<p>DNI N°:</p>

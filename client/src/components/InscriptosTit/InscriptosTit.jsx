@@ -24,6 +24,7 @@ import PaginaDesignacionTitular from "../PaginaDesignacionTitular/PaginaDesignac
 import { fetchVacanteAsignadaTit } from "../../utils/fetchVacanteAsignadaTit";
 import { updateEstadoAsignadoInscripto } from "../../utils/updateEstadoAsignadoInscripto";
 import { updEstadoAsignadoInscriptoTit } from "../../utils/updateEstadoAsignadoInscriptoTit";
+import PaginaAsistenciaTitular from "../PaginaAsistenciaTitular/PaginaAsistenciaTitular";
 
 const InscriptosTit = () =>{
     
@@ -103,6 +104,7 @@ const InscriptosTit = () =>{
     const[datosVacante, setDatosVacante]=useState({});
 
     const componentRef = useRef(null);
+    const componentRefAsistencia = useRef(null);
 
     const[cargoAsignado, setCargoAsignado]=useState('');
 
@@ -413,6 +415,27 @@ const InscriptosTit = () =>{
         @page {
           size: LEGAL; /* Tamaño del papel */
           orientation: portrait; /* Orientación vertical */
+        }
+      `,
+    });
+
+
+    //PROCESO IMPRESION DE ASISTENCIA
+    const procesoImpresionAsistencia = async()=>{
+        console.log('ingresa a Impresion Asistencia');
+        await handlePrintAsistencia();
+    };
+
+    const handlePrintAsistencia = useReactToPrint({
+        content:() => componentRefAsistencia.current,
+        pageStyle:`
+        @page {
+          size: LEGAL; /* Tamaño del papel */
+          margin:0.4cm;
+          orientation: portrait; /* Orientación vertical */
+        }
+        body {
+            margin: 0.4
         }
       `,
     });
@@ -771,7 +794,7 @@ const InscriptosTit = () =>{
                     cargoAsignado={cargoAsignado}
                     procesoImpresion={procesoImpresion}
                     submitEliminarTomaCargo={submitEliminarTomaCargo}
-                    //procesoImpresionAsistencia={procesoImpresionAsistencia}
+                    procesoImpresionAsistencia={procesoImpresionAsistencia}
                 />
             </ModalEdit>
 
@@ -824,6 +847,18 @@ const InscriptosTit = () =>{
                 ref={componentRef}
             >
                 <PaginaDesignacionTitular
+                    datosInscripto={datosInscriptoSelect}
+                    datosVacante={datosVacante}
+                    id_nivel={configSG?.nivel.id_nivel}
+                />
+            </div>
+
+            {/* PAGINA DE IMPRESION ASISTENCIA */}
+            <div 
+                className="flex flex-col print:page-break-after"
+                ref={componentRefAsistencia}
+            >
+                <PaginaAsistenciaTitular
                     datosInscripto={datosInscriptoSelect}
                     datosVacante={datosVacante}
                     id_nivel={configSG?.nivel.id_nivel}
