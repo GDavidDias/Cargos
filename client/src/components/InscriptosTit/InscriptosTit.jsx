@@ -423,6 +423,7 @@ const InscriptosTit = () =>{
     //PROCESO IMPRESION DE ASISTENCIA
     const procesoImpresionAsistencia = async()=>{
         console.log('ingresa a Impresion Asistencia');
+        console.log
         await handlePrintAsistencia();
     };
 
@@ -544,6 +545,10 @@ const InscriptosTit = () =>{
         setCurrentPageVac(1);
     }
 
+    const handleCancelFiltroEspecialidadLuom =()=>{
+        setSelectFiltroEspecialidad("");
+        setCurrentPage(1);
+    };
 
     //?--------------------------------------------------
 
@@ -612,6 +617,7 @@ const InscriptosTit = () =>{
                     <div className="flex flex-row">
                         <label className="ml-4 text-lg font-sans font-bold">INSCRIPTOS - LUOM</label>
                     </div>
+                    {/**SELECCION FILTRO ESPECIALIDAD */}
                     <div className="ml-4 flex flex-row">
                         <label className="mr-2 ">Especialidad: </label>
                         <select
@@ -627,6 +633,12 @@ const InscriptosTit = () =>{
                                 ))
                             }
                         </select>
+                        {(selectFiltroEspecialidad!="") &&
+                            <label 
+                                className="font-bold mx-2 cursor-pointer"
+                                onClick={handleCancelFiltroEspecialidadLuom}
+                            >X</label>
+                        }
                     </div>
                 </div>
                 {/* SECCION DATOS USUARIO */}

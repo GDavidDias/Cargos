@@ -2,7 +2,8 @@ const {Router} = require('express');
 
 const{
     createAsignacionTit,
-    delAsignacionTit
+    delAsignacionTit,
+    getAllAsignacionesRealizadasTit
 } = require('../controllers/asignacionTit.controllers');
 
 const router = Router();
@@ -13,5 +14,8 @@ router.post('/createasignaciontit', createAsignacionTit);
 
 //elimino una asignacion, se desactiva por medio campo obsdesactiva
 router.post('/delasignaciontit/:idAsignacionTit', delAsignacionTit);
+
+//listado de asignaciones realizadas de titularizacion
+router.post('/asignacionesrealizadastit', getAllAsignacionesRealizadasTit);
 
 module.exports = router;

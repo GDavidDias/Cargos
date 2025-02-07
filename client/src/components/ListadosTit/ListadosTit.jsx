@@ -6,11 +6,13 @@ import * as XLSX from 'xlsx';
 import { FaRegUserCircle, FaPowerOff  } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { fetchVacantesDispMov } from "../../utils/fetchVacanteDispMov";
 import { SiMicrosoftexcel } from "react-icons/si";
 import ReporteVacantesDisponibles from "../ReporteVacantesDisponibles/ReporteVacantesDisponibles";
 import ReporteAsignacionesRealizadas from "../ReporteAsignacionesRealizadas/ReporteAsignacionesRealizadas";
 import { fetchRepoAsignacionesRealizadas } from "../../utils/fetchRepoAsignacionesRealizadas";
+import { fetchVacantesDispTit } from "../../utils/fetchVacantesDispTit";
+import { fetchAllAsignacionesRealizadasTit } from "../../utils/fetchAllAsignacionesRealizadasTit";
+import ReporteAsignacionesRealizadasTit from "../ReporteAsignacionesRealizadasTit/ReporteAsignacionesRealizadasTit";
 
 const ListadosTit = () => {
 
@@ -40,8 +42,8 @@ const ListadosTit = () => {
         console.log('que trae configFilterNivel: ', configFilterNivel);
 
         //Traigo el id del listado cargado en configuracion para:
-        //LISTADO DE VACANTES DE MOVIMIENTOS -> id_listado_vacantes_mov
-        const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_mov;
+        //LISTADO DE VACANTES DE MOVIMIENTOS -> id_listado_vacantes_tit
+        const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_tit;
         console.log('que tiene idFilterListado: ',idFilterListado);
 
         //Guardo id_listado_vacantes_mov para usarlo en nueva Vacante
@@ -51,11 +53,17 @@ const ListadosTit = () => {
     const submitVacDisponibles= async()=>{
         console.log('presiono vacantes disponibles')
         //traigo datos y guardo en store local
-        //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE VACANTES
-        const data = await fetchVacantesDispMov(idListVacMov);
-        console.log('que trae data de fetchVacantesDispMov: ', data);
-        if(data.length!=0){
-            setlistado(data);
+        //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE VACANTES TITULARIZACION
+        const limit = 999999;
+        const page = 1;
+        const valorBusqueda = "";
+        const filtroEspecialidad = "";
+        const orderBy = "";
+        
+        const data = await fetchVacantesDispTit(idListVacMov,limit,page,valorBusqueda,filtroEspecialidad,orderBy);
+        console.log('que trae data de fetchVacantesDispMov: ', data.result);
+        if(data.result.length!=0){
+            setlistado(data.result);
         }
     };
 
@@ -63,13 +71,12 @@ const ListadosTit = () => {
         console.log('presiono asignaciones realizadas')
         //traigo datos y guardo en store local
         //setlistado([])
-        //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE ASIGNACIONES REALIZADAS
-        const data = await fetchRepoAsignacionesRealizadas(idListVacMov);
+        //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE ASIGNACIONES REALIZADAS        
+        const data = await fetchAllAsignacionesRealizadasTit(idListVacMov);
         console.log('que trae data de fetchRepoAsignacionesRealizadas: ', data);
         if(data.length!=0){
             setlistado(data);
         }
-
     };
 
     const handlePrint = useReactToPrint({
@@ -122,8 +129,8 @@ const ListadosTit = () => {
             'Orden':objeto.orden, 
             'Cargo':objeto.cargo, 
             'Cupof':objeto.cupof, 
-            'N° Escuela': objeto.establecimiento, 
-            'Nombre Escuela':objeto.obs_establecimiento, 
+            'N° Escuela': objeto.nro_establecimiento, 
+            'Nombre Escuela':objeto.nombre_establecimiento, 
             'Turno':objeto.turno, 
             'Modalidad':objeto.modalidad, 
             'Region':objeto.region, 
@@ -153,11 +160,9 @@ const ListadosTit = () => {
 
         const datosformat = datos.map(objeto=>({
             
-            'Legajo':objeto.legajo, 
             'Dni':objeto.dni, 
             'Total':objeto.total, 
-            'Apellido': objeto.apellido, 
-            'Nombre':objeto.nombre, 
+            'Nombre':objeto.apellido, 
             'Observacion':objeto.observacion, 
             'N° Escuela Actual':objeto.nro_escuela_actual, 
             'Cargo Actual':objeto.cargo_actual, 
@@ -270,7 +275,7 @@ const ListadosTit = () => {
                     />
                 }
                 {(reporte==='asignacionesRealizadas') &&
-                    <ReporteAsignacionesRealizadas
+                    <ReporteAsignacionesRealizadasTit
                         listado={listado}
                     />
                 }
