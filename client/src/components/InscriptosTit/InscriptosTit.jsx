@@ -349,6 +349,8 @@ const InscriptosTit = () =>{
         closeModalVac();
         setCurrentPageVac(1);
         setInputSearchVac('');
+        setFiltroRegionVac('');
+        setFiltroModalidadVac('');
     };
 
     const handleInputSearchVacChange = (event)=>{

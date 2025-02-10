@@ -4,6 +4,7 @@ const{
     getAllInscriptosTit,
     editInscriptoTit,
     updestadoinscriptotit,
+    getReporteEstadoInscriptosTit,
 }= require('../controllers/inscriptosTit.controllers');
 
 const router = Router();
@@ -16,5 +17,8 @@ router.put('/editinscriptotit/:idInscriptoTit',editInscriptoTit);
 
 //Actualiza estado de inscripto
 router.put('/updestadoinscriptotit/:idInscriptoTit', updestadoinscriptotit);
+
+//Listado para reporte de Inscriptos y Estado del inscripto, si tomo alguna vacante o no.
+router.post('/repoestadoinscriptostit', getReporteEstadoInscriptosTit);
 
 module.exports=router;

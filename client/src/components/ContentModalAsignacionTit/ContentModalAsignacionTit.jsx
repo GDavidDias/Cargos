@@ -1,4 +1,5 @@
 import { IoMdPrint } from "react-icons/io";
+import { FiAlertTriangle } from "react-icons/fi";
 
 const ContentModalAsignacionTit = ({closeModalAsign,datosInscriptoSelect,datosVacanteSelect,procesoImpresion,submitAsignarVacante}) =>{    
     return(
@@ -21,7 +22,24 @@ const ContentModalAsignacionTit = ({closeModalAsign,datosInscriptoSelect,datosVa
                         </div>
                     </div>
                 </div>
-                {/* DATOS DE LOS CARGOS */}
+                
+                {/* AVISO ESPECIALIDAD DIFIERE DE LA SOLICITADA */}
+                {/* PARA TRASLADO */}
+                {(datosInscriptoSelect.especialidad!=datosVacanteSelect.cargo)
+                    ?<div className="flex flex-row items-center">
+                        <FiAlertTriangle  className="mr-2 text-xl desktop-xl:text-3xl  text-red-500"/>
+                        <div className="border-[2px] border-red-500 flex flex-row justify-center rounded-md shadow font-semibold text-lg bg-red-100 mb-2 desktop-xl:text-xl animate-parpadeoborde">
+                            <label className="mx-2">La especialidad del docente: </label>
+                            <label className="mr-2 font-bold">{datosInscriptoSelect.especialidad}</label>
+                            <label className="mr-2">, es distinto al cargo a tomar: </label>
+                            <label className="mr-2 font-bold">{datosVacanteSelect.cargo}</label>
+                        </div>
+                        {/* <FiAlertTriangle  className="ml-2 text-xl desktop-xl:text-3xl blink text-red-500"/> */}
+                    </div>
+                    :``
+                }
+
+                {/* DATOS DEL CARGOS */}
                 <div className="flex flex-row w-[50vw] justify-center">
             
                     {/* CARGO A TOMAR */}
@@ -71,12 +89,12 @@ const ContentModalAsignacionTit = ({closeModalAsign,datosInscriptoSelect,datosVa
                 </div>
                 <div>
                     <button
-                        className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white shadow hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                        className="border-2 border-[#7C8EA6] mt-5 font-semibold w-40 h-8 bg-[#7C8EA6] text-white shadow hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
                         onClick={()=>submitAsignarVacante()}
                         translate='no'
                     >ACEPTAR</button>
                     <button
-                        className="border-2 border-[#7C8EA6] mt-10 font-semibold w-40 h-8 bg-[#7C8EA6] text-white shadow hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
+                        className="border-2 border-[#7C8EA6] mt-5 font-semibold w-40 h-8 bg-[#7C8EA6] text-white shadow hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
                         onClick={closeModalAsign}
                         translate='no'
                     >CANCELAR</button>

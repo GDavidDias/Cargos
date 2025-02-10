@@ -64,6 +64,12 @@ const SideBar = () => {
         dispatch(setPage('VacantesTit'))
     };
 
+    const submitVacantesTitDocentes = () =>{
+        //
+        console.log('Presiona en Vacantes Titularizacion');
+        dispatch(setPage('VacantesTitDocentes'))
+    };
+
     const submitListadosTit = () =>{
         //
         console.log('Presiona en Listados Titularizacion');
@@ -297,7 +303,7 @@ const SideBar = () => {
                     }
 
                     {/**ENLACE A VACANTES */}
-                    {(configCompSG[4]?.active=="1") &&
+                    {(userSG.permiso!=3 && configCompSG[4]?.active=="1") &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
                                 ${(pageSG==='VacantesTit')
@@ -312,7 +318,7 @@ const SideBar = () => {
                         </div>
                     }
 
-                    {/**ENLACE A VACANTES */}
+                    {/**ENLACE A LISTADOS */}
                     {(userSG.permiso!=3 && configCompSG[5]?.active=="1") &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
@@ -324,7 +330,23 @@ const SideBar = () => {
                             onClick={()=>submitListadosTit()}
                         >
                             <CgList className="text-xl font-bold mr-2"/>
-                            <label className="font-light desktop-xl:text-lg">Listados</label>
+                            <label className="font-light desktop-xl:text-lg">Listados y Metricas</label>
+                        </div>
+                    }
+
+                    {/**ENLACE A VACANTES VISUALIZACION PARA DOCENTES */}
+                    {(configCompSG[6]?.active=="1") &&
+                        <div 
+                            className={` rounded p-[4px] flex flex-row justify-start items-center
+                                ${(pageSG==='VacantesTitDocentes')
+                                ?'bg-[#C9D991]'
+                                :'hover:bg-[#C9D991]'
+                            }
+                                `}
+                            onClick={()=>submitVacantesTitDocentes()}
+                        >
+                            <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
+                            <label className="font-light desktop-xl:text-lg">Listado de Vacantes</label>
                         </div>
                     }
                 </div>

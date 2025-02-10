@@ -13,6 +13,8 @@ import { fetchRepoAsignacionesRealizadas } from "../../utils/fetchRepoAsignacion
 import { fetchVacantesDispTit } from "../../utils/fetchVacantesDispTit";
 import { fetchAllAsignacionesRealizadasTit } from "../../utils/fetchAllAsignacionesRealizadasTit";
 import ReporteAsignacionesRealizadasTit from "../ReporteAsignacionesRealizadasTit/ReporteAsignacionesRealizadasTit";
+import { fetchEstadoInscriptosTit } from "../../utils/fetchEstadoInscriptosTit";
+import ReporteEstadoInscriptosTit from "../ReporteEstadoInscriptosTit/ReporteEstadoInscriptosTit";
 
 const ListadosTit = () => {
 
@@ -68,7 +70,7 @@ const ListadosTit = () => {
     };
 
     const submitAsignacionesRealizadas=async()=>{
-        console.log('presiono asignaciones realizadas')
+        console.log('presiono asignaciones realizadas');
         //traigo datos y guardo en store local
         //setlistado([])
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE ASIGNACIONES REALIZADAS        
@@ -76,6 +78,19 @@ const ListadosTit = () => {
         console.log('que trae data de fetchRepoAsignacionesRealizadas: ', data);
         if(data.length!=0){
             setlistado(data);
+        }
+    };
+
+    const submitEstadoInscriptos=async()=>{
+        console.log('presiono sobre estado inscriptos');
+        //traigo datos de estado inscriptos y guardo en store local
+        const limit = 999999;
+        const page = 1;
+        //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE ESTADOS DE INSCRIPTOS
+        const data = await fetchEstadoInscriptosTit(idListVacMov, limit, page);
+        console.log('que trae data de fetchEstadoInscriptosTit: ', data.result);
+        if(data.result.length!=0){
+            setlistado(data.result);
         }
     };
 
@@ -107,6 +122,8 @@ const ListadosTit = () => {
             worksheet = XLSX.utils.json_to_sheet(formateaListadoAsignacionesRealizadas(listado));
         }else if(reporte==='vacantesDisponibles'){
             worksheet = XLSX.utils.json_to_sheet(formateaListadoVacantesDisponibles(listado));
+        }else if(reporte==='estadoinscriptos'){
+            worksheet = XLSX.utils.json_to_sheet(formateaListadoEstadoInscriptos(listado));
         }
         
         const workbook = XLSX.utils.book_new();
@@ -120,6 +137,8 @@ const ListadosTit = () => {
             nombreArchivo='Asignaciones Realizadas'
         }else if(reporte==='vacantesDisponibles'){
             nombreArchivo='Vacantes Disponibles'
+        }else if(reporte==='estadoinscriptos'){
+            nombreArchivo='Listado del Estado de Inscriptos'
         }
         XLSX.writeFile(workbook, `${nombreArchivo}.xlsx`);
     }; 
@@ -154,12 +173,10 @@ const ListadosTit = () => {
         const seconds = String(date.getSeconds()).padStart(2, '0');
       
         return `${day}/${month}/${year} - ${hours}:${minutes}:${seconds}`;
-      }
+      };
 
     function formateaListadoAsignacionesRealizadas (datos){
-
         const datosformat = datos.map(objeto=>({
-            
             'Dni':objeto.dni, 
             'Total':objeto.total, 
             'Nombre':objeto.apellido, 
@@ -184,12 +201,35 @@ const ListadosTit = () => {
     };
 
 
+    function formateaListadoEstadoInscriptos (datos){
+        const datosformat = datos.map(objeto=>({
+            'Dni':objeto.dni, 
+            'Total':objeto.total,
+            'Nombre Docente':objeto.apellido, 
+            'Especialidad':objeto.especialidad, 
+            'Estado':objeto.descripcion_estado_inscripto, 
+            /*'descripcion':objeto.descripcion, 
+            'id_especialidad':objeto.id_especialidad, 
+            'id_estado_inscripto':objeto.id_estado_inscripto, 
+            'id_inscriptos_tit':objeto.id_inscriptos_tit,
+            'id_listado_inscriptos':objeto.id_listado_inscriptos, 
+            'nombre':objeto.nombre,
+            'orden':objeto.orden,
+            'vacante_asignada':objeto.vacante_asignada, */
+            
+        }));
+        return datosformat;
+    };
+
+
     useEffect(()=>{
         setlistado([]);
         if(reporte==='asignacionesRealizadas'){
             submitAsignacionesRealizadas();
         }else if(reporte==='vacantesDisponibles'){
             submitVacDisponibles();
+        }else if(reporte==='estadoinscriptos'){
+            submitEstadoInscriptos();
         }
     },[reporte])
 
@@ -198,7 +238,6 @@ const ListadosTit = () => {
         //?PROCESO SE EJECUTA EN CARGA INICIAL
         //LLAMO AL PROCEDIMIENTO buscoIDListadoVacantes Y PASO EL NIVEL CARGADO EN STORE GLOBAL
         buscoIDListadoVacantes(configSG.nivel.id_nivel);
-
     },[])
 
     return(
@@ -245,6 +284,15 @@ const ListadosTit = () => {
                             `}
                         onClick={()=>setReporte('vacantesDisponibles')}
                     >Vacantes Disponibles</button>
+                    <button 
+                        className={`ml-2 px-[2px] border-[1px] border-[#73685F] rounded hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] shadow
+                            ${(reporte==='estadoinscriptos')
+                                ?`bg-[#7C8EA6] text-white border-[#7C8EA6]`
+                                :``
+                            }
+                            `}
+                        onClick={()=>setReporte('estadoinscriptos')}
+                    >Estado de Inscriptos</button>
                 </div>
                 <div className="flex flex-row mr-4">
                     {/* <button
@@ -278,6 +326,12 @@ const ListadosTit = () => {
                     <ReporteAsignacionesRealizadasTit
                         listado={listado}
                     />
+                }
+                {(reporte==='estadoinscriptos') &&
+                    <ReporteEstadoInscriptosTit
+                        listado={listado}
+                    />
+                    
                 }
                 
             </div>

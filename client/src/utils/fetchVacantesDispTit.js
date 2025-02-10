@@ -13,6 +13,7 @@ export const fetchVacantesDispTit = async(id_listado,limit,page,valorBusqueda,fi
     };
     //console.log('que tiene datos que pasa a body en fetchVacantesDispTit: ', dataBody);
 
+
     try{
         const {data} = await axios.post(`${URL}/api/vacantesdisptit`,dataBody);
         //console.log('que trae data de fetchVacantesDispTit: ', data);

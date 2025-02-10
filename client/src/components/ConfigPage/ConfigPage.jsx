@@ -87,13 +87,25 @@ const ConfigPage = () => {
     <div className='m-2'>
         {/*ENCABEZADO */}
         <div>
-            <h1 className='font-bold'>Configuraciones</h1>
+            <h1 className='font-bold'>CONFIGURACIONES</h1>
         </div>
 
         {/**CUERPO */}
         <div>
-          {/* PARTE INFERIOR DE DATOS DE TABLA */}
+
+          {/**CONFIGURACION DE ESPECIALIDADES A MOSTRAR EN LISTADO_VACANTES_TITULARIZACION */}
+          <div>
+            <div>
+              <h3 className='font-bold'>Especialidades a Mostrar en Listado de Vacantes - TITULARIZACIONES</h3>
+            </div>
+          </div>
+
+          {/* CONFIGURACION DE VISUALIZACION DE COMPONENTES */}
           <div className="h-[79vh] overflow-y-auto">
+            <div>
+              <h3 className='font-bold'>Visualizacion de componentes</h3>
+            </div>
+            <div>
               <table className="border-[1px] bg-slate-50 w-full">
                   <thead>
                       <tr className="sticky top-0 text-sm border-b-[1px] border-zinc-300 bg-zinc-200">
@@ -147,6 +159,7 @@ const ConfigPage = () => {
                       }
                   </tbody>
               </table>
+            </div>
           </div>
         </div>
     </div>
