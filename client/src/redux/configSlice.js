@@ -7,7 +7,8 @@ const initialState = {
         descripcion:''
     },
     config:[],
-    configComponente:[]
+    configComponente:[],
+    especialidadVisorTit:[]
 }
 
 export const configSlice = createSlice({
@@ -27,9 +28,12 @@ export const configSlice = createSlice({
         },
         setConfigComp:(state, action)=>{
             state.configComponente = action.payload;
+        },
+        setEspecialidadVisorTit:(state, action)=>{
+            state.especialidadVisorTit = action.payload;
         }
     }
 });
 
-export const {setPage, setNivel, setConfig, setConfigComp} = configSlice.actions;
+export const {setPage, setNivel, setConfig, setConfigComp, setEspecialidadVisorTit} = configSlice.actions;
 export default configSlice.reducer;

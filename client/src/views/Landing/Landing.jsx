@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchConfig } from "../../utils/fetchConfig";
-import { setConfig, setConfigComp, setNivel } from "../../redux/configSlice";
+import { setConfig, setConfigComp, setEspecialidadVisorTit, setNivel } from "../../redux/configSlice";
 import { useNavigate } from "react-router-dom";
 import ModalUser from "../../components/ModalUser/ModalUser";
 import Modal from "../../components/Modal/Modal";
@@ -12,6 +12,7 @@ import { outUser, setUser } from "../../redux/userSlice";
 import logo from '../../assets/JUNTA-04-xs.png';
 import { changepass } from "../../utils/changepass";
 import { fetchConfigComponente } from "../../utils/fetchConfigComponente";
+import { fetchConfigEspVisorTit } from "../../utils/fetchConfigEspVisorTit";
 
 
 const Landing = () => {
@@ -155,6 +156,11 @@ const Landing = () => {
         const dataComp = await fetchConfigComponente();
         console.log('que trae fetchConfigComponente: ', dataComp);
         dispatch(setConfigComp(dataComp));
+
+        /**Trae configuracion de Especialidad para Visor de Vacantes */
+        const dataEspeVisorVac = await fetchConfigEspVisorTit();
+        console.log('que trae fetchConfigEspVisorTit: ', dataEspeVisorVac);
+        dispatch(setEspecialidadVisorTit(dataEspeVisorVac));
     };
 
     const ModalChangePass = ()=>{

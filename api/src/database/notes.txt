@@ -4,7 +4,7 @@ CREATE DATABASE dbcargos;
 USE dbcargos;
 CREATE TABLE inscriptos_mov(id_inscriptos_mov INT(11) NOT NULL AUTO_INCREMENT, cargo_actual VARCHAR(50) DEFAULT NULL, turno_actual VARCHAR(50) DEFAULT NULL, cargo_solicitado VARCHAR(50) DEFAULT NULL, dni VARCHAR(50) DEFAULT NULL, apellido VARCHAR(250) DEFAULT NULL, nombre VARCHAR(250) DEFAULT NULL, observacion VARCHAR(250) DEFAULT NULL, total VARCHAR(50) DEFAULT NULL, orden INT(11) DEFAULT NULL, nro_escuela VARCHAR(250) DEFAULT NULL,  legajo INT(11) DEFAULT NULL, id_especialidad INT(7) DEFAULT NULL, id_tipo_inscripto INT(7) DEFAULT NULL, id_listado_inscriptos INT(7) DEFAULT NULL, id_vacante_generada_cargo_actual INT(11) DEFAULT NULL, id_estado_inscripto INT(2), genera_vacante VARCHAR(2) DEFAULT NULL,  PRIMARY KEY(id_inscriptos_mov));CREATE TABLE estado_inscripto(id_estado_inscripto INT(2) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_estado_inscripto));
 
-CREATE TABLE especialidad(id_especialidad INT(11) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(250) DEFAULT NULL, abreviatura VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_especialidad));
+CREATE TABLE especialidad(id_especialidad INT(11) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(250) DEFAULT NULL, abreviatura VARCHAR(50) DEFAULT NULL, activo_visor_tit VARCHAR(5) DEFAULT NULL,PRIMARY KEY(id_especialidad));
 
 CREATE TABLE tipo_inscripto(id_tipo_inscripto INT(2) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_tipo_inscripto));
 
@@ -35,8 +35,7 @@ CREATE TABLE asignacion_tit(id_asignacion_tit INT(11) NOT NULL AUTO_INCREMENT, i
 CREATE TABLE estado_inscripto(id_estado_inscripto INT(2) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_estado_inscripto));
 
 ----TABLAS DE configuracion
-CREATE TABLE componentes(id_component INT(5) NOT NULL AUTO_INCREMENT, )
-CREATE TABLE config_component(id_config INT(5) NOT NULL AUTO_INCREMENT, id_component INT(5) DEFAULT NULL, id_type_config INT(5) DEFAULT NULL, componente VARCHAR(150) DEFAULT NULL, descripcion VARCHAR(300) DEFAULT NULL, active VARCHAR(5) DEFAULT NULL, PRIMARY KEY(id_component));
+CREATE TABLE config_component_active(id_component INT(5) NOT NULL AUTO_INCREMENT, componente varchar(150) DEFAULT NULL, descripcion VARCHAR(300) DEFAULT NULL, active VARCHAR(5) DEFAULT NULL, PRIMARY KEY(id_component));
 
 CREATE TABLE config_report_component(id_component INT(5))
 
@@ -53,6 +52,8 @@ MODULO TITULARIZACIONES
 -->agrego campo estado_inscripto en tabla inscriptos_tit
 ALTER TABLE inscriptos_tit ADD id_estado_inscripto INT(2);
 
+AGREGO COLUMNA A especialidad
+ALTER TABLE especialidad ADD activo_visor_tit VARCHAR(5) DEFAULT NULL;
 
 -----------------------------------------
 PERMISOS:
