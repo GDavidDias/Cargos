@@ -245,6 +245,7 @@ INSERT INTO config_component_active(id_component,componente,descripcion,active) 
 INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(4,'InscriptosTit','Inscriptos de Titularizaciones', NULL);
 INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(5,'VacantesTit','Vacantes de Titularizaciones', NULL);
 INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(6,'ListadosTit','Listados de Titularizaciones', NULL);
+INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(7,'VacantesTitDocentes','Vacantes de Titularizaciones para mostrar a Docentes', NULL);
 
 
 ---------------------------
