@@ -25,12 +25,12 @@ const ContentModalAsignacionTit = ({closeModalAsign,datosInscriptoSelect,datosVa
                 
                 {/* AVISO ESPECIALIDAD DIFIERE DE LA SOLICITADA */}
                 {/* PARA TRASLADO */}
-                {(datosInscriptoSelect.especialidad!=datosVacanteSelect.cargo)
+                {(datosInscriptoSelect.id_especialidad!=datosVacanteSelect.id_especialidad)
                     ?<div className="flex flex-row items-center">
                         <FiAlertTriangle  className="mr-2 text-xl desktop-xl:text-3xl  text-red-500"/>
                         <div className="border-[2px] border-red-500 flex flex-row justify-center rounded-md shadow font-semibold text-lg bg-red-100 mb-2 desktop-xl:text-xl animate-parpadeoborde">
                             <label className="mx-2">La especialidad del docente: </label>
-                            <label className="mr-2 font-bold">{datosInscriptoSelect.especialidad}</label>
+                            <label className="mr-2 font-bold">{datosInscriptoSelect.abreviatura_especialidad}</label>
                             <label className="mr-2">, es distinto al cargo a tomar: </label>
                             <label className="mr-2 font-bold">{datosVacanteSelect.cargo}</label>
                         </div>

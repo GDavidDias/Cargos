@@ -133,19 +133,21 @@ const SideBar = () => {
 
     useEffect(()=>{
         //console.log('que tiene userSG: ', userSG);
-        if(userSG.id_user===''){
+        if(userSG.username===''){
             navigate('/');
-        }else{
-            dispatch(setPage('PageIni'));
+        }else if(userSG.username==='invitadoPri'){
+            dispatch(setPage('VacantesTitDocentes'));
             /**
              if(userSG.permiso===3){
-                 //Si es un invitado
-                 dispatch(setPage('VacantesMov'));
-             }else{
-                 dispatch(setPage('InscriptosMov'));
-             }
-             
-             */
+                //Si es un invitado
+                dispatch(setPage('VacantesMov'));
+                }else{
+                    dispatch(setPage('InscriptosMov'));
+            }
+            
+            */
+        }else{
+            dispatch(setPage('PageIni'));
         }
     },[userSG])
 

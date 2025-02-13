@@ -26,7 +26,7 @@ CREATE TABLE usuarios (id_usuario INT(7) NOT NULL AUTO_INCREMENT, nombre VARCHAR
 
 
 -tablas de Titularizaciones
-CREATE TABLE inscriptos_tit(id_inscriptos_tit INT(11) NOT NULL AUTO_INCREMENT, dni VARCHAR(50) DEFAULT NULL, apellido VARCHAR(250) DEFAULT NULL, nombre VARCHAR(250) DEFAULT NULL, total VARCHAR(50) DEFAULT NULL, orden INT(11) DEFAULT NULL, id_especialidad INT(7) DEFAULT NULL, id_listado_inscriptos INT(7) DEFAULT NULL, id_estado_inscripto INT(2) DEFAULT NULL,  PRIMARY KEY(id_inscriptos_tit));
+CREATE TABLE inscriptos_tit(id_inscriptos_tit INT(11) NOT NULL AUTO_INCREMENT, dni VARCHAR(50) DEFAULT NULL, apellido VARCHAR(250) DEFAULT NULL, nombre VARCHAR(250) DEFAULT NULL, total VARCHAR(50) DEFAULT NULL, orden INT(11) DEFAULT NULL, id_especialidad INT(7) DEFAULT NULL, id_listado_inscriptos INT(7) DEFAULT NULL, id_estado_inscripto INT(2) DEFAULT NULL,  observaciones VARCHAR(250) DEFAULT NULL, PRIMARY KEY(id_inscriptos_tit));
 
 CREATE TABLE vacantes_tit(id_vacante_tit INT(11) NOT NULL AUTO_INCREMENT, id_listado_vac_tit INT(7) DEFAULT NULL, orden INT(7) DEFAULT NULL, nro_establecimiento VARCHAR(255) DEFAULT NULL, nombre_establecimiento VARCHAR(250) DEFAULT NULL, region VARCHAR(250) DEFAULT NULL, departamento VARCHAR(250) DEFAULT NULL, localidad VARCHAR(250) DEFAULT NULL, cargo VARCHAR(250) DEFAULT NULL, turno VARCHAR(50) DEFAULT NULL, modalidad VARCHAR(250) DEFAULT NULL, cupof VARCHAR(50) DEFAULT NULL, id_especialidad INT(11) DEFAULT NULL, datetime_creacion DATETIME DEFAULT NULL, obs_desactiva VARCHAR(250) DEFAULT NULL, zona VARCHAR(7) DEFAULT NULL, resolucion VARCHAR(250) DEFAULT NULL, PRIMARY KEY(id_vacante_tit));
 
@@ -54,6 +54,9 @@ ALTER TABLE inscriptos_tit ADD id_estado_inscripto INT(2);
 
 AGREGO COLUMNA A especialidad
 ALTER TABLE especialidad ADD activo_visor_tit VARCHAR(5) DEFAULT NULL;
+
+AGREGO COLUMNA A TABLA inscriptos_tit
+ALTER TABLE inscriptos_tit ADD observaciones VARCHAR(250) DEFAULT NULL;
 
 -----------------------------------------
 PERMISOS:

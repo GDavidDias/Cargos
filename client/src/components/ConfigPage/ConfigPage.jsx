@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { fetchConfigComponente } from '../../utils/fetchConfigComponente';
+import { fetchAllEspecialidades } from "../../utils/fetchAllEspecialidades.js";
 import {URL} from '../../../varGlobal';
 import axios from "axios";
 
 import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit, FaEyeSlash} from "react-icons/fa";
 import { useDispatch, useSelector } from 'react-redux';
-import { setConfigComp } from '../../redux/configSlice';
+import { setConfigComp, setEspecialidadVisorTit } from '../../redux/configSlice';
 
 {/*Se veran todos los accesos en modo administrador y se podra configurar que modulo mostrar o no
     Modulos:
@@ -79,6 +80,65 @@ const ConfigPage = () => {
     const dataComp = await fetchConfigComponente();
     console.log('que trae fetchConfigComponente: ', dataComp);
     dispatch(setConfigComp(dataComp));
+  };
+
+  const actualizaEspecialidadVisorTit = async()=>{
+    /**Trae la configuracion de todas las especialidades y su campo activo_visor_tit */
+    const dataEspeVisorTit = await fetchAllEspecialidades();
+    console.log('que trae fetchAllEspecialidades: ', dataEspeVisorTit);
+    dispatch(setEspecialidadVisorTit(dataEspeVisorTit));
+  };
+
+
+  const submitDeshabilitarEspecialidad = async(data)=>{
+    /**DESHABILITA la especialidad del Visor de Vacantes */
+    console.log('presiono sobre submitDeshabilitarEspecialidad');
+
+    const updEspVisor = {
+      "idEspecialidad": data.id_especialidad,
+      "activoVisor":""
+    }
+    /**Se Deshabilita especialidad con vacio */
+    try{
+      await axios.put(`${URL}/api/updespevisortit`,updEspVisor)
+      .then(async res=>{
+          console.log('que trae res de updespevisortit: ', res);
+      })
+      .catch(error=>{
+          console.log('que trae error updespevisortit: ', error);
+      })
+    }catch(error){
+      console.error(error.message);
+    }
+
+    actualizaEspecialidadVisorTit();
+  };
+
+
+  const submitHabilitarEspecialidad = async(data) =>{
+    /**HABILITA la especialidad en el Visor de Vacantes de Docentes */
+    console.log('presiono sobre submitHabilitarEspecialidad: ', data);
+
+    const updEspVisor = {
+      "idEspecialidad": data.id_especialidad,
+      "activoVisor":1
+    }
+    
+    /**Se habilita especialidad con 1 */
+    try{
+      await axios.put(`${URL}/api/updespevisortit`,updEspVisor)
+      .then(async res=>{
+          console.log('que trae res de updespevisortit: ', res);
+      })
+      .catch(error=>{
+          console.log('que trae error updespevisortit: ', error);
+      })
+    }catch(error){
+      console.error(error.message);
+    }
+
+    actualizaEspecialidadVisorTit();
+
   };
   
 
@@ -174,7 +234,7 @@ const ConfigPage = () => {
                           <th className="border-r-[1px] border-zinc-300">Id</th>
                           <th className="border-r-[1px] border-zinc-300">Especialidad</th>
                           <th className="border-r-[1px] border-zinc-300">Abr.</th>
-                          <th className="border-r-[1px] border-zinc-300">Activo</th>
+                          <th className="border-r-[1px] border-zinc-300">Activo en Visor</th>
                           <th className="">Acciones</th>
                       </tr>
                   </thead>
@@ -185,14 +245,14 @@ const ConfigPage = () => {
                               const colorFila = (((especialidad.id_especialidad % 2)===0) ?`bg-zinc-200` :``)
                               return(
                                   <tr 
-                                      className={`text-lg font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 ${colorFila}`}
+                                      className={`text-base font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 ${colorFila}`}
                                       key={index}
                                   >
                                       <td className="text-center">{especialidad.id_especialidad}</td>
                                       <td className="text-center">{especialidad.descripcion}</td>
                                       {/* <td>{inscripto.apellido}</td> */}
-                                      <td>{especialidad.abreviatura}</td>
-                                      <td>{especialidad.activo_visor_tit}</td>
+                                      <td className='text-center'>{especialidad.abreviatura}</td>
+                                      <td className='text-center'>{especialidad.activo_visor_tit}</td>
                                       <td>
                                           <div className="flex flex-row items-center justify-center  ">
                                               {/* {(inscripto.vacante_asignada===null )
@@ -201,16 +261,16 @@ const ConfigPage = () => {
                                                       />
                                                   :``
                                               } */}
-                                              {(especialidad.active === 1 || especialidad.active === "1")
+                                              {(especialidad.activo_visor_tit === 1 || especialidad.activo_visor_tit === "1")
                                                 ?<FaEye 
                                                     className="hover:cursor-pointer hover:text-[#83F272]" 
                                                     title="Componente Visible"
-                                                    onClick={()=>submitOcultarComponente(especialidad)}
+                                                    onClick={()=>submitDeshabilitarEspecialidad(especialidad)}
                                                 />
                                                 :<FaEyeSlash
                                                     className='hover:cursor-pointer hover:text-[#83F272]'
                                                     title='Componente Oculto'
-                                                    onClick={()=>submitMostrarComponente(especialidad)}
+                                                    onClick={()=>submitHabilitarEspecialidad(especialidad)}
                                                   />
                                               }
                                           </div>

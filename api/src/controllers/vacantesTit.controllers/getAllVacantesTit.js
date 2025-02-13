@@ -37,7 +37,6 @@ module.exports = async(req,res)=>{
         OR LOWER(vt.departamento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
         OR LOWER(vt.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
         OR LOWER(vt.cargo) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-        OR LOWER(vt.modalidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
         ) `
     };
     
@@ -54,10 +53,11 @@ module.exports = async(req,res)=>{
     armaquery+= ` ORDER BY vt.id_vacante_tit ASC`
 
     try{
+        console.log('como ARMA QUERY: ', armaquery);
 
         const [result] = await pool.query(`${armaquery} LIMIT ${limit} OFFSET ${offset}`);
 
-        console.log('que trae result getAllVacantesTit: ', result);
+        //console.log('que trae result getAllVacantesTit: ', result);
 
         const [totalRows]= await pool.query(`SELECT COUNT(*) AS count FROM (${armaquery}) AS vacantes`)
 

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { URL } from '../../varGlobal';
 
 
-export const fetchAllVacantesTit = async(id_listado,limit,page,filtroAsignacion,filtroEspecialidad,valorBusqueda, filtroModalidad, filtroRegion) => {
+export const fetchAllVacantesTit = async(id_listado,limit,page,filtroAsignacion,filtroEspecialidad,valorBusqueda, filtroRegion, filtroModalidad ) => {
     const dataBody={
         "idListadoVacTit":id_listado,
         "limit":limit,

@@ -728,6 +728,7 @@ const InscriptosTit = () =>{
                                     <th className="border-r-[1px] border-zinc-300">Nombre Docente</th>
                                     <th className="border-r-[1px] border-zinc-300">DNI</th>
                                     <th className="border-r-[1px] border-zinc-300">Especialidad</th>
+                                    <th className="border-r-[1px] border-zinc-300">Obs</th>
                                     <th className="border-r-[1px] border-zinc-300">Estado</th>
                                     <th className="">Acciones</th>
                                 </tr>
@@ -747,7 +748,8 @@ const InscriptosTit = () =>{
                                                 {/* <td>{inscripto.apellido}</td> */}
                                                 <td>{inscripto.apellido} {inscripto.nombre}</td>
                                                 <td>{inscripto.dni}</td>
-                                                <td>{inscripto.especialidad}</td>
+                                                <td className="font-sans font-light">{inscripto.especialidad}</td>
+                                                <td className="text-sm font-sans font-light">{inscripto.observaciones}</td>
                                                 <td>{inscripto.descripcion_estado_inscripto}</td>
                                                 <td>
                                                     <div className="flex flex-row items-center justify-center  ">

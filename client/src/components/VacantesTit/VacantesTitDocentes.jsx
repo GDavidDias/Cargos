@@ -20,14 +20,22 @@ import { fetchAllEspecialidades } from "../../utils/fetchAllEspecialidades";
 import Modal from "../Modal/Modal";
 import ContentModalNuevaVacanteTit from "../ContentModalNuevaVacanteTit/ContentModalNuevaVacanteTit";
 import ContentModalFiltroVacantesTit from "../ContentModalFiltroVacantesTit/ContentModalFiltroVacantesTit";
+import { setIntervalActive } from "../../redux/intervalSlice";
 
 
 const VacantesTitDocentes = () => {
 
     const navigate=useNavigate();
-    
+
+    /**VARIABLES LOCALES */
+    const[queryEspVisorTit, setQueryEspVisorTit]=useState(''); //para guardar concatenado las especialidades y mostrarlas
+    const[queryIdEspVisorTit, setQueryIdEspVisorTit]=useState(''); //para guardar por ID las especialidades para el visor y pasar a query por body
+
+    /**ESTADOS GLOBALES */
     const userSG = useSelector((state)=>state.user);
     const configSG = useSelector((state)=>state.config);
+    const especialidadesSG = useSelector((state)=>state.config.especialidadVisorTit);
+
 
     //E.L. para Ventanas Modales
     const[isOpenModalNuevo,openModalNuevo,closeModalNuevo]=useModal(false);
@@ -119,6 +127,8 @@ const VacantesTitDocentes = () => {
     const[filtroRegionVac, setFiltroRegionVac]=useState('');
     const[filtroModalidadVac, setFiltroModalidadVac]=useState('');
 
+    const[isIntervalActive, setIsIntervalActive]=useState(true);
+
     //--------------PROCESOS Y FUNCIONES----------
 
     const logOut = () =>{
@@ -149,12 +159,14 @@ const VacantesTitDocentes = () => {
         const limit=10;
         //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
+            
             data = await fetchAllVacantesTit(id_listado,limit,page, filtroAsignacion, filtroEspecialidad, valorBusqueda, filtroModalidad, filtroRegion);
             console.log('que trae data de fetchAllVacantesTit: ', data);
 
             if(data.result?.length!=0){
                 setListadoVacantesTit(data.result); 
                 setPaginacionVac(data.paginacion);
+
             }else{
                 setListadoVacantesTit([]);
                 setPaginacionVac(data.paginacion);
@@ -168,7 +180,9 @@ const VacantesTitDocentes = () => {
         console.log('que tiene especialidades: ', data);
         if(data?.length!=0){
             setListadoEspecialidades(data);
-        }
+            especialidadesActivasVisorTit();
+        };
+
     };
 
 
@@ -277,7 +291,7 @@ const VacantesTitDocentes = () => {
         //cambio estado de formVacante
         setEstadoForm('ver');
         //recargo listao de inscriptos con datos actualizados
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
+        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,queryIdEspVisorTit,inputSearchVac, filtroModalidadVac, filtroRegionVac);
     };
     
 
@@ -449,6 +463,27 @@ const VacantesTitDocentes = () => {
         //Presiono Boton Aplicar
     };
 
+    const especialidadesActivasVisorTit=async()=>{
+        console.log('entra a concatenar especialidades');
+        //console.log('que tiene listadoEspecialidades: ', listadoEspecialidades);
+        const data = await listadoEspecialidades
+            .filter((fila)=>fila.activo_visor_tit=='1')
+            .map((fila)=>fila.abreviatura)
+            .join(", ");
+
+        setQueryEspVisorTit(data);
+        console.log('especialidad concatenado: ', data);
+
+        const dataIdEspecialidades = await listadoEspecialidades
+            .filter((fila)=>fila.activo_visor_tit=='1')
+            .map((fila)=>fila.id_especialidad)
+            .join(", ");
+
+        setQueryIdEspVisorTit(dataIdEspecialidades);
+        console.log('id_epecialidad concatenado: ', dataIdEspecialidades);
+        
+    };
+
 
     /**PROCESOS DE ESTADO */
     useEffect(()=>{
@@ -469,14 +504,29 @@ const VacantesTitDocentes = () => {
     },[datosVacanteSelect])
 
     useEffect(()=>{
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
+        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,queryIdEspVisorTit,inputSearchVac, filtroModalidadVac, filtroRegionVac);
     },[currentPageVac])
 
     useEffect(()=>{
         console.log('APLICO FILTROS');
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
-    },[estadoVacantes,inputSearchVac,filtroEspecialidadVac, filtroModalidadVac, filtroRegionVac])
+        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,queryIdEspVisorTit,inputSearchVac, filtroModalidadVac, filtroRegionVac);
+    },[estadoVacantes,inputSearchVac, filtroModalidadVac, filtroRegionVac, queryIdEspVisorTit])
 
+    useEffect(()=>{
+
+        //if(!isIntervalActive) return;
+        const intervalId=setInterval(()=>{
+            console.log('se ejecuta intervalo');
+            cargaEspecidalidades();
+            getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,queryIdEspVisorTit,inputSearchVac, filtroModalidadVac, filtroRegionVac);
+            if(paginacionVac.totalPages==1){
+                setCurrentPageVac(1);
+            }
+        },5000);
+
+        return()=>clearInterval(intervalId);
+
+    },[currentPageVac, inputSearchVac, filtroModalidadVac, filtroRegionVac,queryIdEspVisorTit,listadoEspecialidades])
 
     useEffect(()=>{
         console.log('que tiene configSG: ', configSG);
@@ -485,6 +535,14 @@ const VacantesTitDocentes = () => {
     useEffect(()=>{
         console.log('que tiene userSG: ', userSG);
     },[userSG])
+
+    useEffect(()=>{
+        console.log('que tiene especialidadesSG: ', listadoEspecialidades);
+        /**Trae las especialidades activas para el visor */
+        //especialidadesActivasVisorTit();
+        //setCurrentPageVac(1);
+
+    },[listadoEspecialidades]);
 
     //CARGO LISTADO DE VACANTES AL RENDERIZAR
     useEffect(()=>{
@@ -512,6 +570,9 @@ const VacantesTitDocentes = () => {
                                 >Nueva Vacante</button>
                             */}
                             
+                        </div>
+                        <div>
+                            <label className="ml-4 font-bold text-silver-500">Especialidad: {(queryEspVisorTit==="") ?`Todas` :queryEspVisorTit}</label>
                         </div>
                         {/**
                         <div className="flex flex-row">
@@ -641,7 +702,7 @@ const VacantesTitDocentes = () => {
                     <div className=" desktop:h-[70vh] movil:h-[63vh] overflow-y-auto">
                         <table className="border-[1px] bg-slate-50 w-full">
                             <thead>
-                                <tr className="sticky top-0 text-sm border-b-[2px] border-zinc-300 bg-zinc-200">
+                                <tr className="sticky top-0 text-sm border-b-[2px] border-zinc-400 bg-zinc-200">
                                     <th className="border-r-[1px] border-zinc-300">ID</th>
                                     <th className="border-r-[1px] border-zinc-300">Orden</th>
                                     <th className="border-r-[1px] border-zinc-300">Establecimiento</th>
@@ -659,10 +720,10 @@ const VacantesTitDocentes = () => {
                                 {
                                     // filterListadoVacantesMov?.map((vacante, index)=>{
                                     listadoVacantesTit?.map((vacante, index)=>{
-                                        const colorFila = vacante.datetime_asignacion ?`bg-red-200` :(((vacante.id_vacante_tit %2)===0) ?'bg-zinc-200' :'')
+                                        const colorFila = vacante.datetime_asignacion ?`bg-red-200` :''
                                         return(
                                             <tr 
-                                                className={`text-lg font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 ${colorFila}`}
+                                                className={`text-lg font-medium border-b-[1px] border-black h-[5vh] hover:bg-orange-300 ${colorFila}`}
                                                 key={index}
                                             >
                                                 <td className="w-[2vw] pl-[4px] font-light text-sm">{vacante.id_vacante_tit}</td>
