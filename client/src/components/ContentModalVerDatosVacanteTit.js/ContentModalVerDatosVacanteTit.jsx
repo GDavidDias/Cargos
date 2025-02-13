@@ -6,7 +6,7 @@ const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handle
             <label 
                 className="text-xl text-center font-bold flex flex-row items-center" 
                 translate='no'
-            >Datos de la Vacante <p className="text-sm font-light ml-2">({idVacante})</p></label>
+            >Datos de la Vacante<p className="text-sm font-light ml-2">({idVacante})</p></label>
             <label className={`
                 ${(inscriptoAsignado.id_inscripto_tit)
                     ?`text-red-500 font-bold`
@@ -44,7 +44,9 @@ const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handle
                                 className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2 bg-neutral-50"
                                 value={formVacante?.nro_establecimiento}
                                 onChange={handleChangeFormVacante}
-                                disabled={(datosVacante?.datetime_asignacion!=null)}
+                                //disabled={true}
+                                //disabled={(datosVacante?.datetime_asignacion!=null)}
+                                disabled={userSG.permiso==3} //si el nivel es invitado =3 se deshabilita el input para modificar
                             />
                         </div>
 
@@ -55,7 +57,9 @@ const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handle
                                 className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2 bg-neutral-50"
                                 value={formVacante?.nombre_establecimiento}
                                 onChange={handleChangeFormVacante}
-                                disabled={(datosVacante?.datetime_asignacion!=null)}
+                                //disabled={true}
+                                //disabled={(datosVacante?.datetime_asignacion!=null)}
+                                disabled={userSG.permiso==3} //si el nivel es invitado =3 se deshabilita el input para modificar
                             />
                         </div>
 
@@ -69,7 +73,9 @@ const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handle
                                 className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2 bg-neutral-50"
                                 value={formVacante?.cargo}
                                 onChange={handleChangeFormVacante}
-                                disabled={(datosVacante?.datetime_asignacion!=null)}
+                                //disabled={true}
+                                //disabled={(datosVacante?.datetime_asignacion!=null)}
+                                disabled={userSG.permiso==3} //si el nivel es invitado =3 se deshabilita el input para modificar
                             />
                         </div>
                         <div className="flex flex-row my-[2px] mx-2 items-center">
@@ -79,7 +85,9 @@ const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handle
                                 className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2 bg-neutral-50"
                                 value={formVacante?.modalidad}
                                 onChange={handleChangeFormVacante}
-                                disabled={(datosVacante?.datetime_asignacion!=null)}
+                                //disabled={true}
+                                //disabled={(datosVacante?.datetime_asignacion!=null)}
+                                disabled={userSG.permiso==3} //si el nivel es invitado =3 se deshabilita el input para modificar
                             />
                         </div>
                         <div className="flex flex-row my-[2px] mx-2 items-center">
@@ -89,7 +97,9 @@ const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handle
                                 className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2 bg-neutral-50"
                                 value={formVacante?.turno}
                                 onChange={handleChangeFormVacante}
-                                disabled={(datosVacante?.datetime_asignacion!=null)}
+                                //disabled={true}
+                                //disabled={(datosVacante?.datetime_asignacion!=null)}
+                                disabled={userSG.permiso==3} //si el nivel es invitado =3 se deshabilita el input para modificar
                             />
                         </div>
                         <div className="flex flex-row my-[2px] mx-2 items-center">
@@ -99,7 +109,9 @@ const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handle
                                 className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2 bg-neutral-50"
                                 value={formVacante?.cupof}
                                 onChange={handleChangeFormVacante}
-                                disabled={(datosVacante?.datetime_asignacion!=null)}
+                                //disabled={true}
+                                //disabled={(datosVacante?.datetime_asignacion!=null)}
+                                disabled={userSG.permiso==3} //si el nivel es invitado =3 se deshabilita el input para modificar
                             />
                         </div>
 
@@ -113,7 +125,9 @@ const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handle
                                 className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2 bg-neutral-50"
                                 value={formVacante?.region}
                                 onChange={handleChangeFormVacante}
-                                disabled={(datosVacante?.datetime_asignacion!=null)}
+                                //disabled={true}
+                                //disabled={(datosVacante?.datetime_asignacion!=null)}
+                                disabled={userSG.permiso==3} //si el nivel es invitado =3 se deshabilita el input para modificar
                             />
                         </div>
                         <div className="flex flex-row my-[2px] mx-2 items-center">
@@ -123,7 +137,9 @@ const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handle
                                 className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2 bg-neutral-50"
                                 value={formVacante?.departamento}
                                 onChange={handleChangeFormVacante}
-                                disabled={(datosVacante?.datetime_asignacion!=null)}
+                                //disabled={true}
+                                //disabled={(datosVacante?.datetime_asignacion!=null)}
+                                disabled={userSG.permiso==3} //si el nivel es invitado =3 se deshabilita el input para modificar
                             />
                         </div>
                         <div className="flex flex-row my-[2px] mx-2 items-center">
@@ -133,7 +149,9 @@ const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handle
                                 className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2 bg-neutral-50"
                                 value={formVacante?.localidad}
                                 onChange={handleChangeFormVacante}
-                                disabled={(datosVacante?.datetime_asignacion!=null)}
+                                //disabled={true}
+                                //disabled={(datosVacante?.datetime_asignacion!=null)}
+                                disabled={userSG.permiso==3} //si el nivel es invitado =3 se deshabilita el input para modificar
                             />
                         </div>
                         <div className="flex flex-row my-[2px] mx-2 items-center justify-end">
@@ -143,7 +161,9 @@ const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handle
                                 className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2 bg-neutral-50"
                                 value={formVacante?.zona}
                                 onChange={handleChangeFormVacante}
-                                disabled={(datosVacante?.datetime_asignacion!=null)}
+                                //disabled={true}
+                                //disabled={(datosVacante?.datetime_asignacion!=null)}
+                                disabled={userSG.permiso==3} //si el nivel es invitado =3 se deshabilita el input para modificar
                             />
                         </div>
                     </div>
@@ -163,7 +183,8 @@ const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handle
                                 className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2"
                                 value={inscriptoAsignado.apellido}
                                 //onChange={handleChangeFormVacante}
-                                disabled={true}
+                                //disabled={true}
+                                disabled={userSG.permiso==3} //si el nivel es invitado =3 se deshabilita el input para modificar
                             />
                         </div>
                         <div className="flex flex-row my-[2px] mx-2 items-center justify-end">
@@ -173,7 +194,8 @@ const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handle
                                 className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2"
                                 value={inscriptoAsignado.nombre}
                                 //onChange={handleChangeFormVacante}
-                                disabled={true}
+                                //disabled={true}
+                                disabled={userSG.permiso==3} //si el nivel es invitado =3 se deshabilita el input para modificar
                             />
                         </div>
                         <div className="flex flex-row mt-[2px] mb-2 mx-2 items-center justify-end">
@@ -183,7 +205,8 @@ const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handle
                                 className="border-[1px] border-zinc-400 w-[60mm] pl-[2px] text-start pl-2"
                                 value={inscriptoAsignado.dni}
                                 //onChange={handleChangeFormVacante}
-                                disabled={true}
+                                //disabled={true}
+                                disabled={userSG.permiso==3} //si el nivel es invitado =3 se deshabilita el input para modificar
                             />
                         </div>
                     </div>
