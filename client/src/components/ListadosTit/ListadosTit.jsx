@@ -15,6 +15,7 @@ import { fetchAllAsignacionesRealizadasTit } from "../../utils/fetchAllAsignacio
 import ReporteAsignacionesRealizadasTit from "../ReporteAsignacionesRealizadasTit/ReporteAsignacionesRealizadasTit";
 import { fetchEstadoInscriptosTit } from "../../utils/fetchEstadoInscriptosTit";
 import ReporteEstadoInscriptosTit from "../ReporteEstadoInscriptosTit/ReporteEstadoInscriptosTit";
+import ReporteVacantesDisponiblesTit from "../ReporteVacantesDisponiblesTit/ReporteVacantesDisponiblesTit";
 
 const ListadosTit = () => {
 
@@ -318,8 +319,8 @@ const ListadosTit = () => {
                 ref={componentRef}
             >
                 {(reporte==='vacantesDisponibles') &&
-                    <ReporteVacantesDisponibles
-                        listado={listado}
+                    <ReporteVacantesDisponiblesTit
+                    listado={listado}
                     />
                 }
                 {(reporte==='asignacionesRealizadas') &&
