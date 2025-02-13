@@ -155,6 +155,13 @@ const VacantesTitDocentes = () => {
 
     //Este Proc carga el listado de VACANTES Disponibles al E.L
     const getVacantesTit = async(id_listado,page,filtroAsignacion,filtroEspecialidad,valorBusqueda, filtroModalidad, filtroRegion) =>{
+        console.log('que ingresa por id_listado: ', id_listado);
+        console.log('que ingresa por page: ', page);
+        console.log('que ingresa por filtroAsignacion: ', filtroAsignacion);
+        console.log('que ingresa por filtroEspecialidad: ', filtroEspecialidad);
+        console.log('que ingresa por valorBusqueda: ', valorBusqueda);
+        console.log('que ingresa por filtroModalidad: ', filtroModalidad);
+        console.log('que ingresa por filtroRegion: ', filtroRegion);
         let data;
         const limit=10;
         //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
@@ -526,7 +533,7 @@ const VacantesTitDocentes = () => {
 
         return()=>clearInterval(intervalId);
 
-    },[currentPageVac, inputSearchVac, filtroModalidadVac, filtroRegionVac,queryIdEspVisorTit,listadoEspecialidades])
+    },[currentPageVac, inputSearchVac, filtroModalidadVac, filtroRegionVac, queryIdEspVisorTit,listadoEspecialidades])
 
     useEffect(()=>{
         console.log('que tiene configSG: ', configSG);
