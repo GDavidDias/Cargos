@@ -548,7 +548,7 @@ const VacantesTitDocentesInicial = () => {
         /**Trae las especialidades activas para el visor */
         //especialidadesActivasVisorTit();
         //setCurrentPageVac(1);
-        cargaEspecidalidades();
+        //cargaEspecidalidades();
 
     },[listadoEspecialidades]);
 
