@@ -15,6 +15,7 @@ import VacMovDoc from "../../components/VacMovDoc/VacMovDoc";
 import ConfigPage from "../../components/ConfigPage/ConfigPage";
 import PageIni from "../../views/PageIni/PageIni";
 import VacantesTitDocentes from "../../components/VacantesTit/VacantesTitDocentes";
+import VacantesTitDocentesInicial from "../../components/VacantesTit/VacantesTitDocentesInicial";
 
 const Home = () =>{
     const dispatch = useDispatch();
@@ -62,6 +63,9 @@ const Home = () =>{
             case 'VacantesTitDocentes'://Pantalla de VACANTES que pueden visualizar los docentes
                 setContent(<VacantesTitDocentes/>);
                 break;
+            case 'VacantesTitDocentesInicial'://Pantalla de VACANTES que pueden visualizar los docentes
+                setContent(<VacantesTitDocentesInicial/>);
+                break;
         }
     },[pageSG]);
 
@@ -87,13 +91,13 @@ const Home = () =>{
                     {/* BARRA NAVEGACION */}
                     <SideBar/>
                 </div>
-                <div className="desktop:w-[85vw] desktop:h-[95vh] movil:w-full movil:h-[88vh]">
+                <div className="desktop:w-[85vw] desktop:h-[95vh] movil:w-full movil:h-[88vh] ">
                     {/* PAGINAS DE CONTENIDOS */}
                     {content}
                 </div>
             </div>
             {/* CONTENEDOR INFERIOR */}
-            <div className="w-full h-[5vh]">
+            <div className="w-full desktop:flex h-[5vh] movil:hidden ">
                 {/* PIE DE SITIO */}
                 <Footer/>
             </div>

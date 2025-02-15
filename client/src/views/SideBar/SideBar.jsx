@@ -66,8 +66,14 @@ const SideBar = () => {
 
     const submitVacantesTitDocentes = () =>{
         //
-        console.log('Presiona en Vacantes Titularizacion');
+        console.log('Presiona en Visor Vacantes Titularizacion');
         dispatch(setPage('VacantesTitDocentes'))
+    };
+
+    const submitVacantesTitDocentesInicial = () =>{
+        //
+        console.log('Presiona en Visor Vacantes Titularizacion Inicial');
+        dispatch(setPage('VacantesTitDocentesInicial'))
     };
 
     const submitListadosTit = () =>{
@@ -135,8 +141,8 @@ const SideBar = () => {
         //console.log('que tiene userSG: ', userSG);
         if(userSG.username===''){
             navigate('/');
-        }else if(userSG.username==='invitadoPri'){
-            dispatch(setPage('VacantesTitDocentes'));
+        }else if(userSG.username==='invitadoIni'){ //modificar para invitadosPri
+            dispatch(setPage('VacantesTitDocentesInicial'));
             /**
              if(userSG.permiso===3){
                 //Si es un invitado
@@ -349,6 +355,22 @@ const SideBar = () => {
                         >
                             <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
                             <label className="font-light desktop-xl:text-lg">Listado de Vacantes</label>
+                        </div>
+                    }
+
+                    {/**ENLACE A VACANTES VISUALIZACION PARA DOCENTES de INICIAL */}
+                    {(configCompSG[7]?.active=="1") &&
+                        <div 
+                            className={` rounded p-[4px] flex flex-row justify-start items-center
+                                ${(pageSG==='VacantesTitDocentesInicial')
+                                ?'bg-[#C9D991]'
+                                :'hover:bg-[#C9D991]'
+                            }
+                                `}
+                            onClick={()=>submitVacantesTitDocentesInicial()}
+                        >
+                            <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
+                            <label className="font-light desktop-xl:text-lg">Visor Vacantes Inicial</label>
                         </div>
                     }
                 </div>

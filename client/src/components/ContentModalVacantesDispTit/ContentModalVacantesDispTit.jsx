@@ -95,7 +95,6 @@ const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,l
                         </div>
                     </div>
 
-
                     {/* ENCABEZADO DE CAMPOS  */}
                     <div className="flex flex-row text-lg">
                         <div className="flex flex-col items-center justify-end w-[2vw] border-r-[1px] border-zinc-200 hover:text-sky-500">

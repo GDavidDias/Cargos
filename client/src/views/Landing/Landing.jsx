@@ -106,7 +106,6 @@ const Landing = () => {
         }
     };
 
-  
 
     const submitNivelInicial = async() =>{
         let formInvitado = {
@@ -245,7 +244,7 @@ const Landing = () => {
             </div>
 
             {/* <div className="desktop:h-[50vh] flex flex-col justify-center items-center  bg-[#FFFEFC]  border-2 border-[#729DA6] desktop:w-[55vw] movil:w-full movil:h-[50vh] rounded-lg mt-10 shadow-lg  p-4 "> */}
-            <div className="desktop:h-[50vh] flex flex-col justify-center items-center  bg-[#FFFEFC]   desktop:w-[55vw] movil:w-full movil:h-[50vh] rounded-lg mt-10 shadow-lg  p-4 ">
+            <div className="desktop:h-[50vh] flex flex-col justify-center items-center  bg-[#FFFEFC]   desktop:w-[55vw] movil:w-full movil:h-[50vh] rounded-lg mt-10   p-4 ">
                 <label className="text-[#729DA6] font-medium text-[20px] mb-4 desktop-xl:text-3xl " translate='no'>Ingresar al Sistema</label>
                 <div className="flex flex-col items-center">
                     {/* PARTE IZQUIERDA INGRESO INVITADOS */}
@@ -274,8 +273,9 @@ const Landing = () => {
                     </div> */}
                     <div>
                         <button
-                            className="w-40 h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2 desktop-xl:h-10 desktop-xl:text-xl"
-                            onClick={submitNivelPrimario}
+                            className="w-[50mm] h-8 bg-[#758C51] my-2 px-2 py-1 text-base font-medium text-white hover:bg-[#c9d991] shadow-md rounded mx-2 desktop-xl:w-[15vw] desktop-xl:h-10 desktop-xl:text-xl"
+                            //onClick={submitNivelPrimario}
+                            onClick={submitNivelInicial}
                             translate='no'
                             id="botonEnter"
                         >Ingreso DOCENTES</button>

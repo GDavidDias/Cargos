@@ -191,11 +191,18 @@ const InscriptosTit = () =>{
 
     //Este Proc carga el listado de VACANTES Disponibles al E.L
     const getVacantesDisponiblesTit = async(id_listado,page,filtroAsignacion,filtroEspecialidad,valorBusqueda, filtroRegion, filtroModalidad) =>{
+        console.log('que ingresa a id_listado: ', id_listado);
+        console.log('que ingresa a page: ', page);
+        console.log('que ingresa a filtroAsignacion: ', filtroAsignacion);
+        console.log('que ingresa a filtroEspecialidad: ', filtroEspecialidad);
+        console.log('que ingresa a valorBusqueda: ', valorBusqueda);
+        console.log('que ingresa a filtroRegion: ', filtroRegion);
+        console.log('que ingresa a filtroModalidad: ', filtroModalidad);
         let data;
         const limit=10;
         //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
-            data = await fetchAllVacantesTit(id_listado,limit,page, filtroAsignacion, filtroEspecialidad, valorBusqueda, filtroRegion, filtroModalidad);
+            data = await fetchAllVacantesTit(id_listado,limit,page, filtroAsignacion, filtroEspecialidad, valorBusqueda, filtroModalidad, filtroRegion);
             console.log('que trae data de fetchAllVacantesTit: ', data);
 
             if(data.result?.length!=0){

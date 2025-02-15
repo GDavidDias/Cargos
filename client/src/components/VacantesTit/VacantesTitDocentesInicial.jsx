@@ -23,7 +23,7 @@ import ContentModalFiltroVacantesTit from "../ContentModalFiltroVacantesTit/Cont
 import { setIntervalActive } from "../../redux/intervalSlice";
 
 
-const VacantesTitDocentes = () => {
+const VacantesTitDocentesInicial = () => {
 
     const navigate=useNavigate();
 
@@ -298,7 +298,7 @@ const VacantesTitDocentes = () => {
         //cambio estado de formVacante
         setEstadoForm('ver');
         //recargo listao de inscriptos con datos actualizados
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,queryIdEspVisorTit,inputSearchVac, filtroModalidadVac, filtroRegionVac);
+        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
     };
     
 
@@ -511,21 +511,21 @@ const VacantesTitDocentes = () => {
     },[datosVacanteSelect])
 
     useEffect(()=>{
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,queryIdEspVisorTit,inputSearchVac, filtroModalidadVac, filtroRegionVac);
+        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
     },[currentPageVac])
 
     useEffect(()=>{
         console.log('APLICO FILTROS');
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,queryIdEspVisorTit,inputSearchVac, filtroModalidadVac, filtroRegionVac);
-    },[estadoVacantes,inputSearchVac, filtroModalidadVac, filtroRegionVac, queryIdEspVisorTit])
+        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
+    },[estadoVacantes,inputSearchVac, filtroModalidadVac, filtroRegionVac, filtroEspecialidadVac])
 
     useEffect(()=>{
 
         //if(!isIntervalActive) return;
         const intervalId=setInterval(()=>{
             console.log('se ejecuta intervalo');
-            cargaEspecidalidades();
-            getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,queryIdEspVisorTit,inputSearchVac, filtroModalidadVac, filtroRegionVac);
+            //cargaEspecidalidades();
+            getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
             if(paginacionVac.totalPages==1){
                 setCurrentPageVac(1);
             }
@@ -533,7 +533,7 @@ const VacantesTitDocentes = () => {
 
         return()=>clearInterval(intervalId);
 
-    },[currentPageVac, inputSearchVac, filtroModalidadVac, filtroRegionVac, queryIdEspVisorTit,listadoEspecialidades])
+    },[currentPageVac, inputSearchVac, filtroModalidadVac, filtroRegionVac, filtroEspecialidadVac,listadoEspecialidades])
 
     useEffect(()=>{
         console.log('que tiene configSG: ', configSG);
@@ -548,6 +548,7 @@ const VacantesTitDocentes = () => {
         /**Trae las especialidades activas para el visor */
         //especialidadesActivasVisorTit();
         //setCurrentPageVac(1);
+        cargaEspecidalidades();
 
     },[listadoEspecialidades]);
 
@@ -569,7 +570,7 @@ const VacantesTitDocentes = () => {
                     <label className="desktop:flex movil:hidden ml-4 text-base font-semibold">NIVEL {configSG.nivel.descripcion}</label>
                     <div className="flex flex-col">
                         <div className="flex flex-row desktop:mb-2">
-                            <label className="desktop:ml-4 text-lg font-sans font-semibold">LISTADO DE VACANTES TITULARIZACION</label>
+                            <label className="desktop:ml-4 text-lg font-sans font-semibold">LISTADO DE VACANTES INICIAL</label>
                             {/*(userSG.permiso!=3) &&
                                 <button 
                                     className="ml-4 px-[2px] border-[1px] border-[#73685F] rounded hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] shadow"
@@ -578,11 +579,13 @@ const VacantesTitDocentes = () => {
                             */}
                         </div>
 
+                        {/**
                         <div>
                             <label className="desktop:ml-4  font-semibold text-silver-500">Especialidad: {(queryEspVisorTit==="") ?`Todas` :queryEspVisorTit}</label>
                         </div>
+                         */}
 
-                        {/**
+                        
                         <div className="flex flex-row">
                             <label className="mx-4 ">Especialidad: </label>
                             <div className="border-[1px] rounded border-gray-500 bg-neutral-50">
@@ -611,7 +614,7 @@ const VacantesTitDocentes = () => {
                                 }
                             </div>
                         </div>
-                         */}
+                         
                     </div>
                 </div>
                 {/* SECCION DATOS USUARIO */}
@@ -872,4 +875,4 @@ const VacantesTitDocentes = () => {
     )
 };
 
-export default VacantesTitDocentes;
+export default VacantesTitDocentesInicial;

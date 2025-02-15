@@ -249,7 +249,8 @@ INSERT INTO config_component_active(id_component,componente,descripcion,active) 
 INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(4,'InscriptosTit','Inscriptos de Titularizaciones', NULL);
 INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(5,'VacantesTit','Vacantes de Titularizaciones', NULL);
 INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(6,'ListadosTit','Listados de Titularizaciones', NULL);
-INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(7,'VacantesTitDocentes','Vacantes de Titularizaciones para mostrar a Docentes', NULL);
+INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(7,'VacantesTitDocentes','Visor de Vacantes de Titularizaciones para mostrar a Docentes de PRIMARIA', NULL);
+INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(8,'VacantesTitDocentesInicial','Visor de Vacantes de Titularizaciones para mostrar a Docentes INICIAL', NULL);
 
 
 ---------------------------
