@@ -141,8 +141,8 @@ const SideBar = () => {
         //console.log('que tiene userSG: ', userSG);
         if(userSG.username===''){
             navigate('/');
-        }else if(userSG.username==='invitadoIni'){ //modificar para invitadosPri
-            dispatch(setPage('VacantesTitDocentesInicial'));
+        }else if(userSG.username==='invitadoPri'){ //modificar para invitadosPri
+            dispatch(setPage('VacantesTitDocentes'));
             /**
              if(userSG.permiso===3){
                 //Si es un invitado

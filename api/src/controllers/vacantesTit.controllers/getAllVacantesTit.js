@@ -31,13 +31,31 @@ module.exports = async(req,res)=>{
         armaquery+=` AND at2.datetime_asignacion IS NULL`;
     };
     
+    {/**
+        if(filtroBusqueda && filtroBusqueda!=''){
+            armaquery+=` AND (LOWER(vt.nro_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+            OR LOWER(vt.nombre_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+            OR LOWER(vt.departamento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+            OR LOWER(vt.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+            OR LOWER(vt.cargo) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+            ) `
+        };
+        */}
+
     if(filtroBusqueda && filtroBusqueda!=''){
-        armaquery+=` AND (LOWER(vt.nro_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-        OR LOWER(vt.nombre_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-        OR LOWER(vt.departamento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-        OR LOWER(vt.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-        OR LOWER(vt.cargo) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-        ) `
+        if(!isNaN(filtroBusqueda)){
+            //SI ES UN NUMERO BUSCARLO EN NUMERO DE ESTABLECIMIENTO
+            armaquery+=` AND (LOWER(vt.nro_establecimiento) LIKE '${filtroBusqueda.toLowerCase()}' 
+            ) `
+
+        }else{
+            //SI NO ES UN  NUMERO, APLICO BUSQUEDAS EN OTROS CAMPOS
+            armaquery+=` AND (LOWER(vt.nombre_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+            OR LOWER(vt.departamento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+            OR LOWER(vt.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+            OR LOWER(vt.cargo) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+            ) `
+        }
     };
     
     /**Filtro de Region, debe ser exacto no traer I, II, III, etc si busco I */

@@ -363,6 +363,13 @@ const InscriptosTit = () =>{
     const handleInputSearchVacChange = (event)=>{
         const {value}=event.target;
         setInputSearchVac(value);
+        setCurrentPageVac(1);
+    };
+
+    const handleCancelSearchVac = ()=>{
+        /**Presiono boton cruz cancela busqueda */
+        console.log('cancela busqueda');
+        setInputSearchVac('');
     };
 
     //?-------------------------------------
@@ -832,6 +839,7 @@ const InscriptosTit = () =>{
                     handlePageChangeVac={handlePageChangeVac}
                     inputSearchVac={inputSearchVac}
                     handleInputSearchVacChange={handleInputSearchVacChange}
+                    handleCancelSearchVac={handleCancelSearchVac}
                     submitVerAsignacion={submitVerAsignacion}
                     listadoEspecialidades={listadoEspecialidades}
                     filtroEspecialidadVac={filtroEspecialidadVac}

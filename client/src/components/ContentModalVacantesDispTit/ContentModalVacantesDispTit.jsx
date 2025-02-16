@@ -3,7 +3,7 @@ import { TbSortAscending , TbSortDescending } from "react-icons/tb";
 import Paginador from "../Paginador/Paginador";
 import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit} from "react-icons/fa";
 
-const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,listadoVacantesDispTit,currentPageVac,paginacionVac,handlePageChangeVac,inputSearchVac,handleInputSearchVacChange,submitVerAsignacion, listadoEspecialidades, filtroEspecialidadVac, handleSelectFiltroEspecialidadVac, handleCancelFiltroEspecialidadVac, estadoAsignadoInscripto, setEstadoAsignadoInscripto, HandleSelectEstadoAsignadoInscripto, submitGuardarEstadoInscripto, submitEliminarSubFiltros, handleSelectFiltroRegion, filtroRegionVac, handleCancelFiltroRegionVac, handleSelectFiltroModalidad, filtroModalidadVac, handleCancelFiltroModalidadVac}) =>{
+const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,listadoVacantesDispTit,currentPageVac,paginacionVac,handlePageChangeVac,inputSearchVac,handleInputSearchVacChange,handleCancelSearchVac,submitVerAsignacion, listadoEspecialidades, filtroEspecialidadVac, handleSelectFiltroEspecialidadVac, handleCancelFiltroEspecialidadVac, estadoAsignadoInscripto, setEstadoAsignadoInscripto, HandleSelectEstadoAsignadoInscripto, submitGuardarEstadoInscripto, submitEliminarSubFiltros, handleSelectFiltroRegion, filtroRegionVac, handleCancelFiltroRegionVac, handleSelectFiltroModalidad, filtroModalidadVac, handleCancelFiltroModalidadVac}) =>{
     return(
         <div className="notranslate h-100 w-100 flex flex-col items-center">
             <label 
