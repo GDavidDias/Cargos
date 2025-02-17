@@ -119,7 +119,7 @@ const ContentModalVacantesDispTit = ({datosInscriptoSelect,submitCloseModalVac,l
                         </div>
                         <div className="flex flex-col items-center justify-center w-[10vw] border-r-[1px] border-zinc-200">
                             {/**Filtro de Region */}
-                            <div className="border-[1px]  h-[26px] rounded border-zinc-400 bg-neutral-50 desktop-xl:h-[30px]">
+                            <div className="border-[1px]  h-[26px] rounded border-zinc-400 bg-neutral-50 desktop-xl:h-[30px] flex flex-row">
                                 <select 
                                     className="w-[7vw] h-[24px] border-[1px] rounded focus:outline-none focus:ring-0 focus:border-none desktop-xl:text-lg"
                                     name="filtroRegion"

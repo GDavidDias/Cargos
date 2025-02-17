@@ -134,7 +134,7 @@ const SideBar = () => {
     useEffect(()=>{
         //console.log('que tiene pageSG: ', pageSG);
         //console.log('que tiene nivelSG: ', nivelSG);
-        console.log('que tiene configComponente: ', configCompSG);
+        //console.log('que tiene configComponente: ', configCompSG);
     },[pageSG,nivelSG,configCompSG])
 
     useEffect(()=>{

@@ -153,12 +153,12 @@ const Landing = () => {
 
         /**Trae la configuracion de los componentes */
         const dataComp = await fetchConfigComponente();
-        console.log('que trae fetchConfigComponente: ', dataComp);
+        //console.log('que trae fetchConfigComponente: ', dataComp);
         dispatch(setConfigComp(dataComp));
 
         /**Trae configuracion de Especialidad para Visor de Vacantes */
         const dataEspeVisorVac = await fetchConfigEspVisorTit();
-        console.log('que trae fetchConfigEspVisorTit: ', dataEspeVisorVac);
+        //console.log('que trae fetchConfigEspVisorTit: ', dataEspeVisorVac);
         dispatch(setEspecialidadVisorTit(dataEspeVisorVac));
     };
 
