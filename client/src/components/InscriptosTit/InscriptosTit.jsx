@@ -114,6 +114,8 @@ const InscriptosTit = () =>{
 
     const[filtroModalidadVac, setFiltroModalidadVac]=useState('');
 
+    const isIntervalActive = useSelector((state)=>state.interval.isIntervalActive);
+
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
     //-------------------------------------
@@ -612,6 +614,20 @@ const InscriptosTit = () =>{
         getVacantesDisponiblesTit(idListadoVacantesTit, currentPageVac,'disponibles',filtroEspecialidadVac,inputSearchVac, filtroRegionVac, filtroModalidadVac)
     },[currentPageVac])
 
+
+    /**INTERVALO PARA ACTUALIZAR LA PAGINA DE INSCRIPTOS */
+    useEffect(()=>{
+        if (!isIntervalActive) return;
+
+        getInscriptosTit(idListadoInscriptosTit,currentPage,estadoInscripto,inputSearch,selectFiltroEspecialidad);
+
+        const intervalId = setInterval(()=>{
+            //console.log('ACTIVO INTERVALO')
+            getInscriptosTit(idListadoInscriptosTit,currentPage,estadoInscripto,inputSearch,selectFiltroEspecialidad);
+        }, 5000);
+        
+        return()=>clearInterval(intervalId);
+    },[isIntervalActive,currentPage,estadoInscripto,inputSearch,selectFiltroEspecialidad])
 
 
     //AL INGRESAR SE CARGA EL LISTADO DE INSCRIPTOS

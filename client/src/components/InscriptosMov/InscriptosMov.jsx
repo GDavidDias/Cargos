@@ -49,7 +49,7 @@ const InscriptosMov = ()=>{
     const userSG = useSelector((state)=>state.user);
     const nivelSG = useSelector((state)=>state.config.nivel);
 
-    const isIntervalActive = useSelector((state)=>state.interval.isIntervalActive);
+    const isIntervalActive = useSelector((state)=>state.interval.isIntervalActive); 
 
     //E.L. de Ventanas Modales
     const[isOpenModalConfirm,openModalConfirm,closeModalConfirm]=useModal(false);
