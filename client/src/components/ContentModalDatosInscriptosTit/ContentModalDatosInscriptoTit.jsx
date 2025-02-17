@@ -1,7 +1,7 @@
 import { IoMdPrint } from "react-icons/io";
 import { IoTrash } from "react-icons/io5";
 
-const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,idInscriptoSelect,closeModal,handleChangeFormInscripto,formEstadoInscripto,submitGuardarFormInscripto,cargoAsignado,procesoImpresion,submitEliminarTomaCargo, procesoImpresionAsistencia})=>{
+const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,idInscriptoSelect,closeModal,handleChangeFormInscripto,formEstadoInscripto,submitGuardarFormInscripto,cargoAsignado,procesoImpresion,submitEliminarTomaCargo, procesoImpresionAsistencia, handleCancelDatosInscriptoTit,userSG})=>{
     console.log('ingreso a ContentModalDatosInscriptoTit');
     return(
         <div className="notranslate h-100 w-100 flex flex-col items-center">
@@ -32,7 +32,8 @@ const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,i
                                     className="border-[1px] border-zinc-500 w-[70mm] h-[8vh] pl-2 text-start pl-2 bg-neutral-50 rounded text-wrap"
                                     value={datosFormInscripto?.apellido}
                                     onChange={handleChangeFormInscripto}
-                                    disabled={(datosInscriptoSelect.vacante_asignada!=null)}
+                                    //disabled={(datosInscriptoSelect.vacante_asignada!=null)}
+                                    disabled={userSG.permiso==4} //si el nivel es consultor = 4 se deshabilita el input para modificar
                                 />
                             </div>
                             {/**
@@ -59,7 +60,8 @@ const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,i
                                     className="border-[1px] border-zinc-500 w-[70mm] h-[4vh] text-start pl-2 bg-neutral-50 rounded"
                                     value={datosFormInscripto?.dni}
                                     onChange={handleChangeFormInscripto}
-                                    disabled={(datosInscriptoSelect.vacante_asignada!=null)}
+                                    //disabled={(datosInscriptoSelect.vacante_asignada!=null)}
+                                    disabled={userSG.permiso==4} //si el nivel es consultor = 4 se deshabilita el input para modificar
                                 />
                             </div>
 
@@ -70,7 +72,8 @@ const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,i
                                     className="border-[1px] border-zinc-500 w-[70mm] h-[4vh] pl-2 text-start pl-2 bg-neutral-50 rounded"
                                     value={datosFormInscripto?.total}
                                     onChange={handleChangeFormInscripto}
-                                    disabled={(datosInscriptoSelect.vacante_asignada!=null)}
+                                    //disabled={(datosInscriptoSelect.vacante_asignada!=null)}
+                                    disabled={userSG.permiso==4} //si el nivel es consultor = 4 se deshabilita el input para modificar
                                 />
                             </div>
 
@@ -187,7 +190,7 @@ const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,i
                             >GUARDAR</button>
                             <button
                                 className="border-2 border-[#7C8EA6] mt-2 font-semibold w-40 h-8 bg-[#7C8EA6] text-white shadow hover:bg-[#C9D991] hover:border-[#C9D991] rounded mx-2"
-                                onClick={closeModal}
+                                onClick={handleCancelDatosInscriptoTit}
                                 translate='no'
                             >CANCELAR</button>
                         </div>

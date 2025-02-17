@@ -115,6 +115,8 @@ ABIGAIL DIAZ -> username: ADIAZ / PASS: 39231868
 INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Abigail Diaz', 'ADIAZ', '39231868',4,2);
 GUILLERMO DIAS -> username: GDIAS / PASS: 28073497
 INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Guillermo Dias', 'GDIAS', '28073497',1,2);
+USUARIO CONSULTOR
+INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Usuario Consultor', 'CONSULTOR', '1346',4,2);
 
 --------------------------------
 --PARA INSERT configuracion

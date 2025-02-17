@@ -327,7 +327,7 @@ const SideBar = () => {
                     }
 
                     {/**ENLACE A LISTADOS */}
-                    {(userSG.permiso!=3 && configCompSG[5]?.active=="1") &&
+                    {((userSG.permiso!=3 && userSG.permiso!=4 ) && configCompSG[5]?.active=="1") &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
                                 ${(pageSG==='ListadosTit')
@@ -343,7 +343,7 @@ const SideBar = () => {
                     }
 
                     {/**ENLACE A VACANTES VISUALIZACION PARA DOCENTES */}
-                    {(configCompSG[6]?.active=="1") &&
+                    {(userSG.permiso!=4 && configCompSG[6]?.active=="1") &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
                                 ${(pageSG==='VacantesTitDocentes')

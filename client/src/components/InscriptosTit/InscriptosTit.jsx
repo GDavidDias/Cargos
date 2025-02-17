@@ -300,6 +300,11 @@ const InscriptosTit = () =>{
             })
     };
 
+    const handleCancelDatosInscriptoTit=()=>{
+        //Cancelar modificacion datos inscripto
+        
+    };
+
     const submitCloseModal = ()=>{
         closeModal();
         closeModalEdit();
@@ -779,7 +784,7 @@ const InscriptosTit = () =>{
                                                             onClick={()=>submitVerDatosInscripto(inscripto)}
                                                         />
                                                         {
-                                                            (inscripto.vacante_asignada===null || inscripto.vacante_asignada==='')
+                                                            ((inscripto.vacante_asignada===null || inscripto.vacante_asignada==='') && userSG.permiso!=4)
                                                             ?<BiTransferAlt 
                                                                 className="text-2xl hover:cursor-pointer hover:text-[#83F272] ml-2"      
                                                                 title="Vacantes"
@@ -825,6 +830,9 @@ const InscriptosTit = () =>{
                     procesoImpresion={procesoImpresion}
                     submitEliminarTomaCargo={submitEliminarTomaCargo}
                     procesoImpresionAsistencia={procesoImpresionAsistencia}
+                    //handleCancelDatosInscriptoTit={handleCancelDatosInscriptoTit}
+                    handleCancelDatosInscriptoTit={seteoDatosInicialesFormInscripto}
+                    userSG={userSG}
                 />
             </ModalEdit>
 
