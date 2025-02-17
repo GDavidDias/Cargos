@@ -111,6 +111,8 @@ const VacantesTit = () => {
 
     const[obsEliminaVacante, setObsEliminaVacante]=useState("");
 
+    const[filtroRegionVac, setFiltroRegionVac]=useState('');
+
     //--------------PROCESOS Y FUNCIONES----------
 
     const logOut = () =>{
@@ -136,12 +138,12 @@ const VacantesTit = () => {
     };
 
     //Este Proc carga el listado de VACANTES Disponibles al E.L
-    const getVacantesTit = async(id_listado,page,filtroAsignacion,filtroEspecialidad,valorBusqueda) =>{
+    const getVacantesTit = async(id_listado,page,filtroAsignacion,filtroEspecialidad,valorBusqueda, filtroRegion) =>{
         let data;
         const limit=10;
         //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
-            data = await fetchAllVacantesTit(id_listado,limit,page, filtroAsignacion, filtroEspecialidad, valorBusqueda);
+            data = await fetchAllVacantesTit(id_listado,limit,page, filtroAsignacion, filtroEspecialidad, valorBusqueda,"", filtroRegion);
             console.log('que trae data de fetchAllVacantesTit: ', data);
 
             if(data.result?.length!=0){
@@ -269,7 +271,7 @@ const VacantesTit = () => {
         //cambio estado de formVacante
         setEstadoForm('ver');
         //recargo listao de inscriptos con datos actualizados
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac);
+        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroRegionVac);
     };
     
 
@@ -308,7 +310,7 @@ const VacantesTit = () => {
             console.error(error.message);
         }
         //Al final del Proceso de Eliminar Vacante recargo el listado de Vacantes Disponibles
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac);
+        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroRegionVac);
 
     };
 
@@ -403,6 +405,25 @@ const VacantesTit = () => {
     };
 
 
+    /**PROCESO DE FILTRO DE REGION */
+    const handleSelectFiltroRegion = (event) => {
+        const {value}=event.target;
+        //Seleccion de Region
+        console.log('que trae value handleSelectFiltroRegion: ', value);
+        setFiltroRegionVac(value);
+        setCurrentPageVac(1);
+    };
+
+    const handleCancelFiltroRegionVac = (event) => {
+        const{value}=event.target;
+        //Cancelar Filtro de Region
+        console.log('que trae value handleCancelFiltroRegionVac: ', value);
+        setFiltroRegionVac('');
+        setCurrentPageVac(1);
+    };    
+
+
+
     useEffect(()=>{
         if(formNuevaVacante.nro_establecimiento!='' && formNuevaVacante.id_especialidad!=''){
             setValidaFormNuevaVacante(true);
@@ -421,13 +442,13 @@ const VacantesTit = () => {
     },[datosVacanteSelect])
 
     useEffect(()=>{
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac);
+        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac,filtroRegionVac);
     },[currentPageVac])
 
     useEffect(()=>{
         console.log('APLICO FILTRO');
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac);
-    },[estadoVacantes,inputSearchVac,filtroEspecialidadVac])
+        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac,filtroRegionVac);
+    },[estadoVacantes,inputSearchVac,filtroEspecialidadVac,filtroRegionVac])
 
 
     useEffect(()=>{
@@ -560,6 +581,37 @@ const VacantesTit = () => {
                             >Asignadas</label>
                         </div>
 
+                        {/**Filtro de Region */}
+                        <label className="mr-[2mm]">Region</label>
+                        <div className="border-[1px]  h-[26px] rounded border-zinc-400 bg-neutral-50 desktop-xl:h-[30px] flex flex-row">
+                            <select 
+                                className={`x h-[24px] border-[1px] rounded focus:outline-none focus:ring-0 focus:border-none desktop-xl:text-lg
+                                    ${(filtroRegionVac==="")
+                                        ?` w-[6vw] `
+                                        :` w-[4vw] `
+                                    }
+                                    `}
+                                name="filtroRegion"
+                                onChange={handleSelectFiltroRegion}
+                                value={filtroRegionVac}
+                            >
+                                <option value='' selected disabled>Region...</option>
+                                <option value='I'>I</option>
+                                <option value='II'>II</option>
+                                <option value='III'>III</option>
+                                <option value='IV'>IV</option>
+                                <option value='V'>V</option>
+                                <option value='VI'>VI</option>
+                                <option value='VII'>VII</option>
+                            </select>
+                            {(filtroRegionVac!="") &&
+                                    <label 
+                                        className="font-bold mx-2 cursor-pointer"
+                                        onClick={handleCancelFiltroRegionVac}
+                                    >X</label>
+                                }
+                        </div>
+
                         {/* Campo de Busqueda */}
                         <div className="desktop:w-[50%]  flex desktop:justify-end movil:w-full ">
                             <div className="desktop:w-[20vw] movil:w-[90vw] border-[1px] border-zinc-400  rounded flex flex-row items-center justify-between mx-2">
@@ -616,7 +668,11 @@ const VacantesTit = () => {
                                             >
                                                 <td className="w-[2vw] pl-[4px] font-light text-sm">{vacante.id_vacante_tit}</td>
                                                 <td className="text-center">{vacante.orden}</td>
-                                                <td className="text-center">{vacante.nro_establecimiento} {vacante.nombre_establecimiento}</td>
+                                                {/*<td className="text-center">{vacante.nro_establecimiento} {vacante.nombre_establecimiento}</td>*/}
+                                                <td className="text-center"> 
+                                                    <span className="text-red-500">{vacante.nro_establecimiento}</span> - 
+                                                    <span>{vacante.nombre_establecimiento}</span>
+                                                </td>
                                                 <td className="text-center">{vacante.cargo}</td>
                                                 <td className="text-center">{vacante.modalidad}</td>
                                                 <td className="text-center">{vacante.turno}</td>

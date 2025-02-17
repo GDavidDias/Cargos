@@ -54,7 +54,7 @@ const ContentModalAsignacionTit = ({closeModalAsign,datosInscriptoSelect,datosVa
                             </div>
                             <div className="flex flex-row my-1">
                                 <label className="mb-0 font-semibold  mr-2">Establecimiento</label>
-                                <div className="flex items-center border-[1px]  border-zinc-300 rounded w-[20vw] h-[4vh] pl-[4px] bg-neutral-50">{datosVacanteSelect.nombre_establecimiento}</div>
+                                <div className="flex items-center border-[1px]  border-zinc-300 rounded w-[20vw] h-[8vh] pl-[4px] bg-neutral-50 text-xl">{datosVacanteSelect.nombre_establecimiento}</div>
                             </div>
                             <div className="flex flex-row my-1">
                                 <label className="font-semibold  mr-2">Cargo</label>

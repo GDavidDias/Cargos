@@ -45,7 +45,7 @@ module.exports = async(req,res)=>{
     if(filtroBusqueda && filtroBusqueda!=''){
         if(!isNaN(filtroBusqueda)){
             //SI ES UN NUMERO BUSCARLO EN NUMERO DE ESTABLECIMIENTO
-            armaquery+=` AND (LOWER(vt.nro_establecimiento) LIKE '${filtroBusqueda.toLowerCase()}' 
+            armaquery+=` AND (LOWER(vt.nro_establecimiento) LIKE '${filtroBusqueda.toLowerCase()}%' 
             ) `
 
         }else{
@@ -68,10 +68,18 @@ module.exports = async(req,res)=>{
         armaquery += ` AND (LOWER(vt.modalidad) LIKE '${filtroModalidad.toLowerCase()}' ) `
     };
 
-    armaquery+= ` ORDER BY vt.id_vacante_tit ASC`
+    if(filtroBusqueda && filtroBusqueda!=''){
+        if(!isNaN(filtroBusqueda)){
+            armaquery+= ` ORDER BY vt.nro_establecimiento ASC`
+        }else{
+            armaquery+= ` ORDER BY vt.id_vacante_tit ASC`    
+        }
+    }else{
+        armaquery+= ` ORDER BY vt.id_vacante_tit ASC`
+    }
 
     try{
-        console.log('como ARMA QUERY: ', armaquery);
+        console.log('como ARMA QUERY getAllVacantesTit: ', armaquery);
 
         const [result] = await pool.query(`${armaquery} LIMIT ${limit} OFFSET ${offset}`);
 

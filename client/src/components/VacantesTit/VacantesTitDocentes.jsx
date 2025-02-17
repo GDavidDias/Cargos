@@ -736,7 +736,11 @@ const VacantesTitDocentes = () => {
                                             >
                                                 <td className="w-[2vw] pl-[4px] font-light text-sm">{vacante.id_vacante_tit}</td>
                                                 <td className="w-[2vw] text-center">{vacante.orden}</td>
-                                                <td className="w-[20vw] text-center">{vacante.nro_establecimiento} {vacante.nombre_establecimiento}</td>
+                                                {/*<td className="w-[20vw] text-center">{vacante.nro_establecimiento} - {vacante.nombre_establecimiento}</td>*/}
+                                                <td className="w-[20vw] text-center text-base">
+                                                    <span className="text-red-500">{vacante.nro_establecimiento}</span> - 
+                                                    <span>{vacante.nombre_establecimiento}</span>
+                                                </td>
                                                 <td className="w-[20vw] text-center text-purple-700">{vacante.cargo}</td>
                                                 <td className="w-[5vw] text-center">{vacante.modalidad}</td>
                                                 <td className="w-[6w] text-center">{vacante.turno}</td>
