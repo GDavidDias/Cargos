@@ -1,5 +1,5 @@
 const ContentModalVerDatosVacanteTit = ({idVacante,formVacante,closeModal,handleChangeFormVacante,estadoForm,datosVacante,submitGuardarFormVacante,inscriptoAsignado, userSG}) =>{
-    console.log('ingreso a ContentModalVerDatosVacanteTit');
+    //console.log('ingreso a ContentModalVerDatosVacanteTit');
 
     return(
         <div className="notranslate h-100 w-100  flex flex-col items-center">

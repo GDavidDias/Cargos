@@ -123,12 +123,12 @@ const VacantesTit = () => {
     const buscoIDListadoVacantes = async(id_nivel) =>{
         //Filtro configuracion para el nivel
         const configFilterNivel = await configSG.config.filter((configNivel)=>configNivel.id_nivel==id_nivel);
-        console.log('que trae configFilterNivel: ', configFilterNivel);
+        //console.log('que trae configFilterNivel: ', configFilterNivel);
 
         //Traigo el id del listado cargado en configuracion para:
         //LISTADO DE VACANTES DE MOVIMIENTOS -> id_listado_vacantes_mov
         const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_tit;
-        console.log('que tiene idFilterListado: ',idFilterListado);
+        //console.log('que tiene idFilterListado: ',idFilterListado);
 
         //Guardo id_listado_vacantes_mov para usarlo en nueva Vacante
         setIdListadoVacantesTit(idFilterListado);
@@ -144,7 +144,7 @@ const VacantesTit = () => {
         //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
             data = await fetchAllVacantesTit(id_listado,limit,page, filtroAsignacion, filtroEspecialidad, valorBusqueda,"", filtroRegion);
-            console.log('que trae data de fetchAllVacantesTit: ', data);
+            //console.log('que trae data de fetchAllVacantesTit: ', data);
 
             if(data.result?.length!=0){
                 setListadoVacantesTit(data.result); 
@@ -159,7 +159,7 @@ const VacantesTit = () => {
     //Este Proc carga el listado de especialidades en E.L.
     const cargaEspecidalidades=async()=>{
         const data = await fetchAllEspecialidades();
-        console.log('que tiene especialidades: ', data);
+        //console.log('que tiene especialidades: ', data);
         if(data?.length!=0){
             setListadoEspecialidades(data);
         }
@@ -187,7 +187,7 @@ const VacantesTit = () => {
 
     const handleSelectFiltroEspecialidad=(event)=>{
         const{value} = event.target;
-        console.log('que tiene filtroEspecialidad: ', value);
+        //console.log('que tiene filtroEspecialidad: ', value);
         setFiltroEspecialidadVac(value);
         
         setCurrentPageVac(1);
@@ -197,16 +197,16 @@ const VacantesTit = () => {
 
     const submitVerDatosVacante = async(datosVacante) => {
         setDatosInscriptoAsignado({});
-        console.log('presiono en submitVerDatosVacante');
-        console.log('que tiene datos de vacante: ', datosVacante)
+        //console.log('presiono en submitVerDatosVacante');
+        //console.log('que tiene datos de vacante: ', datosVacante)
         await setDatosVacanteSelect(datosVacante);
         //busco datos de inscripto asignado si datetime_asignacion no es null
         if(datosVacante.datetime_asignacion!=null){
-            console.log('Busco datos del inscripto asignado')
+            //console.log('Busco datos del inscripto asignado')
             try{
                 await axios.post(`${URL}/api/vacantetitasignadainscripto/${datosVacante.id_vacante_tit}`)
                     .then(async res=>{
-                        console.log('que trae res de vacanteasignadainscripto: ', res.data);
+                        //console.log('que trae res de vacanteasignadainscripto: ', res.data);
                         if(res.data.length!=0){
                             setDatosInscriptoAsignado(res.data[0]);
                             //setMensajeModalInfo(`Para eliminar la Vacante generada del Movimiento de: ${res.data[0].apellido}, ${res.data[0].nombre} (DNI: ${res.data[0].dni}), dirigase a Inscriptos`);
@@ -249,11 +249,11 @@ const VacantesTit = () => {
     };
 
     const submitGuardarFormVacante = async() => {
-        console.log('presiono en submitGuardarFormVacante');
+        //console.log('presiono en submitGuardarFormVacante');
         const idVacanteTit=datosVacanteSelect.id_vacante_tit;
         await axios.put(`${URL}/api/editvacantetit/${idVacanteTit}`,formVacante)
             .then(async res=>{
-                console.log('que trae res de editvacantetit: ', res);
+                //console.log('que trae res de editvacantetit: ', res);
                 //Mostar mensaje de datos actualizados.
                 setMensajeModalInfo('Datos Modificados Correctamente')
                 openModal();
@@ -282,9 +282,9 @@ const VacantesTit = () => {
     };
 
     const procesoEliminarVacante = async() => {
-        console.log('Ingresa a procesoEliminarVacante');
+        //console.log('Ingresa a procesoEliminarVacante');
         const idVacanteTit = datosVacanteSelect?.id_vacante_tit;
-        console.log('que tiene idVacanteTit: ', idVacanteTit);
+        //console.log('que tiene idVacanteTit: ', idVacanteTit);
         const fechaHoraActual = traeFechaHoraActual();
         let datosBody={}
         if(obsEliminaVacante===""){
@@ -296,7 +296,7 @@ const VacantesTit = () => {
         try{
             await axios.put(`${URL}/api/delvacantetit/${idVacanteTit}`,datosBody)
             .then(async res=>{
-                console.log('que trae res de delvacantetit: ', res);
+                //console.log('que trae res de delvacantetit: ', res);
 
                 //Mostrar Notificacion de Eliminacion de Vacante
                 setMensajeModalInfo('Vacante Eliminada');
@@ -380,12 +380,12 @@ const VacantesTit = () => {
 
     const submitGuardarFormNuevaVacante = async() => {
 
-        console.log('presiono en submitGuardarFormNuevaVacante');
-        console.log('como queda formNuevaVacante: ', formNuevaVacante);
+        //console.log('presiono en submitGuardarFormNuevaVacante');
+        //console.log('como queda formNuevaVacante: ', formNuevaVacante);
         
         await axios.post(`${URL}/api/newvacantetit`,formNuevaVacante)
             .then(async res=>{
-                console.log('que trae res de newvacantetit: ', res);
+                //console.log('que trae res de newvacantetit: ', res);
                 //Mostar mensaje de datos actualizados.
                 setMensajeModalInfo('Vacante Creada Correctamente')
                 openModal();
@@ -409,7 +409,7 @@ const VacantesTit = () => {
     const handleSelectFiltroRegion = (event) => {
         const {value}=event.target;
         //Seleccion de Region
-        console.log('que trae value handleSelectFiltroRegion: ', value);
+        //console.log('que trae value handleSelectFiltroRegion: ', value);
         setFiltroRegionVac(value);
         setCurrentPageVac(1);
     };
@@ -417,7 +417,7 @@ const VacantesTit = () => {
     const handleCancelFiltroRegionVac = (event) => {
         const{value}=event.target;
         //Cancelar Filtro de Region
-        console.log('que trae value handleCancelFiltroRegionVac: ', value);
+        //console.log('que trae value handleCancelFiltroRegionVac: ', value);
         setFiltroRegionVac('');
         setCurrentPageVac(1);
     };    
@@ -433,11 +433,11 @@ const VacantesTit = () => {
     },[formNuevaVacante])
 
     useEffect(()=>{
-        console.log('que tiene datosInscriptoAsignado: ', datosInscriptoAsignado);
+        //console.log('que tiene datosInscriptoAsignado: ', datosInscriptoAsignado);
     },[datosInscriptoAsignado]);
 
     useEffect(()=>{
-        console.log('que tene datosVacanteSelect: ', datosVacanteSelect);
+        //console.log('que tene datosVacanteSelect: ', datosVacanteSelect);
         seteoDatosInicialesFormVacante();
     },[datosVacanteSelect])
 
@@ -446,17 +446,17 @@ const VacantesTit = () => {
     },[currentPageVac])
 
     useEffect(()=>{
-        console.log('APLICO FILTRO');
+        //console.log('APLICO FILTRO');
         getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac,filtroRegionVac);
     },[estadoVacantes,inputSearchVac,filtroEspecialidadVac,filtroRegionVac])
 
 
     useEffect(()=>{
-        console.log('que tiene configSG: ', configSG);
+        //console.log('que tiene configSG: ', configSG);
     },[configSG])
 
     useEffect(()=>{
-        console.log('que tiene userSG: ', userSG);
+        //console.log('que tiene userSG: ', userSG);
     },[userSG])
 
     //CARGO LISTADO DE VACANTES AL RENDERIZAR

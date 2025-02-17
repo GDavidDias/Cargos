@@ -102,9 +102,9 @@ const SideBar = () => {
     
     const submitNivelInicial = async() =>{
 
-        console.log('Presiono Nivel Inicial');
+        //console.log('Presiono Nivel Inicial');
         const datosNivel=[{id_nivel:1, descripcion:'INICIAL'}];
-        console.log('Que tiene datosNivel: ', datosNivel);
+        //console.log('Que tiene datosNivel: ', datosNivel);
         dispatch(setNivel(datosNivel));
         resetInterval();
         navigate('/home');
@@ -113,9 +113,9 @@ const SideBar = () => {
 
     const submitNivelPrimario = async()=>{
 
-        console.log('Presiono Nivel Primario');
+        //console.log('Presiono Nivel Primario');
         const datosNivel=[{id_nivel:2, descripcion:'PRIMARIO'}];
-        console.log('Que tiene datosNivel: ', datosNivel);
+        //console.log('Que tiene datosNivel: ', datosNivel);
         dispatch(setNivel(datosNivel));
         resetInterval();
         navigate('/home');

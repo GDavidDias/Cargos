@@ -2,7 +2,7 @@ import { IoMdPrint } from "react-icons/io";
 import { IoTrash } from "react-icons/io5";
 
 const ContentModalFiltroVacantesTit =({closeModalFilter, submitCloseModalFilter, filtroRegionVac, handleSelectFiltroRegion, handleCancelFiltroRegionVac, filtroModalidadVac, handleSelectFiltroModalidad, handleCancelFiltroModalidadVac, submitAplicarFiltrosModales})=>{
-    console.log('ingreso a ContentModalFiltroVacantesTit');
+    //console.log('ingreso a ContentModalFiltroVacantesTit');
     return(
         <div className="notranslate h-100 w-100 flex flex-col items-center">
             <label 

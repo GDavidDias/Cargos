@@ -2,7 +2,7 @@ import logo from '../../assets/logo_designacion.png';
 import { useEffect, useState } from 'react';
 
 const PaginaDesignacionTitular = ({datosInscripto, datosVacante,id_nivel}) =>{
-console.log('que tiene id_nivel en PaginaDesignacion: ', id_nivel);
+//console.log('que tiene id_nivel en PaginaDesignacion: ', id_nivel);
 
     const fechaActual = new Date();
     const dia = fechaActual.getDate();

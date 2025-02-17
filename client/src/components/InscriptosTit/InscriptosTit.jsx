@@ -129,12 +129,12 @@ const InscriptosTit = () =>{
     const buscoIdlistadoInscrip = async(id_nivel) =>{
         //Filtro configuracion para el nivel
         const configFilterNivel = await configSG.config.filter((configNivel)=>configNivel.id_nivel==id_nivel);
-        console.log('que trae configFilterNivel: ', configFilterNivel);
+        //console.log('que trae configFilterNivel: ', configFilterNivel);
 
         //Traigo el id_listado cargado en configuracion para:
         //LISTADO DE INSCRIPTOS DE TITULARIZACION -> id_listado_inscriptos_tit
         const idFilterListado = configFilterNivel[0]?.id_listado_inscriptos_tit;
-        console.log('que tiene idFilterListado: ',idFilterListado);
+        //console.log('que tiene idFilterListado: ',idFilterListado);
 
         //Guardo el id del listado de inscriptos
         setIdListadoInscriptosTit(idFilterListado);
@@ -148,11 +148,11 @@ const InscriptosTit = () =>{
     const getInscriptosTit = async(id_listado,page,filtroAsignacion,valorBusqueda,filtroEspecialidad) =>{
         let data;
         const limit=10;
-        console.log('que trae id_listado getInscriptosTitListado: ', id_listado);
+        //console.log('que trae id_listado getInscriptosTitListado: ', id_listado);
         if(id_listado){
             //paso id_listado, limit y page
             data = await fetchAllInscriptosTit(id_listado, limit, page,filtroAsignacion, valorBusqueda,filtroEspecialidad);
-            console.log('que trae data de fetchAllInscriptosTit: ', data);
+            //console.log('que trae data de fetchAllInscriptosTit: ', data);
 
             if(data.result?.length!=0){
                 setListadoInscriptosTit(data.result); 
@@ -167,7 +167,7 @@ const InscriptosTit = () =>{
     //Este Proc carga el listado de especialidades en E.L.
     const cargaEspecidalidades=async()=>{
         const data = await fetchAllEspecialidades();
-        console.log('que tiene especialidades: ', data);
+        //console.log('que tiene especialidades: ', data);
         if(data?.length!=0){
             setListadoEspecialidades(data);
         }
@@ -177,12 +177,12 @@ const InscriptosTit = () =>{
     const buscoIDListadoVacantes = async(id_nivel) =>{
         //Filtro configuracion para el nivel
         const configFilterNivel = await configSG.config.filter((configNivel)=>configNivel.id_nivel==id_nivel);
-        console.log('que trae configFilterNivel: ', configFilterNivel);
+        //console.log('que trae configFilterNivel: ', configFilterNivel);
 
         //Traigo el id del listado cargado en configuracion para:
         //LISTADO DE VACANTES DE TITULARIZACION -> id_listado_vacantes_tit
         const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_tit;
-        console.log('que tiene idFilterListado: ',idFilterListado);
+        //console.log('que tiene idFilterListado: ',idFilterListado);
 
         //Guardo id_listado_vacantes_tit para usarlo despues
         setIdListadoVacantesTit(idFilterListado);
@@ -193,19 +193,19 @@ const InscriptosTit = () =>{
 
     //Este Proc carga el listado de VACANTES Disponibles al E.L
     const getVacantesDisponiblesTit = async(id_listado,page,filtroAsignacion,filtroEspecialidad,valorBusqueda, filtroRegion, filtroModalidad) =>{
-        console.log('que ingresa a id_listado: ', id_listado);
-        console.log('que ingresa a page: ', page);
-        console.log('que ingresa a filtroAsignacion: ', filtroAsignacion);
-        console.log('que ingresa a filtroEspecialidad: ', filtroEspecialidad);
-        console.log('que ingresa a valorBusqueda: ', valorBusqueda);
-        console.log('que ingresa a filtroRegion: ', filtroRegion);
-        console.log('que ingresa a filtroModalidad: ', filtroModalidad);
+        //console.log('que ingresa a id_listado: ', id_listado);
+        //console.log('que ingresa a page: ', page);
+        //console.log('que ingresa a filtroAsignacion: ', filtroAsignacion);
+        //console.log('que ingresa a filtroEspecialidad: ', filtroEspecialidad);
+        //console.log('que ingresa a valorBusqueda: ', valorBusqueda);
+        //console.log('que ingresa a filtroRegion: ', filtroRegion);
+        //console.log('que ingresa a filtroModalidad: ', filtroModalidad);
         let data;
         const limit=10;
         //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
             data = await fetchAllVacantesTit(id_listado,limit,page, filtroAsignacion, filtroEspecialidad, valorBusqueda, filtroModalidad, filtroRegion);
-            console.log('que trae data de fetchAllVacantesTit: ', data);
+            //console.log('que trae data de fetchAllVacantesTit: ', data);
 
             if(data.result?.length!=0){
                 setListadoVacantesDispTit(data.result); 
@@ -247,14 +247,14 @@ const InscriptosTit = () =>{
     };
 
     const submitVerDatosInscripto = async(datosInscripto)=>{
-        console.log('presiono en submitVerDatosInscripto');
-        console.log('que tiene datos inscripto: ', datosInscripto);
+        //console.log('presiono en submitVerDatosInscripto');
+        //console.log('que tiene datos inscripto: ', datosInscripto);
         setDatosInscriptoSelect(datosInscripto);
         //traigo datos de la vacante asignada
         if(datosInscripto.vacante_asignada!=null && datosInscripto.vacante_asignada!=''){
-            console.log('TIENE CARGO ASIGNADO');
+            //console.log('TIENE CARGO ASIGNADO');
             const data = await fetchVacanteAsignadaTit(datosInscripto.vacante_asignada);
-            console.log('que trae data de fetchVacanteAsignadaTit: ',data);
+            //console.log('que trae data de fetchVacanteAsignadaTit: ',data);
             setCargoAsignado(data[0]);
             setDatosVacante(data[0])
         }else{
@@ -288,11 +288,11 @@ const InscriptosTit = () =>{
     }
 
     const submitGuardarFormInscripto=async()=>{
-        console.log('presiono en submitGuardarFormInscripto');
+        //console.log('presiono en submitGuardarFormInscripto');
         const idInscriptoTit = idInscriptoSelect;
         await axios.put(`${URL}/api/editinscriptotit/${idInscriptoTit}`,formInscripto)
             .then(async res=>{
-                console.log('que trae res de editinscriptotit: ', res);
+                //console.log('que trae res de editinscriptotit: ', res);
                 //Mostar mensaje de datos actualizados.
                 setMensajeModalInfo('Datos Modificados Correctamente')
                 openModal();
@@ -317,7 +317,7 @@ const InscriptosTit = () =>{
 
     const handleSelectFiltroEspecialidad=(event)=>{
         const{value} = event.target;
-        console.log('que tiene filtroEspecialidad: ', value);
+        //console.log('que tiene filtroEspecialidad: ', value);
         setSelectFiltroEspecialidad(value);
         setFiltroEspecialidadVac(value);
         setCurrentPageVac(1);
@@ -328,7 +328,7 @@ const InscriptosTit = () =>{
 
     const handleSelectFiltroEspecialidadVac=(event)=>{
         const{value} = event.target;
-        console.log('que tiene filtroEspecialidad: ', value);
+        //console.log('que tiene filtroEspecialidad: ', value);
         //setSelectFiltroEspecialidad(value);
         setFiltroEspecialidadVac(value);
         setCurrentPageVac(1);
@@ -343,7 +343,7 @@ const InscriptosTit = () =>{
     };
 
     const submitVerVacantes = (datosInscripto) =>{
-        console.log('que tien datosInscriptos: ', datosInscripto);
+        //console.log('que tien datosInscriptos: ', datosInscripto);
         //setCurrentPageVac(1);
         setDatosInscriptoSelect(datosInscripto);
         //cargo listado de vacantes disponibles
@@ -351,7 +351,7 @@ const InscriptosTit = () =>{
         
         //Verifico si estado_asignacion tiene algun estado guardado lo actualizo para mostrar
         if(datosInscripto.id_estado_inscripto!=null){
-            console.log('Asigno id_estado_inscripto guardado');
+            //console.log('Asigno id_estado_inscripto guardado');
             setEstadoAsignadoInscripto(datosInscripto.id_estado_inscripto);
         }
         
@@ -375,14 +375,14 @@ const InscriptosTit = () =>{
 
     const handleCancelSearchVac = ()=>{
         /**Presiono boton cruz cancela busqueda */
-        console.log('cancela busqueda');
+        //console.log('cancela busqueda');
         setInputSearchVac('');
     };
 
     //?-------------------------------------
     //?--------PROCESO ASIGNACION-----------
     const submitVerAsignacion = async(datosVacanteSeleccionada)=>{
-        console.log('presiono ver la asignacion');
+        //console.log('presiono ver la asignacion');
         setDatosVacante(datosVacanteSeleccionada);
         openModalAsign();
     };
@@ -398,12 +398,12 @@ const InscriptosTit = () =>{
             id_inscripto_tit:datosInscriptoSelect.id_inscriptos_tit,
             datetime_asignacion:fechaHoraActual
         };
-        console.log('como queda body a enviar createasignaciontit: ', formAsignacionTit);
+        //console.log('como queda body a enviar createasignaciontit: ', formAsignacionTit);
 
         //ASIGNACION
         await axios.post(`${URL}/api/createasignaciontit`,formAsignacionTit)
             .then(async res=>{
-                console.log('que trae res de createasignaciontit: ', res);
+                //console.log('que trae res de createasignaciontit: ', res);
                 setMensajeModalConfirm('Asignacion Realizada, ¿imprime designacion?')
                 openModalConfirm();
             })
@@ -428,7 +428,7 @@ const InscriptosTit = () =>{
 
     //Proceso para Imprimir la designacion
     const procesoImpresion = async()=>{
-        console.log('ingresa a Impresion');
+        //console.log('ingresa a Impresion');
         await handlePrint();
     };
 
@@ -445,8 +445,7 @@ const InscriptosTit = () =>{
 
     //PROCESO IMPRESION DE ASISTENCIA
     const procesoImpresionAsistencia = async()=>{
-        console.log('ingresa a Impresion Asistencia');
-        console.log
+        //console.log('ingresa a Impresion Asistencia');
         await handlePrintAsistencia();
     };
 
@@ -477,7 +476,7 @@ const InscriptosTit = () =>{
     };
 
     const submitEliminarTomaCargo = async(idAsignacion) =>{
-        console.log('que trae idAsignacion: ', idAsignacion);
+        //console.log('que trae idAsignacion: ', idAsignacion);
         const fechaHoraActual = traeFechaHoraActual();
         const datosBody={
             obsDesactiva:`Se desactiva la Asignacion por Eliminacion ${fechaHoraActual}`
@@ -486,7 +485,7 @@ const InscriptosTit = () =>{
         try{
             await axios.post(`${URL}/api/delasignaciontit/${idAsignacion}`,datosBody)
             .then(async res=>{
-                console.log('que trae res de delasignaciontit: ', res);
+                //console.log('que trae res de delasignaciontit: ', res);
 
                 //Actualizo Estado de Asignacion de Insripto
                 await updEstadoAsignadoInscriptoTit(datosInscriptoSelect.id_inscriptos_tit, null);
@@ -514,10 +513,10 @@ const InscriptosTit = () =>{
     };
 
     const submitGuardarEstadoInscripto=async()=>{
-        console.log('que tiene estadoAsignadoInscripto: ', estadoAsignadoInscripto)
+        //console.log('que tiene estadoAsignadoInscripto: ', estadoAsignadoInscripto)
         try{
             const datosUpdateEstado = await updEstadoAsignadoInscriptoTit(datosInscriptoSelect.id_inscriptos_tit, estadoAsignadoInscripto);
-            console.log('que trae datosUpdateEstado: ', datosUpdateEstado)
+            //console.log('que trae datosUpdateEstado: ', datosUpdateEstado)
             setMensajeModalInfo('Estado del Inscripto Actualizado');
             openModal();
             setEstadoAsignadoInscripto('');
@@ -540,7 +539,7 @@ const InscriptosTit = () =>{
     const handleSelectFiltroRegion = (event) => {
         const {value}=event.target;
         //Seleccion de Region
-        console.log('que trae value handleSelectFiltroRegion: ', value);
+        //console.log('que trae value handleSelectFiltroRegion: ', value);
         setFiltroRegionVac(value);
         setCurrentPageVac(1);
     };
@@ -548,7 +547,7 @@ const InscriptosTit = () =>{
     const handleCancelFiltroRegionVac = (event) => {
         const{value}=event.target;
         //Cancelar Filtro de Region
-        console.log('que trae value handleCancelFiltroRegionVac: ', value);
+        //console.log('que trae value handleCancelFiltroRegionVac: ', value);
         setFiltroRegionVac('');
         setCurrentPageVac(1);
     };
@@ -557,7 +556,7 @@ const InscriptosTit = () =>{
     const handleSelectFiltroModalidad = (event) =>{
         const{value}=event.target;
         //Seleccion de Modalidad
-        console.log('que trae value handleSelectFiltroModalidad: ', value);
+        //console.log('que trae value handleSelectFiltroModalidad: ', value);
         setFiltroModalidadVac(value);
         setCurrentPageVac(1);
     };
@@ -576,24 +575,24 @@ const InscriptosTit = () =>{
     //?--------------------------------------------------
 
     useEffect(()=>{
-        console.log('que tiene EstadoAsignadoInscriptos: ', estadoAsignadoInscripto);
+        //console.log('que tiene EstadoAsignadoInscriptos: ', estadoAsignadoInscripto);
     },[estadoAsignadoInscripto])
 
     useEffect(()=>{
-        console.log('que tiene Cargo Asignado: ', cargoAsignado)
+        //console.log('que tiene Cargo Asignado: ', cargoAsignado)
     },[cargoAsignado])
 
     useEffect(()=>{
         seteoDatosInicialesFormInscripto();
-        console.log('que tiene datosInscriptoSelect: ', datosInscriptoSelect);
+        //console.log('que tiene datosInscriptoSelect: ', datosInscriptoSelect);
     },[datosInscriptoSelect])
 
     useEffect(()=>{
-        console.log('que tiene datos de Vacantes seleccionada: ', datosVacante);
+        //console.log('que tiene datos de Vacantes seleccionada: ', datosVacante);
     },[datosVacante])
 
     useEffect(()=>{
-        console.log('APLICO FILTRO LISTADO INSCRIPTOS');
+        //console.log('APLICO FILTRO LISTADO INSCRIPTOS');
         getInscriptosTit(idListadoInscriptosTit,currentPage,estadoInscripto,inputSearch,selectFiltroEspecialidad);
     },[estadoInscripto,inputSearch,selectFiltroEspecialidad])
 
@@ -605,7 +604,7 @@ const InscriptosTit = () =>{
 
     //------------Estados desde Modal Vacantes
     useEffect(()=>{
-        console.log('APLICO FILTRO LISTADO VACANTES');
+        //console.log('APLICO FILTRO LISTADO VACANTES');
         getVacantesDisponiblesTit(idListadoVacantesTit, currentPageVac,'disponibles',filtroEspecialidadVac,inputSearchVac, filtroRegionVac, filtroModalidadVac)
     },[filtroEspecialidadVac,inputSearchVac, filtroRegionVac, filtroModalidadVac])
 

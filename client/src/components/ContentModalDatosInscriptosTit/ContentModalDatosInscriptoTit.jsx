@@ -2,7 +2,7 @@ import { IoMdPrint } from "react-icons/io";
 import { IoTrash } from "react-icons/io5";
 
 const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,idInscriptoSelect,closeModal,handleChangeFormInscripto,formEstadoInscripto,submitGuardarFormInscripto,cargoAsignado,procesoImpresion,submitEliminarTomaCargo, procesoImpresionAsistencia, handleCancelDatosInscriptoTit,userSG})=>{
-    console.log('ingreso a ContentModalDatosInscriptoTit');
+    //console.log('ingreso a ContentModalDatosInscriptoTit');
     return(
         <div className="notranslate h-100 w-100 flex flex-col items-center">
             <label 

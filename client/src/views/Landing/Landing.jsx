@@ -113,7 +113,7 @@ const Landing = () => {
             password:'invitadoIni'
         };
 
-        console.log('Presiono Docente Inicial');
+        //console.log('Presiono Docente Inicial');
         const datosNivel=[{id_nivel:1, descripcion:'INICIAL'}];
         dispatch(setNivel(datosNivel));
 
@@ -132,7 +132,7 @@ const Landing = () => {
             password:'invitadoPri'
         };
 
-        console.log('Presiono Nivel Primario');
+        //console.log('Presiono Nivel Primario');
         const datosNivel=[{id_nivel:2, descripcion:'PRIMARIO'}];
         dispatch(setNivel(datosNivel));
 
