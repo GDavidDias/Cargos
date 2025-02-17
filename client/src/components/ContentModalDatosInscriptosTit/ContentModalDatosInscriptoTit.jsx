@@ -105,7 +105,6 @@ const ContentModalDatosInscriptoTit =({datosFormInscripto,datosInscriptoSelect,i
                                 
                         </div>
 
-
                     </div>
 
                     {/* DATOS DE SU ASIGNACION */}
