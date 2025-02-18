@@ -126,6 +126,7 @@ const VacantesTitDocentes = () => {
 
     const[filtroRegionVac, setFiltroRegionVac]=useState('');
     const[filtroModalidadVac, setFiltroModalidadVac]=useState('');
+    //const[filtroEspecialidadVac, setFiltroEspecialidadVac]=useState('');
 
     const[isIntervalActive, setIsIntervalActive]=useState(true);
 
@@ -155,13 +156,18 @@ const VacantesTitDocentes = () => {
 
     //Este Proc carga el listado de VACANTES Disponibles al E.L
     const getVacantesTit = async(id_listado,page,filtroAsignacion,filtroEspecialidad,valorBusqueda, filtroModalidad, filtroRegion) =>{
-        //console.log('que ingresa por id_listado: ', id_listado);
-        //console.log('que ingresa por page: ', page);
-        //console.log('que ingresa por filtroAsignacion: ', filtroAsignacion);
-        //console.log('que ingresa por filtroEspecialidad: ', filtroEspecialidad);
-        //console.log('que ingresa por valorBusqueda: ', valorBusqueda);
-        //console.log('que ingresa por filtroModalidad: ', filtroModalidad);
-        //console.log('que ingresa por filtroRegion: ', filtroRegion);
+        if(filtroEspecialidadVac==''){
+            filtroEspecialidad=queryIdEspVisorTit;
+        }else{
+            filtroEspecialidad=filtroEspecialidadVac
+        }
+        console.log('que ingresa por id_listado: ', id_listado);
+        console.log('que ingresa por page: ', page);
+        console.log('que ingresa por filtroAsignacion: ', filtroAsignacion);
+        console.log('que ingresa por filtroEspecialidad: ', filtroEspecialidad);
+        console.log('que ingresa por valorBusqueda: ', valorBusqueda);
+        console.log('que ingresa por filtroModalidad: ', filtroModalidad);
+        console.log('que ingresa por filtroRegion: ', filtroRegion);
         let data;
         const limit=10;
         //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
@@ -184,7 +190,7 @@ const VacantesTitDocentes = () => {
     //Este Proc carga el listado de especialidades en E.L.
     const cargaEspecidalidades=async()=>{
         const data = await fetchAllEspecialidades();
-        //console.log('que tiene especialidades: ', data);
+        console.log('que tiene especialidades: ', data);
         if(data?.length!=0){
             setListadoEspecialidades(data);
             especialidadesActivasVisorTit();
@@ -298,7 +304,7 @@ const VacantesTitDocentes = () => {
         //cambio estado de formVacante
         setEstadoForm('ver');
         //recargo listao de inscriptos con datos actualizados
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,queryIdEspVisorTit,inputSearchVac, filtroModalidadVac, filtroRegionVac);
+        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
     };
     
 
@@ -426,6 +432,13 @@ const VacantesTitDocentes = () => {
         setFiltroEspecialidadVac("");
     };
 
+    const handleSelectFiltroEspecialidadVac = (event) =>{
+        const{value}=event.target;
+        console.log('que tiene data en handleSelectFiltroEspecialidadVac: ', value);
+        setFiltroEspecialidadVac(value);
+        setCurrentPageVac(1);
+    };
+
     const handleChangeObsEliminaVacante = (event) =>{
         const {name, value}=event.target;
         setObsEliminaVacante(value);
@@ -511,13 +524,13 @@ const VacantesTitDocentes = () => {
     },[datosVacanteSelect])
 
     useEffect(()=>{
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,queryIdEspVisorTit,inputSearchVac, filtroModalidadVac, filtroRegionVac);
+        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
     },[currentPageVac])
 
     useEffect(()=>{
         //console.log('APLICO FILTROS');
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,queryIdEspVisorTit,inputSearchVac, filtroModalidadVac, filtroRegionVac);
-    },[estadoVacantes,inputSearchVac, filtroModalidadVac, filtroRegionVac, queryIdEspVisorTit])
+        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
+    },[estadoVacantes,inputSearchVac, filtroModalidadVac, filtroRegionVac, filtroEspecialidadVac])
 
     useEffect(()=>{
 
@@ -525,7 +538,7 @@ const VacantesTitDocentes = () => {
         const intervalId=setInterval(()=>{
             //console.log('se ejecuta intervalo');
             cargaEspecidalidades();
-            getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,queryIdEspVisorTit,inputSearchVac, filtroModalidadVac, filtroRegionVac);
+            getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
             if(paginacionVac.totalPages==1){
                 setCurrentPageVac(1);
             }
@@ -533,7 +546,7 @@ const VacantesTitDocentes = () => {
 
         return()=>clearInterval(intervalId);
 
-    },[currentPageVac, inputSearchVac, filtroModalidadVac, filtroRegionVac, queryIdEspVisorTit,listadoEspecialidades])
+    },[currentPageVac, inputSearchVac, filtroModalidadVac, filtroRegionVac, filtroEspecialidadVac,listadoEspecialidades])
 
     useEffect(()=>{
         //console.log('que tiene configSG: ', configSG);
@@ -578,9 +591,12 @@ const VacantesTitDocentes = () => {
                             */}
                         </div>
 
+                        {/**
+                         
                         <div>
                             <label className="desktop:ml-4  font-semibold text-silver-500">Especialidad: {(queryEspVisorTit==="") ?`Todas` :queryEspVisorTit}</label>
                         </div>
+                         */}
 
                         {/**
                         <div className="flex flex-row">
@@ -667,7 +683,7 @@ const VacantesTitDocentes = () => {
                         {/*Filtros Modales */}
                         <div 
                             className={`flex flex-row items-center desktop:w-[50%] 
-                                ${(filtroModalidadVac!='' || filtroRegionVac!='')
+                                ${(filtroModalidadVac!='' || filtroRegionVac!='' || filtroEspecialidadVac!='')
                                     ?` text-sky-500`
                                     :` `
                                 }
@@ -855,6 +871,10 @@ const VacantesTitDocentes = () => {
                     handleSelectFiltroModalidad={handleSelectFiltroModalidad}
                     handleCancelFiltroModalidadVac={handleCancelFiltroModalidadVac}
                     submitAplicarFiltrosModales={submitAplicarFiltrosModales}
+                    listadoEspecialidades={listadoEspecialidades}
+                    filtroEspecialidadVac={filtroEspecialidadVac}
+                    handleCancelFiltroEspecialidadVac={handleCancelFiltroEspecialidadVac}
+                    handleSelectFiltroEspecialidadVac={handleSelectFiltroEspecialidadVac}
                 />
             </ModalEdit>
 

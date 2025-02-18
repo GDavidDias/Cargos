@@ -1,7 +1,7 @@
 import { IoMdPrint } from "react-icons/io";
 import { IoTrash } from "react-icons/io5";
 
-const ContentModalFiltroVacantesTit =({closeModalFilter, submitCloseModalFilter, filtroRegionVac, handleSelectFiltroRegion, handleCancelFiltroRegionVac, filtroModalidadVac, handleSelectFiltroModalidad, handleCancelFiltroModalidadVac, submitAplicarFiltrosModales})=>{
+const ContentModalFiltroVacantesTit =({closeModalFilter, submitCloseModalFilter, filtroRegionVac, handleSelectFiltroRegion, handleCancelFiltroRegionVac, filtroModalidadVac, handleSelectFiltroModalidad, handleCancelFiltroModalidadVac, submitAplicarFiltrosModales,listadoEspecialidades,filtroEspecialidadVac,handleCancelFiltroEspecialidadVac,handleSelectFiltroEspecialidadVac})=>{
     //console.log('ingreso a ContentModalFiltroVacantesTit');
     return(
         <div className="notranslate h-100 w-100 flex flex-col items-center">
@@ -15,6 +15,7 @@ const ContentModalFiltroVacantesTit =({closeModalFilter, submitCloseModalFilter,
                     {/* SELECCION DE FILTROS */}
                     <div className="border-[1px] border-slate-500 rounded-md w-[80mm] h-[40mm] py-2 my-2 font-semibold bg-slate-200 ">
                         <div className="flex flex-col ml-2 mt-[2px] items-end justify-start">
+                            {/** FILTRO MODALIDAD */}
                             <div className="flex flex-row my-[4px] mx-2 text-start items-center">
                                 <label className="font-semibold text-base mr-2">Modalidad:</label>
                                 <select
@@ -41,6 +42,7 @@ const ContentModalFiltroVacantesTit =({closeModalFilter, submitCloseModalFilter,
                                 }
                             </div>
 
+                            {/**FILTRO REGION */}
                             <div className="flex flex-row my-[4px] mx-2 text-start items-start">
                                 <label className="font-semibold text-base mr-2">Region:</label>
                                 <select 
@@ -67,6 +69,39 @@ const ContentModalFiltroVacantesTit =({closeModalFilter, submitCloseModalFilter,
                                         <label 
                                             className="font-bold mx-2 cursor-pointer"
                                             onClick={handleCancelFiltroRegionVac}
+                                        >X</label>
+                                    }
+                            </div>
+
+                            {/**FILTRO ESPECIALIDAD */}
+                            <div className="flex flex-row my-[4px] mx-2 text-start items-start">
+                                <label className="font-semibold text-base mr-2">Especialidad:</label>
+                                <select 
+                                    className={` h-[24px] border-[1px] rounded focus:outline-none focus:ring-0 focus:border-none desktop-xl:text-lg
+                                        ${(filtroEspecialidadVac==='')
+                                            ?` w-[40mm]`
+                                            :` w-[33mm]`
+                                        }
+                                        `}
+                                    name="filtroRegion"
+                                    onChange={handleSelectFiltroEspecialidadVac}
+                                    value={filtroEspecialidadVac}
+                                >
+                                    <option value='' selected disabled>Seleccione...</option>
+                                        {listadoEspecialidades
+                                            ?.filter(especialidad=>especialidad.activo_visor_tit=="1")
+                                            .map((especialidad, index)=>(
+                                            <option
+                                                key={index}
+                                                value={especialidad.id_especialidad}
+                                            >{especialidad.abreviatura}</option>
+                                        ))
+                                        }
+                                </select>
+                                {(filtroEspecialidadVac!="") &&
+                                        <label 
+                                            className="font-bold mx-2 cursor-pointer"
+                                            onClick={handleCancelFiltroEspecialidadVac}
                                         >X</label>
                                     }
                             </div>
