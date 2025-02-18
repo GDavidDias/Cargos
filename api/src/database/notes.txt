@@ -39,6 +39,10 @@ CREATE TABLE config_component_active(id_component INT(5) NOT NULL AUTO_INCREMENT
 
 CREATE TABLE config_report_component(id_component INT(5))
 
+--TABLAS de Escuelas
+CREATE TABLE escuelas(id_escuela INT (5) NOT NULL AUTO_INCREMENT, numero_escuela VARCHAR(50) DEFAULT NULL, nombre_escuela VARCHAR(300) DEFAULT NULL, direccion VARCHAR(250) DEFAULT NULL, cp VARCHAR(100) DEFAULT NULL, longitud VARCHAR(50) DEFAULT NULL, latitud VARCHAR(50) DEFAULT NULL)
+
+/*-----------------------------------------------------------------
 -->agrego campo estado_inscripto en tabla inscriptos_mov
 ALTER TABLE inscriptos_mov ADD id_estado_inscripto INT(2);
 
