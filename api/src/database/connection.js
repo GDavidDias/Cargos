@@ -17,7 +17,7 @@ const dbSettingsRemoto = {
     password: process.env.REMOTOPASSWORDDB,
     database: process.env.REMOTODATABASE,
     timezone: 'Z'
-};
+}; 
 
 const pool = mysql.createPool(dbSettingsLocal);
 

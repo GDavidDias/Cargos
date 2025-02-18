@@ -703,7 +703,7 @@ const InscriptosTit = () =>{
                                         :`border-zinc-300 text-black`
                                     }
                                     `}
-                                onClick={()=>setEstadoInscripto('todos')}
+                                onClick={()=>{setEstadoInscripto('todos');setCurrentPage(1)}}
                             >Todos</label>
                             <label 
                                 className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
@@ -712,7 +712,7 @@ const InscriptosTit = () =>{
                                         :`border-zinc-300 text-black`
                                     }
                                     `}
-                                onClick={()=>setEstadoInscripto('sinasignar')}
+                                onClick={()=>{setEstadoInscripto('sinasignar');setCurrentPage(1)}}
                             >Sin Asignar</label>
                             <label 
                                 className={`border-b-2 px-2 cursor-pointer transition-all duration-500 
@@ -721,7 +721,7 @@ const InscriptosTit = () =>{
                                         :`border-zinc-300 text-black`
                                     }
                                     `}
-                                onClick={()=>setEstadoInscripto('asignados')}
+                                onClick={()=>{setEstadoInscripto('asignados');setCurrentPage(1)}}
                             >Asignados</label>
                         </div>
 
