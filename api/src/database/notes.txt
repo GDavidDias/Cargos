@@ -40,7 +40,7 @@ CREATE TABLE config_component_active(id_component INT(5) NOT NULL AUTO_INCREMENT
 CREATE TABLE config_report_component(id_component INT(5))
 
 --TABLAS de Escuelas
-CREATE TABLE escuelas(id_escuela INT (5) NOT NULL AUTO_INCREMENT, numero_escuela VARCHAR(50) DEFAULT NULL, nombre_escuela VARCHAR(300) DEFAULT NULL, direccion VARCHAR(250) DEFAULT NULL, cp VARCHAR(100) DEFAULT NULL, longitud VARCHAR(50) DEFAULT NULL, latitud VARCHAR(50) DEFAULT NULL)
+CREATE TABLE escuelas(id_escuela INT (5) NOT NULL AUTO_INCREMENT, numero_escuela VARCHAR(50) DEFAULT NULL, cue VARCHAR(50) DEFAULT NULL, nombre_escuela VARCHAR(300) DEFAULT NULL, direccion VARCHAR(250) DEFAULT NULL, localidad VARCHAR(250) DEFAULT NULL, departamento VARCHAR(250) DEFAULT NULL, modalidad VARCHAR(10) DEFAULT NULL, categoria VARCHAR(10) DEFAULT NULL, zona VARCHAR(10) DEFAULT NULL, longitud VARCHAR(50) DEFAULT NULL, latitud VARCHAR(50) DEFAULT NULL, PRIMARY KEY (id_escuela));
 
 /*-----------------------------------------------------------------
 -->agrego campo estado_inscripto en tabla inscriptos_mov
