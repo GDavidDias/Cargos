@@ -34,13 +34,29 @@ CREATE TABLE asignacion_tit(id_asignacion_tit INT(11) NOT NULL AUTO_INCREMENT, i
 
 CREATE TABLE estado_inscripto(id_estado_inscripto INT(2) NOT NULL AUTO_INCREMENT, descripcion VARCHAR(50) DEFAULT NULL, PRIMARY KEY(id_estado_inscripto));
 
+
+--TABLAS DE MODULO PROVISIONAL Y REEMPLAZANTES
+
+---tabla de provisionales
+CREATE TABLE inscriptos_pr(id_inscriptos_pr INT(11) NOT NULL AUTO_INCREMENT, dni VARCHAR(50) DEFAULT NULL, apellido VARCHAR(250) DEFAULT NULL, nombre VARCHAR(250) DEFAULT NULL, total VARCHAR(50) DEFAULT NULL, orden INT(11) DEFAULT NULL, id_especialidad INT(7) DEFAULT NULL, id_listado_inscriptos INT(7) DEFAULT NULL, id_estado_inscripto INT(2) DEFAULT NULL, observaciones VARCHAR(250) DEFAULT NULL, PRIMARY KEY(id_inscriptos_pr));
+
+(vacantes_pr -> vacantes_provisionalreemplazante):
+--tabla de vacantes provisionales
+CREATE TABLE vacantes_pr(id_vacante_pr INT(11) NOT NULL AUTO_INCREMENT, id_listado_vac_pr INT(7) DEFAULT NULL, orden INT(7) DEFAULT NULL, nro_establecimiento VARCHAR(255) DEFAULT NULL, nombre_establecimiento VARCHAR(255) DEFAULT NULL, region VARCHAR(250) DEFAULT NULL, localidad VARCHAR(250) DEFAULT NULL, cargo VARCHAR(250) DEFAULT NULL, turno VARCHAR(250) DEFAULT NULL, modalidad VARCHAR(250) DEFAULT NULL, caracter VARCHAR(250) DEFAULT NULL, motivo_cobertura VARCHAR(250) DEFAULT NULL, desde DATETIME DEFAULT NULL, hasta DATETIME DEFAULT NULL, PRIMARY KEY(id_vacante_pr));
+
+--tabla de asignaciones provisionales
+CREATE TABLE asignacion_pr(id_asignacion_pr INT(11) NOT NULL AUTO_INCREMENT, id_vacante_pr INT(11) DEFAULT NULL, id_inscripto_pr INT(11) DEFAULT NULL, datetime_asignacion DATETIME DEFAULT NULL, id_estado_asignacion INT(2) DEFAULT NULL, obervaciones VARCHAR(250) DEFAULT NULL, datetime_actualizacion DATETIME DEFAULT NULL, obs_desactiva VARCHAR(250) DEFAULT NULL, PRIMARY KEY(id_asignacion_pr));
+
+
+
 ----TABLAS DE configuracion
 CREATE TABLE config_component_active(id_component INT(5) NOT NULL AUTO_INCREMENT, componente varchar(150) DEFAULT NULL, descripcion VARCHAR(300) DEFAULT NULL, active VARCHAR(5) DEFAULT NULL, PRIMARY KEY(id_component));
 
 CREATE TABLE config_report_component(id_component INT(5))
 
 --TABLAS de Escuelas
-CREATE TABLE escuelas(id_escuela INT (5) NOT NULL AUTO_INCREMENT, numero_escuela VARCHAR(50) DEFAULT NULL, cue VARCHAR(50) DEFAULT NULL, nombre_escuela VARCHAR(300) DEFAULT NULL, direccion VARCHAR(250) DEFAULT NULL, localidad VARCHAR(250) DEFAULT NULL, departamento VARCHAR(250) DEFAULT NULL, modalidad VARCHAR(10) DEFAULT NULL, categoria VARCHAR(10) DEFAULT NULL, zona VARCHAR(10) DEFAULT NULL, longitud VARCHAR(50) DEFAULT NULL, latitud VARCHAR(50) DEFAULT NULL, PRIMARY KEY (id_escuela));
+CREATE TABLE escuelas(id_escuela INT (5) NOT NULL AUTO_INCREMENT, numero_escuela VARCHAR(50) DEFAULT NULL, cue VARCHAR(50) DEFAULT NULL, nombre_escuela VARCHAR(300) DEFAULT NULL, direccion VARCHAR(250) DEFAULT NULL, localidad VARCHAR(250) DEFAULT NULL, departamento VARCHAR(250) DEFAULT NULL, modalidad VARCHAR(10) DEFAULT NULL, categoria VARCHAR(10) DEFAULT NULL, zona VARCHAR(10) DEFAULT NULL, longitud VARCHAR(50) DEFAULT NULL, latitud VARCHAR(50) DEFAULT NULL, link_map VARCHAR(250) DEFAULT NULL ,PRIMARY KEY (id_escuela));
+
 
 /*-----------------------------------------------------------------
 -->agrego campo estado_inscripto en tabla inscriptos_mov
@@ -257,6 +273,9 @@ INSERT INTO config_component_active(id_component,componente,descripcion,active) 
 INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(6,'ListadosTit','Listados de Titularizaciones', NULL);
 INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(7,'VacantesTitDocentes','Visor de Vacantes de Titularizaciones para mostrar a Docentes de PRIMARIA', NULL);
 INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(8,'VacantesTitDocentesInicial','Visor de Vacantes de Titularizaciones para mostrar a Docentes INICIAL', NULL);
+INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(9,'IncriptosPR','Inscriptos de Provisional y Reemplazantes', NULL);
+INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(10,'VacantesPR','Vacantes de Provisional y Reemplazantes', NULL);
+INSERT INTO config_component_active(id_component,componente,descripcion,active) VALUES(11,'ListadosPR','Listados de Provisional y Reemplazantes', NULL);
 
 
 ---------------------------

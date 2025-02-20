@@ -16,6 +16,8 @@ import ConfigPage from "../../components/ConfigPage/ConfigPage";
 import PageIni from "../../views/PageIni/PageIni";
 import VacantesTitDocentes from "../../components/VacantesTit/VacantesTitDocentes";
 import VacantesTitDocentesInicial from "../../components/VacantesTit/VacantesTitDocentesInicial";
+import VacantesPyR from "../../components/VacantesPyR/VacantesPyR";
+import ListadosPR from "../../components/ListadosPR/ListadosPR";
 
 const Home = () =>{
     const dispatch = useDispatch();
@@ -45,9 +47,6 @@ const Home = () =>{
             case 'ListadosTit': //Pantalla de Listados
                 setContent(<ListadosTit/>);
                 break;
-            case 'InscriptosPyR':
-                setContent(<InscriptosPyR/>);
-                break;
             case 'Asignaciones': //Pantalla de Asignaciones Realizadas, segun tipo de movimiento y nivel
                 setContent(<AsignacionesMov/>);
                 break;                
@@ -65,6 +64,15 @@ const Home = () =>{
                 break;
             case 'VacantesTitDocentesInicial'://Pantalla de VACANTES que pueden visualizar los docentes
                 setContent(<VacantesTitDocentesInicial/>);
+                break;
+            case 'InscriptosPyR': //Pantalla de INSCRIPTOS DE PROVISIONAL Y REEMPLAZANTES
+                setContent(<InscriptosPyR/>);
+                break;
+            case 'VacantesPyR': //Pantalla de VACANTES de PROVISIONALES y REEMPLAZANTES
+                setContent(<VacantesPyR/>);
+                break;
+            case 'ListadosPyR': //Pantalla de LISTADOS de PROVISIONALES y REEMPLAZANTES
+                setContent(<ListadosPR/>);
                 break;
         }
     },[pageSG]);

@@ -93,6 +93,12 @@ const SideBar = () => {
         console.log('Presiona sobre Vacantes Provisionales y Reemplazantes');
         dispatch(setPage('VacantesPyR'))
     };
+    
+    const submitListadosPyR = () =>{
+        //
+        console.log('Presiona sobre Listados Provisionales y Reemplazantes');
+        dispatch(setPage('ListadosPyR'))
+    };
 
     const submitConfigPage = () =>{
         //
@@ -377,9 +383,10 @@ const SideBar = () => {
 
 
                 {/* MENU PROVISIONALES Y REEMPLAZANTES */}
-                {/* <div className="ml-2 mt-6 text-white text-base">
+                <div className="ml-2 mt-6 text-white text-base">
                     <label className="font-normal">Provisionales y Reemplazantes</label>
-                    {(userSG.permiso!=3) &&
+                    {/**ENLACE A INSCRIPTOS DE PROVISIONAL Y REEMPLAZANTES */}
+                    {(userSG.permiso!=3 && configCompSG[8]?.active=="1") &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
                                 ${(pageSG==='InscriptosPyR')
@@ -390,22 +397,42 @@ const SideBar = () => {
                             onClick={()=>submitInscriptosPyR()}
                         >
                             <PiUserListBold className="text-xl font-bold mr-2"/>
-                            <label className="font-light">Inscriptos</label>
+                            <label className="font-light">Inscriptos Pr</label>
                         </div>
                     }
-                    <div 
-                        className={` rounded p-[4px] flex flex-row justify-start items-center
-                            ${(pageSG==='VacantesPyR')
-                            ?'bg-[#C9D991]'
-                            :'hover:bg-[#C9D991]'
-                        }
-                            `}
-                        onClick={()=>submitVacantesPyR()}
-                    >
-                        <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
-                        <label className="font-light">Vacantes</label>
-                    </div>
-                </div> */}
+
+                    {/**ENLACE A VACANTES PROVISIONALES Y REEMPLAZANTES */}
+                    {(userSG.permiso!=3 && configCompSG[9]?.active=="1") &&
+                        <div 
+                            className={` rounded p-[4px] flex flex-row justify-start items-center
+                                ${(pageSG==='VacantesPyR')
+                                ?'bg-[#C9D991]'
+                                :'hover:bg-[#C9D991]'
+                            }
+                                `}
+                            onClick={()=>submitVacantesPyR()}
+                        >
+                            <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
+                            <label className="font-light desktop-xl:text-lg">Vacantes PR</label>
+                        </div>
+                    }
+
+                    {/**ENLACE A LISTADOS PROVISIONALES Y REEMPLAZANTES */}
+                    {(userSG.permiso!=3 && configCompSG[10]?.active=="1") &&
+                        <div 
+                            className={` rounded p-[4px] flex flex-row justify-start items-center
+                                ${(pageSG==='ListadosPyR')
+                                ?'bg-[#C9D991]'
+                                :'hover:bg-[#C9D991]'
+                            }
+                                `}
+                            onClick={()=>submitListadosPyR()}
+                        >
+                            <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
+                            <label className="font-light desktop-xl:text-lg">Listados PR</label>
+                        </div>
+                    }
+                </div>
 
 
                 {/* MENU ADMINISTRADORES */}
