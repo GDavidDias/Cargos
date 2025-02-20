@@ -14,6 +14,7 @@ const userRoutes = require('./src/routes/user.routes.js');
 const inscriptosTitRoutes = require('./src/routes/inscriptosTit.routes.js');
 const vacantesTitRoutes = require('./src/routes/vacantesTit.routes.js');
 const asignacionTitRoutes = require('./src/routes/asignacionTit.routes.js');
+const escuelasRoutes = require('./src/routes/escuelas.routes.js');
 
 
 const app = express();
@@ -64,6 +65,9 @@ app.use('/api', userRoutes);
 app.use('/api', inscriptosTitRoutes);
 app.use('/api', vacantesTitRoutes);
 app.use('/api', asignacionTitRoutes);
+
+//Rutas de modulos generales
+app.use('/api', escuelasRoutes);
 
 
 //server.listen(3001,()=>{console.log("Server Socket is Running")})

@@ -730,6 +730,7 @@ const VacantesTitDocentes = () => {
                                     <th className="w-[1vw] border-r-[1px] border-zinc-300">ID</th>
                                     <th className="w-[1vw] border-r-[1px] border-zinc-300">Orden</th>
                                     <th className="w-[20vw] border-r-[1px] border-zinc-300">Establecimiento</th>
+                                    {/*<th className="w-[5vw] border-r-[1px] border-zinc-300">Mapa</th>*/}
                                     <th className="w-[20vw] border-r-[1px] border-zinc-300">Cargo</th>
                                     <th className="w-[5vw] border-r-[1px] border-zinc-300">Modalidad</th>
                                     <th className="w-[6vw] border-r-[1px] border-zinc-300">Turno</th>
@@ -757,6 +758,7 @@ const VacantesTitDocentes = () => {
                                                     <span className="text-red-500">{vacante.nro_establecimiento}</span> - 
                                                     <span>{vacante.nombre_establecimiento}</span>
                                                 </td>
+                                                {/*<td className="w-[5vw] text-center text-purple-700"></td>*/}
                                                 <td className="w-[20vw] text-center text-purple-700">{vacante.cargo}</td>
                                                 <td className="w-[5vw] text-center">{vacante.modalidad}</td>
                                                 <td className="w-[6w] text-center">{vacante.turno}</td>

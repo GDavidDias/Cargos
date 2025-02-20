@@ -13,6 +13,7 @@ import ContentModalVerDatosVacanteTit from "../ContentModalVerDatosVacanteTit.js
 import { FaRegUserCircle, FaPowerOff  } from "react-icons/fa";
 import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit} from "react-icons/fa";
 import { IoTrash } from "react-icons/io5";
+import { SiGooglemaps } from "react-icons/si";
 import { fetchAllEspecialidades } from "../../utils/fetchAllEspecialidades";
 import Modal from "../Modal/Modal";
 import ContentModalNuevaVacanteTit from "../ContentModalNuevaVacanteTit/ContentModalNuevaVacanteTit";
@@ -646,6 +647,7 @@ const VacantesTit = () => {
                                     <th className="border-r-[1px] border-zinc-300">ID</th>
                                     <th className="border-r-[1px] border-zinc-300">Orden</th>
                                     <th className="border-r-[1px] border-zinc-300">Establecimiento</th>
+                                    <th className="border-r-[1px] border-zinc-300">Mapa</th>
                                     <th className="border-r-[1px] border-zinc-300">Cargo</th>
                                     <th className="border-r-[1px] border-zinc-300">Modalidad</th>
                                     <th className="border-r-[1px] border-zinc-300">Turno</th>
@@ -672,6 +674,13 @@ const VacantesTit = () => {
                                                 <td className="text-center"> 
                                                     <span className="text-red-500">{vacante.nro_establecimiento}</span> - 
                                                     <span>{vacante.nombre_establecimiento}</span>
+                                                </td>
+                                                <td 
+                                                    className="flex justify-center mt-2 text-blue-600 hover:scale-125 transition-all duration-500 cursor-pointer"
+                                                >
+                                                    <a href={vacante.link_map} target="_blank" rel="noopener noreferrer">
+                                                        <SiGooglemaps className="" />
+                                                    </a>
                                                 </td>
                                                 <td className="text-center">{vacante.cargo}</td>
                                                 <td className="text-center">{vacante.modalidad}</td>
