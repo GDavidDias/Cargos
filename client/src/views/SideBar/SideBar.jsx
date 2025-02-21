@@ -384,7 +384,10 @@ const SideBar = () => {
 
                 {/* MENU PROVISIONALES Y REEMPLAZANTES */}
                 <div className="ml-2 mt-6 text-white text-base">
-                    <label className="font-normal">Provisionales y Reemplazantes</label>
+                    {/**TITULO TRASLADOS Y CAMBIO DE FUNCION */}
+                    {!(configCompSG[8]?.active==="" && configCompSG[9]?.active==="" && configCompSG[10]?.active==="") &&
+                        <label className="font-normal desktop-xl:text-lg">Provisionales y Reemplazantes</label>
+                    }
                     {/**ENLACE A INSCRIPTOS DE PROVISIONAL Y REEMPLAZANTES */}
                     {(userSG.permiso!=3 && configCompSG[8]?.active=="1") &&
                         <div 
