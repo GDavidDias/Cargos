@@ -1,10 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import Paginador from "../Paginador/Paginador";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 //----------ICONOS
 import { FaRegUserCircle, FaPowerOff  } from "react-icons/fa";
+import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit} from "react-icons/fa";
+
+
+import { fetchAllEspecialidades } from "../../utils/fetchAllEspecialidades";
+import { fetchAllInscriptosPyR } from "../../utils/fetchAllInscriptosPyR";
+import { fetchAllVacantesPyR } from "../../utils/fetchAllVacantesPyR";
 
 const InscriptosPyR = () =>{
 
@@ -45,8 +51,72 @@ const InscriptosPyR = () =>{
 
     //E.L. para input busqueda Inscriptos
     const[inputSearch, setInputSearch]=useState('');
+
+    //E.L. donde se almacena el Listado de Inscriptos (carga inicial)
+    //y segun el tipo de listado segun configuracion
+    const[listadoInscriptosPyR, setListadoInscriptosPyR]=useState([]);
+
+    //EL guardo el id del listado de inscriptos de titularizacion
+    const[idListadoInscriptosPyR, setIdListadoInscriptosPyR]=useState('');
+
+    const componentRef = useRef(null);
+    const componentRefAsistencia = useRef(null);
+
+    //E.L. para input busqueda Vacantes
+    const[inputSearchVac, setInputSearchVac]=useState('');
+
     //---------------------------------------------------------
     //PROCESOS Y FUNCIONES
+
+    //Proc que trae el ID del listado configurado
+    const buscoIdlistadoInscrip = async(id_nivel) =>{
+        //Filtro configuracion para el nivel
+        const configFilterNivel = await configSG.config.filter((configNivel)=>configNivel.id_nivel==id_nivel);
+        //console.log('que trae configFilterNivel: ', configFilterNivel);
+
+        //Traigo el id_listado cargado en configuracion para:
+        //LISTADO DE INSCRIPTOS DE PROVISIONALES Y REEMPLAZANTES -> id_listado_inscriptos_pr
+        const idFilterListado = configFilterNivel[0]?.id_listado_inscriptos_pr;
+        //console.log('que tiene idFilterListado: ',idFilterListado);
+
+        //Guardo el id del listado de inscriptos
+        setIdListadoInscriptosPyR(idFilterListado);
+
+        //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO
+        await getInscriptosPyR(idFilterListado,currentPage,estadoInscripto,inputSearch,selectFiltroEspecialidad);
+        
+    };
+
+
+    //Este Proc carga el listado de inscriptos_tit al E.L
+    const getInscriptosPyR = async(id_listado,page,filtroAsignacion,valorBusqueda,filtroEspecialidad) =>{
+        let data;
+        const limit=10;
+        //console.log('que trae id_listado getInscriptosTitListado: ', id_listado);
+        if(id_listado){
+            //paso id_listado, limit y page
+            data = await fetchAllInscriptosPyR(id_listado, limit, page,filtroAsignacion, valorBusqueda,filtroEspecialidad);
+            //console.log('que trae data de fetchAllInscriptosPyR: ', data);
+
+            if(data.result?.length!=0){
+                setListadoInscriptosPyR(data.result); 
+                setPaginacion(data.paginacion);
+            }else{
+                setListadoInscriptosPyR([]);
+                setPaginacion(data.paginacion);
+            };
+        };
+    };
+
+
+    //Este Proc carga el listado de especialidades en E.L.
+    const cargaEspecidalidades=async()=>{
+        const data = await fetchAllEspecialidades();
+        //console.log('que tiene especialidades: ', data);
+        if(data?.length!=0){
+            setListadoEspecialidades(data);
+        }
+    };
 
     //Proc: traigo el ID del listado de Vacantes configurado
     const buscoIDListadoVacantes = async(id_nivel) =>{
@@ -56,15 +126,42 @@ const InscriptosPyR = () =>{
 
         //Traigo el id del listado cargado en configuracion para:
         //LISTADO DE VACANTES DE TITULARIZACION -> id_listado_vacantes_tit
-        const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_tit;
+        const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_pr;
         //console.log('que tiene idFilterListado: ',idFilterListado);
 
         //Guardo id_listado_vacantes_tit para usarlo despues
         setIdListadoVacantesPyR(idFilterListado);
 
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE VACANTES DISPONIBLES
-        await getVacantesDisponiblesTit(idFilterListado, currentPageVac,'disponibles',filtroEspecialidadVac,inputSearchVac)
+        await getVacantesDisponiblesPyR(idFilterListado, currentPageVac,'disponibles',filtroEspecialidadVac,inputSearchVac)
     };
+
+
+    //Este Proc carga el listado de VACANTES Disponibles al E.L
+    const getVacantesDisponiblesPyR = async(id_listado,page,filtroAsignacion,filtroEspecialidad,valorBusqueda, filtroRegion, filtroModalidad) =>{
+        //console.log('que ingresa a id_listado: ', id_listado);
+        //console.log('que ingresa a page: ', page);
+        //console.log('que ingresa a filtroAsignacion: ', filtroAsignacion);
+        //console.log('que ingresa a filtroEspecialidad: ', filtroEspecialidad);
+        //console.log('que ingresa a valorBusqueda: ', valorBusqueda);
+        //console.log('que ingresa a filtroRegion: ', filtroRegion);
+        //console.log('que ingresa a filtroModalidad: ', filtroModalidad);
+        let data;
+        const limit=10;
+        //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
+        if(id_listado){
+            data = await fetchAllVacantesPyR(id_listado,limit,page, filtroAsignacion, filtroEspecialidad, valorBusqueda, filtroModalidad, filtroRegion);
+            //console.log('que trae data de fetchAllVacantesPyR: ', data);
+
+            if(data.result?.length!=0){
+                setListadoVacantesDispTit(data.result); 
+                setPaginacionVac(data.paginacion);
+            }else{
+                setListadoVacantesDispTit([]);
+                setPaginacionVac(data.paginacion);
+            }
+        };
+    }; 
 
     //--------Proceso de seleccion de especialidad
     const handleSelectFiltroEspecialidad=(event)=>{
@@ -90,7 +187,19 @@ const InscriptosPyR = () =>{
         setInputSearch('')
         setCurrentPage(1);
     };
-    
+
+
+    const handlePageChange = (nuevaPagina)=>{
+        if(nuevaPagina>0 && nuevaPagina<=paginacion?.totalPages){
+            setCurrentPage(nuevaPagina);
+        };
+    };
+
+    const handleCancelFiltroEspecialidadLuom =()=>{
+        setSelectFiltroEspecialidad("");
+        setCurrentPage(1);
+    };
+
 
     //AL INGRESAR SE CARGA EL LISTADO DE INSCRIPTOS
     useEffect(()=>{
@@ -107,7 +216,7 @@ const InscriptosPyR = () =>{
     },[]);
 
     return(
-<div className="notranslate h-full w-full">
+        <div className="notranslate h-full w-full">
             {/* ENCABEZADO PAGINA */}
             <div className="bg-[#C9D991] h-[12vh] flex flex-row">
                 {/* TITULOS - NIVEL */}
@@ -233,7 +342,7 @@ const InscriptosPyR = () =>{
                             <tbody>
                                 {
                                     // filterListadoInscriptosMov?.map((inscripto, index)=>{
-                                    listadoInscriptosTit?.map((inscripto, index)=>{
+                                    listadoInscriptosPyR?.map((inscripto, index)=>{
                                         const colorFila = inscripto.vacante_asignada ?`bg-red-200` :(((inscripto.id_inscriptos_tit % 2)===0) ?`bg-zinc-200` :``)
                                         return(
                                             <tr 

@@ -2,7 +2,7 @@ import React from 'react'
 
 const ListadosPR = () => {
   return (
-    <div>ListadosPR</div>
+    <div>Listados de Pro</div>
   )
 }
 

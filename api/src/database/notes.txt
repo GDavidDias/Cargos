@@ -152,9 +152,14 @@ INSERT INTO usuarios (nombre, username, password, permiso,nivel) VALUE ('Usuario
 | id_listado_inscriptos_mov_compara | int  | YES  |     | NULL    |                |
 +-----------------------------------+------+------+-----+---------+----------------+
 
+ALTER TABLE configuracion ADD id_listado_inscriptos_pr INT(7) DEFAULT NULL;
+ALTER TABLE configuracion ADD id_listado_vacantes_pr INT(7) DEFAULT NULL;
+
 INSERT INTO configuracion(id_nivel, id_listado_inscriptos_mov, id_listado_vacantes_mov, id_listado_inscriptos_tit, id_listado_vacantes_tit, id_listado_inscriptos_mov_compara) VALUES(1, 1, 1, 2, 2, 3);
 INSERT INTO configuracion(id_nivel, id_listado_inscriptos_mov, id_listado_vacantes_mov, id_listado_inscriptos_tit, id_listado_vacantes_tit, id_listado_inscriptos_mov_compara) VALUES(2, 3, 3, 4, 4, 1);
 
+UPDATE configuracion SET id_listado_inscriptos_pr = 5 WHERE id_configuracion = 1;
+UPDATE configuracion SET id_listado_vacantes_pr = 5 WHERE id_configuracion = 1;
 ------------------------------------------------------
 --PARA INSERT listado_inscriptos
 INSERT INTO listado_inscriptos(descripcion, id_nivel) VALUES('2024 - Inscriptos Movimientos - Inicial',1);
@@ -197,7 +202,6 @@ INSERT INTO listado_vacantes(año, id_nivel, resolucion, descripcion) VALUES(202
 INSERT INTO vacantes_mov(id_listado_vac_mov,orden,establecimiento,obs_establecimiento,region,departamento,localidad,cargo,turno,modalidad,cupof,id_especialidad,datetime_creacion,obs_desactiva,zona) VALUES();
 
 INSERT INTO vacantes_mov(id_listado_vac_mov, orden, establecimiento, obs_establecimiento, region, departamento, localidad, cargo, turno, modalidad, cupof, id_especialidad, datetime_creacion, zona) VALUES(1,1,'25','','I','YAVI','YAVI','M.G.','MAÑANA','J.S.','141802',1,'2024-08-25 12:00:00','');
-
 
 -----------------------------------------
 -- PARA INSERT INSCRIPTOS MOVIMIENTOS

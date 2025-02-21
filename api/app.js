@@ -15,11 +15,11 @@ const inscriptosTitRoutes = require('./src/routes/inscriptosTit.routes.js');
 const vacantesTitRoutes = require('./src/routes/vacantesTit.routes.js');
 const asignacionTitRoutes = require('./src/routes/asignacionTit.routes.js');
 const escuelasRoutes = require('./src/routes/escuelas.routes.js');
+const inscriptosPyRRoutes = require('./src/routes/inscriptosPyR.routes.js');
+const vacantesPyRRoutes = require('./src/routes/vacantesPyR.routes.js');
 
 
 const app = express();
-
-
 
 
 //Configuracion de Middlewares
@@ -66,8 +66,13 @@ app.use('/api', inscriptosTitRoutes);
 app.use('/api', vacantesTitRoutes);
 app.use('/api', asignacionTitRoutes);
 
+//Rutas Modulo Provisionales y Reemplazantes
+app.use('/api', inscriptosPyRRoutes);
+app.use('/api', vacantesPyRRoutes);
+
 //Rutas de modulos generales
 app.use('/api', escuelasRoutes);
+
 
 
 //server.listen(3001,()=>{console.log("Server Socket is Running")})
