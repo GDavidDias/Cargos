@@ -16,7 +16,7 @@ module.exports = async(req,res)=>{
 
     let armaquery=`SELECT vpr.id_vacante_pr, vpr.id_listado_vac_pr, vpr.orden, vpr.nro_establecimiento, vpr.nombre_establecimiento, vpr.region, vpr.departamento, vpr.localidad, vpr.cargo, vpr.turno, vpr.modalidad, vpr.cupof, vpr.id_especialidad, vpr.datetime_creacion, vpr.obs_desactiva, vpr.zona, vpr.resolucion, apr2.datetime_asignacion , apr2.id_estado_asignacion, e.cue, e.link_map
             FROM vacantes_pr AS vpr
-            LEFT JOIN (SELECT apr.id_vacante_tit, apr.datetime_asignacion , apr.id_estado_asignacion FROM asignacion_pr AS apr WHERE apr.obs_desactiva IS NULL) AS apr2 ON vpr.id_vacante_pr = apr2.id_vacante_pr
+            LEFT JOIN (SELECT apr.id_vacante_pr, apr.datetime_asignacion , apr.id_estado_asignacion FROM asignacion_pr AS apr WHERE apr.obs_desactiva IS NULL) AS apr2 ON vpr.id_vacante_pr = apr2.id_vacante_pr
             LEFT JOIN escuelas AS e ON vpr.nro_establecimiento = e.numero_escuela
             WHERE (vpr.obs_desactiva IS NULL OR vpr.obs_desactiva = "")
             AND vpr.id_listado_vac_pr=${idListadoVacPyR}
@@ -84,7 +84,7 @@ module.exports = async(req,res)=>{
 
         const [result] = await pool.query(`${armaquery} LIMIT ${limit} OFFSET ${offset}`);
 
-        //console.log('que trae result getAllVacantesPyR: ', result);
+        console.log('que trae result getAllVacantesPyR: ', result);
 
         const [totalRows]= await pool.query(`SELECT COUNT(*) AS count FROM (${armaquery}) AS vacantes`)
 

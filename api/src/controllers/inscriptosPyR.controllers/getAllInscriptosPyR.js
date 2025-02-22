@@ -52,7 +52,7 @@ module.exports = async(req,res)=>{
     try{
         const [result] = await pool.query(`${armaquery} LIMIT ${limit} OFFSET ${offset}`);
 
-        console.log('que trae result getAllInscriptosPyR: ', result);
+        //console.log('que trae result getAllInscriptosPyR: ', result);
 
         const [totalRows]= await pool.query(`SELECT COUNT(*) AS count FROM (${armaquery}) AS inscriptos`)
 

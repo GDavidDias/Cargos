@@ -11,6 +11,8 @@ import { BiTransferAlt } from "react-icons/bi";
 import { fetchAllEspecialidades } from "../../utils/fetchAllEspecialidades";
 import { fetchAllInscriptosPyR } from "../../utils/fetchAllInscriptosPyR";
 import { fetchAllVacantesPyR } from "../../utils/fetchAllVacantesPyR";
+import { useModal } from "../../hooks/useModal";
+import ContentModalDatosInscriptoPyR from "../ContentModalDatosInscriptoPyR/ContentModalDatosInscriptoPyR";
 
 const InscriptosPyR = () =>{
 
@@ -20,6 +22,9 @@ const InscriptosPyR = () =>{
     //E.G que trae la configuracion de sistema
     const configSG = useSelector((state)=>state.config);
     const userSG = useSelector((state)=>state.user);    
+
+    //VENTANAS MODALES
+    const[isOpenModalEdit,openModalEdit,closeModalEdit]=useModal(false);
 
     //ESTADOS LOCALES Y VARIABLES
 
@@ -68,6 +73,12 @@ const InscriptosPyR = () =>{
     //E.L. para input busqueda Vacantes
     const[inputSearchVac, setInputSearchVac]=useState('');
 
+    const[datosInscriptoSelect, setDatosInscriptoSelect]=useState({});
+
+    const[cargoAsignado, setCargoAsignado]=useState('');
+
+    const[datosVacante, setDatosVacante]=useState({});
+    const[idInscriptoSelect, setIdInscriptoSelect]=useState('');
     //---------------------------------------------------------
     //PROCESOS Y FUNCIONES
 
@@ -202,6 +213,25 @@ const InscriptosPyR = () =>{
         setSelectFiltroEspecialidad("");
         setCurrentPage(1);
     };
+
+    const submitVerDatosInscripto = async(datosInscripto)=>{
+        //console.log('presiono en submitVerDatosInscripto');
+        //console.log('que tiene datos inscripto: ', datosInscripto);
+        setDatosInscriptoSelect(datosInscripto);
+        //traigo datos de la vacante asignada
+        if(datosInscripto.vacante_asignada!=null && datosInscripto.vacante_asignada!=''){
+            //console.log('TIENE CARGO ASIGNADO');
+            const data = await fetchVacanteAsignadaTit(datosInscripto.vacante_asignada);
+            console.log('que trae data de fetchVacanteAsignadaPyR: ',data);
+            setCargoAsignado(data[0]);
+            setDatosVacante(data[0])
+        }else{
+            setCargoAsignado('');
+            setDatosVacante({})
+        }
+
+        openModalEdit();
+    };    
 
 
     //AL INGRESAR SE CARGA EL LISTADO DE INSCRIPTOS
@@ -407,8 +437,8 @@ const InscriptosPyR = () =>{
             </div>
 
             {/* MODAL DE DATOS DEL INSCRPTO */}
-            {/* <ModalEdit isOpen={isOpenModalEdit} closeModal={closeModalEdit}>
-                <ContentModalDatosInscriptoTit
+            <ModalEdit isOpen={isOpenModalEdit} closeModal={closeModalEdit}>
+                <ContentModalDatosInscriptoPyR
                     datosFormInscripto = {formInscripto}
                     datosInscriptoSelect={datosInscriptoSelect}
                     idInscriptoSelect={idInscriptoSelect}
@@ -424,7 +454,7 @@ const InscriptosPyR = () =>{
                     handleCancelDatosInscriptoTit={seteoDatosInicialesFormInscripto}
                     userSG={userSG}
                 />
-            </ModalEdit> */}
+            </ModalEdit>
 
             {/* MODAL DE VACANTES DISPONIBLES */}
             {/* <ModalEdit isOpen={isOpenModalVac} closeModal={closeModalVac}>

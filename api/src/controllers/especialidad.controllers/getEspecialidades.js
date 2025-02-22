@@ -6,7 +6,7 @@ module.exports = async(req,res)=>{
         const [result] = await pool.query(`SELECT id_especialidad, descripcion, abreviatura, activo_visor_tit
             FROM especialidad`);
 
-        console.log('que trae result getEspecidalidades: ', result);
+        //console.log('que trae result getEspecidalidades: ', result);
 
         res.status(200).json(result);
         
