@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 //----------ICONOS
 import { FaRegUserCircle, FaPowerOff  } from "react-icons/fa";
 import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit} from "react-icons/fa";
-
+import { BiTransferAlt } from "react-icons/bi";
 
 import { fetchAllEspecialidades } from "../../utils/fetchAllEspecialidades";
 import { fetchAllInscriptosPyR } from "../../utils/fetchAllInscriptosPyR";
@@ -56,6 +56,9 @@ const InscriptosPyR = () =>{
     //y segun el tipo de listado segun configuracion
     const[listadoInscriptosPyR, setListadoInscriptosPyR]=useState([]);
 
+    //E.L donde se almacena listado de vacants disponibles
+    const[listadoVacantesDispPyR,setListadoVacantesDispPyR]=useState([]);    
+
     //EL guardo el id del listado de inscriptos de titularizacion
     const[idListadoInscriptosPyR, setIdListadoInscriptosPyR]=useState('');
 
@@ -92,11 +95,11 @@ const InscriptosPyR = () =>{
     const getInscriptosPyR = async(id_listado,page,filtroAsignacion,valorBusqueda,filtroEspecialidad) =>{
         let data;
         const limit=10;
-        //console.log('que trae id_listado getInscriptosTitListado: ', id_listado);
+        console.log('que trae id_listado getInscriptosPyRListado: ', id_listado);
         if(id_listado){
             //paso id_listado, limit y page
             data = await fetchAllInscriptosPyR(id_listado, limit, page,filtroAsignacion, valorBusqueda,filtroEspecialidad);
-            //console.log('que trae data de fetchAllInscriptosPyR: ', data);
+            console.log('que trae data de fetchAllInscriptosPyR: ', data);
 
             if(data.result?.length!=0){
                 setListadoInscriptosPyR(data.result); 
@@ -122,12 +125,12 @@ const InscriptosPyR = () =>{
     const buscoIDListadoVacantes = async(id_nivel) =>{
         //Filtro configuracion para el nivel
         const configFilterNivel = await configSG.config.filter((configNivel)=>configNivel.id_nivel==id_nivel);
-        //console.log('que trae configFilterNivel: ', configFilterNivel);
+        console.log('que trae configFilterNivel: ', configFilterNivel);
 
         //Traigo el id del listado cargado en configuracion para:
-        //LISTADO DE VACANTES DE TITULARIZACION -> id_listado_vacantes_tit
+        //LISTADO DE VACANTES DE PYR -> id_listado_vacantes_pr
         const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_pr;
-        //console.log('que tiene idFilterListado: ',idFilterListado);
+        console.log('que tiene idFilterListado: ',idFilterListado);
 
         //Guardo id_listado_vacantes_tit para usarlo despues
         setIdListadoVacantesPyR(idFilterListado);
@@ -139,25 +142,25 @@ const InscriptosPyR = () =>{
 
     //Este Proc carga el listado de VACANTES Disponibles al E.L
     const getVacantesDisponiblesPyR = async(id_listado,page,filtroAsignacion,filtroEspecialidad,valorBusqueda, filtroRegion, filtroModalidad) =>{
-        //console.log('que ingresa a id_listado: ', id_listado);
-        //console.log('que ingresa a page: ', page);
-        //console.log('que ingresa a filtroAsignacion: ', filtroAsignacion);
-        //console.log('que ingresa a filtroEspecialidad: ', filtroEspecialidad);
-        //console.log('que ingresa a valorBusqueda: ', valorBusqueda);
-        //console.log('que ingresa a filtroRegion: ', filtroRegion);
-        //console.log('que ingresa a filtroModalidad: ', filtroModalidad);
+        console.log('que ingresa a id_listado: ', id_listado);
+        console.log('que ingresa a page: ', page);
+        console.log('que ingresa a filtroAsignacion: ', filtroAsignacion);
+        console.log('que ingresa a filtroEspecialidad: ', filtroEspecialidad);
+        console.log('que ingresa a valorBusqueda: ', valorBusqueda);
+        console.log('que ingresa a filtroRegion: ', filtroRegion);
+        console.log('que ingresa a filtroModalidad: ', filtroModalidad);
         let data;
         const limit=10;
         //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
             data = await fetchAllVacantesPyR(id_listado,limit,page, filtroAsignacion, filtroEspecialidad, valorBusqueda, filtroModalidad, filtroRegion);
-            //console.log('que trae data de fetchAllVacantesPyR: ', data);
+            console.log('que trae data de fetchAllVacantesPyR: ', data);
 
             if(data.result?.length!=0){
-                setListadoVacantesDispTit(data.result); 
+                setListadoVacantesDispPyR(data.result); 
                 setPaginacionVac(data.paginacion);
             }else{
-                setListadoVacantesDispTit([]);
+                setListadoVacantesDispPyR([]);
                 setPaginacionVac(data.paginacion);
             }
         };

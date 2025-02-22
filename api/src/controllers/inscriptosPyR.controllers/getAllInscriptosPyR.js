@@ -3,7 +3,7 @@ const pool = require('../../database/connection.js');
 module.exports = async(req,res)=>{
     //TRAE TODOS LOS INSCRIPTOS DE LA TABLA inscriptos_pr
     //QUE SEAN DEL NIVEL INDICADO EN EL LISTADO id_listado_inscriptos
-    console.log('ingresa a getAllInscriptosTit');
+    console.log('ingresa a getAllInscriptosPyR');
     const {id_listado_inscriptos,limit,page,filtroAsignacion,filtroEspecialidad,filtroBusqueda} = req.body;
 
     console.log('que trae id_listado_inscriptos: ', id_listado_inscriptos);
@@ -16,7 +16,7 @@ module.exports = async(req,res)=>{
     const offset = (page-1)*limit;
 
 
-    let armaquery=`SELECT ipr.id_inscriptos_pr, ipr.dni, it.apellido, ipr.nombre, ipr.total, ipr.orden, ipr.id_especialidad, e.descripcion AS especialidad, e.abreviatura AS abreviatura_especialidad, ipr.id_listado_inscriptos, li.descripcion, apr2.id_vacante_tit AS vacante_asignada, ipr.id_estado_inscripto, ei.descripcion AS descripcion_estado_inscripto, ipr.observaciones
+    let armaquery=`SELECT ipr.id_inscriptos_pr, ipr.dni, ipr.apellido, ipr.nombre, ipr.total, ipr.orden, ipr.id_especialidad, e.descripcion AS especialidad, e.abreviatura AS abreviatura_especialidad, ipr.id_listado_inscriptos, li.descripcion, apr2.id_vacante_pr AS vacante_asignada, ipr.id_estado_inscripto, ei.descripcion AS descripcion_estado_inscripto, ipr.observaciones
             FROM inscriptos_pr AS ipr
             LEFT JOIN especialidad AS e ON ipr.id_especialidad = e.id_especialidad 
             LEFT JOIN listado_inscriptos AS li ON ipr.id_listado_inscriptos = li.id_listado_inscriptos
@@ -46,6 +46,8 @@ module.exports = async(req,res)=>{
     };
 
     armaquery+=` ORDER BY ipr.id_inscriptos_pr ASC `
+
+    console.log('como armaquery en getAllInscriptosPyR: ', armaquery);
 
     try{
         const [result] = await pool.query(`${armaquery} LIMIT ${limit} OFFSET ${offset}`);

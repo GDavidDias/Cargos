@@ -158,8 +158,8 @@ ALTER TABLE configuracion ADD id_listado_vacantes_pr INT(7) DEFAULT NULL;
 INSERT INTO configuracion(id_nivel, id_listado_inscriptos_mov, id_listado_vacantes_mov, id_listado_inscriptos_tit, id_listado_vacantes_tit, id_listado_inscriptos_mov_compara) VALUES(1, 1, 1, 2, 2, 3);
 INSERT INTO configuracion(id_nivel, id_listado_inscriptos_mov, id_listado_vacantes_mov, id_listado_inscriptos_tit, id_listado_vacantes_tit, id_listado_inscriptos_mov_compara) VALUES(2, 3, 3, 4, 4, 1);
 
-UPDATE configuracion SET id_listado_inscriptos_pr = 5 WHERE id_configuracion = 1;
-UPDATE configuracion SET id_listado_vacantes_pr = 5 WHERE id_configuracion = 1;
+UPDATE configuracion SET id_listado_inscriptos_pr = 6 WHERE id_configuracion = 2;
+UPDATE configuracion SET id_listado_vacantes_pr = 6 WHERE id_configuracion = 2;
 ------------------------------------------------------
 --PARA INSERT listado_inscriptos
 INSERT INTO listado_inscriptos(descripcion, id_nivel) VALUES('2024 - Inscriptos Movimientos - Inicial',1);

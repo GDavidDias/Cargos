@@ -12,11 +12,11 @@ export const fetchAllInscriptosPyR = async(id_listado,limit,page,filtroAsignacio
         "filtroBusqueda":valorBusqueda,
         "filtroEspecialidad":filtroEspecialidad
     };
-    //console.log('que tiene datos que pasa a body en fetchAllInscriptosPyR: ', dataBody);
+    console.log('que tiene datos que pasa a body en fetchAllInscriptosPyR: ', dataBody);
 
     try{
-        const {data} = await axios.post(`${URL}/api/inscriptospyr`,dataBody);
-        //console.log('que trae data de fetchAllInscriptosPyR: ', data);
+        const {data} = await axios.post(`${URL}/api/inscriptospr`,dataBody);
+        console.log('que trae data de fetchAllInscriptosPyR: ', data);
         return data;
         
     }catch(error){
