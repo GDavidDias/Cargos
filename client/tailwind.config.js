@@ -12,6 +12,7 @@ export default {
       'desktop-md':'1024px',
       'desktop-lg':'1280px',
       'desktop-xl':'1600px',
+      'desktop-fullhd':'1920px',
 
     },
     extend: {
@@ -37,6 +38,8 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+     require('@tailwindcss/line-clamp'),
+  ],
 }
 

@@ -9,6 +9,7 @@ const getVacanteMovInscripto = require('./getVacanteMovInscripto.js');
 const getVacanteMovAsignadaInscripto = require('./getVacanteMovAsignadaInscripto.js');
 const getAllVacantesMovAsignadas = require('./getAllVacantesMovAsignadas.js');
 const getRepoASignacionesRealizadas = require('./getRepoAsignacionesRealizadas.js');
+const getHayNulosMov = require('./getHayNulosMov.js');
 
 
 module.exports={
@@ -22,7 +23,8 @@ module.exports={
     getVacanteMovInscripto,
     getVacanteMovAsignadaInscripto,
     getAllVacantesMovAsignadas,
-    getRepoASignacionesRealizadas
+    getRepoASignacionesRealizadas, 
+    getHayNulosMov,
 };
 
 // Traer todas las vacantes

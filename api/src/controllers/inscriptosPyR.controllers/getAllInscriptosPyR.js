@@ -35,7 +35,7 @@ module.exports = async(req,res)=>{
 
     if(filtroEspecialidad && filtroEspecialidad!=''){
         armaquery+=` AND ipr.id_especialidad IN (${filtroEspecialidad}) `
-    }
+    };
 
     if(filtroBusqueda && filtroBusqueda!=''){
         armaquery+=` AND (LOWER(ipr.apellido) LIKE '%${filtroBusqueda.toLowerCase()}%' 

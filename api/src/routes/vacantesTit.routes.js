@@ -8,7 +8,8 @@ const {
     delVacanteTit,
     createVacanteTit,
     getAllVacantesFiltroAsignacionTit,
-    getVacantesDispTit
+    getVacantesDispTit,
+    getHayNulosTit
 }= require('../controllers/vacantesTit.controllers');
 
 const router = Router();
@@ -37,5 +38,7 @@ router.post('/vacantesasignatit', getAllVacantesFiltroAsignacionTit);
 //trae todas las vacantes disponibles
 router.post('/vacantesdisptit', getVacantesDispTit);
 
+//Trae si hay nulos en estado movimiento
+router.post('/haynulostit', getHayNulosTit);
 
 module.exports = router;

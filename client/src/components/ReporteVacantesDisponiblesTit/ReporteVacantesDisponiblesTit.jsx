@@ -1,4 +1,6 @@
 const ReporteVacantesDisponiblesTit = ({listado})=>{
+    console.log('listado en >>> ReporteVacantesDisponiblesTit: ', listado);
+
     return(
         <div>
             <table className="border-[1px] bg-slate-50 w-full page-break-after border">

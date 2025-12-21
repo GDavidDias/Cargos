@@ -18,6 +18,9 @@ import VacantesTitDocentes from "../../components/VacantesTit/VacantesTitDocente
 import VacantesTitDocentesInicial from "../../components/VacantesTit/VacantesTitDocentesInicial";
 import VacantesPyR from "../../components/VacantesPyR/VacantesPyR";
 import ListadosPR from "../../components/ListadosPR/ListadosPR";
+import VacantesMovDocentes from "../../components/VacantesMov/VacantesMovDocentes";
+import VisorAsignacionesMov from "../../components/VisorAsignacionesMov/VisorAsignacionesMov";
+import VisorAsignacionesTit from "../../components/VisorAsignacionesTit/VisorAsignacionesTit";
 
 const Home = () =>{
     const dispatch = useDispatch();
@@ -37,7 +40,13 @@ const Home = () =>{
                 break;
             case 'Listados': //Pantalla de Listados
                 setContent(<Listados/>);
-                break;                
+                break;           
+            case 'VacantesMovDocentes': //Pantalla de VACANTES MOVIMIENTOS que pueden visualizar los docentes
+                setContent(<VacantesMovDocentes/>);
+                break;     
+            case 'VisorAsignacionesMov': //Pantalla de VACANTES MOVIMIENTOS que pueden visualizar los docentes
+                setContent(<VisorAsignacionesMov/>);
+                break;     
             case 'InscriptosTit':
                 setContent(<InscriptosTit/>);
                 break;
@@ -46,6 +55,9 @@ const Home = () =>{
                 break;
             case 'ListadosTit': //Pantalla de Listados
                 setContent(<ListadosTit/>);
+                break;
+            case 'VisorAsignacionesTit': //Pantalla de VACANTES TITULARIZACIONES que pueden visualizar los docentes
+                setContent(<VisorAsignacionesTit/>);
                 break;
             case 'Asignaciones': //Pantalla de Asignaciones Realizadas, segun tipo de movimiento y nivel
                 setContent(<AsignacionesMov/>);
@@ -74,6 +86,7 @@ const Home = () =>{
             case 'ListadosPyR': //Pantalla de LISTADOS de PROVISIONALES y REEMPLAZANTES
                 setContent(<ListadosPR/>);
                 break;
+
         }
     },[pageSG]);
 

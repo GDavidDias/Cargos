@@ -47,6 +47,7 @@ module.exports = async(req,res)=>{
         if(!isNaN(filtroBusqueda)){
             //SI ES UN NUMERO BUSCARLO EN NUMERO DE ESTABLECIMIENTO
             armaquery+=` AND (LOWER(vt.nro_establecimiento) LIKE '${filtroBusqueda.toLowerCase()}%' 
+
             ) `
 
         }else{

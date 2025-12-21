@@ -116,8 +116,9 @@ const PaginaDesignacionTitular = ({datosInscripto, datosVacante,id_nivel}) =>{
                 </div>
             </div>
             {/* PIE IMPRESION */}
-            <div className='flex flex-row h-[12vh] justify-center items-end'>
-                {/* <p className='text-base font-semibold w-[200px] border-t-[1px] border-gray-600 text-center'>Firma y Sello</p> */}
+            <div className='flex flex-row h-[18vh] justify-start items-end'>
+                <p className='text-[0.7rem] font-semibold border-[1px] border-b-gray-500'>Nota: </p>
+                <p className='text-[0.7rem] border-[1px] border-b-gray-500'>La presente queda sujeta a la Resolucion de sumarios, recursos, impugnaciones u observaciones conformelo prevee la normativa vigente.</p>
             </div>
         </div>
     )

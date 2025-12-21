@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import { useReactToPrint } from 'react-to-print';
 import * as XLSX from 'xlsx';
 
+
 //-------ICONOS--------
 import { FaRegUserCircle, FaPowerOff  } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -64,7 +65,7 @@ const ListadosTit = () => {
         const orderBy = "";
         
         const data = await fetchVacantesDispTit(idListVacMov,limit,page,valorBusqueda,filtroEspecialidad,orderBy);
-        console.log('que trae data de fetchVacantesDispMov: ', data.result);
+        console.log('===> que trae data de fetchVacantesDispTit: ', data);
         if(data.result.length!=0){
             setlistado(data.result);
         }
@@ -76,9 +77,9 @@ const ListadosTit = () => {
         //setlistado([])
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE ASIGNACIONES REALIZADAS        
         const data = await fetchAllAsignacionesRealizadasTit(idListVacMov);
-        console.log('que trae data de fetchRepoAsignacionesRealizadas: ', data);
-        if(data.length!=0){
-            setlistado(data);
+        console.log('===> que trae data de fetchAllAsignacionesRealizadasTit: ', data);
+        if(data.result.length!=0){
+            setlistado(data.result);
         }
     };
 
@@ -89,7 +90,7 @@ const ListadosTit = () => {
         const page = 1;
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE ESTADOS DE INSCRIPTOS
         const data = await fetchEstadoInscriptosTit(idListVacMov, limit, page);
-        console.log('que trae data de fetchEstadoInscriptosTit: ', data.result);
+        console.log('===> que trae data de fetchEstadoInscriptosTit: ', data);
         if(data.result.length!=0){
             setlistado(data.result);
         }
@@ -114,16 +115,19 @@ const ListadosTit = () => {
       `
     }); 
 
-    
+
     // Función para exportar la tabla a un archivo Excel
     const handleExportToExcel = () => {
         // Crea una hoja de cálculo
         let worksheet;
-        if(reporte==='asignacionesRealizadas'){
+        if(reporte==='asignacionesRealizadas'){ 
+            console.log('exportando asignaciones realizadas');
             worksheet = XLSX.utils.json_to_sheet(formateaListadoAsignacionesRealizadas(listado));
         }else if(reporte==='vacantesDisponibles'){
+            console.log('exportando vacantes disponibles');
             worksheet = XLSX.utils.json_to_sheet(formateaListadoVacantesDisponibles(listado));
         }else if(reporte==='estadoinscriptos'){
+            console.log('exportando estado inscriptos');
             worksheet = XLSX.utils.json_to_sheet(formateaListadoEstadoInscriptos(listado));
         }
         
@@ -145,6 +149,7 @@ const ListadosTit = () => {
     }; 
 
     function formateaListadoVacantesDisponibles (datos){
+        console.log('formateando vacantes disponibles: ', datos);
         const datosformat = datos.map(objeto=>({
             'Orden':objeto.orden, 
             'Cargo':objeto.cargo, 
@@ -177,6 +182,7 @@ const ListadosTit = () => {
       };
 
     function formateaListadoAsignacionesRealizadas (datos){
+        console.log('formateando asignaciones realizadas: ', datos);
         const datosformat = datos.map(objeto=>({
             'Dni':objeto.dni, 
             'Total':objeto.total, 
@@ -190,7 +196,9 @@ const ListadosTit = () => {
             'Turno':objeto.turno,
             'Modalidad':objeto.modalidad,
             'Cupof':objeto.cupof,
-            'N° Escuela que Toma':objeto.nro_escuela_toma, 
+            'N° Escuela que Toma':objeto.nombre_establecimiento
+            ? `${objeto.nro_escuela_toma} - ${objeto.nombre_establecimiento}`
+            : objeto.nro_escuela_toma, 
             'Region':objeto.region,
             'Departamento':objeto.departamento,
             'Localidad':objeto.localidad,
@@ -203,6 +211,7 @@ const ListadosTit = () => {
 
 
     function formateaListadoEstadoInscriptos (datos){
+        console.log('formateando estado inscriptos: ', datos);
         const datosformat = datos.map(objeto=>({
             'Dni':objeto.dni, 
             'Total':objeto.total,

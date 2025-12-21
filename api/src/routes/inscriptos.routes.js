@@ -7,12 +7,12 @@ const {
     validateDniAsignado,
     updateEstadoAsignadoInscripto,
     validateLegajoAsignado,
-    validateLegajoDisponibilidad
+    //validaLegajoDisponibilidad,
+    getPageInscriptosMovPorDni,
 } = require('../controllers/inscriptosMov.controllers');
 const validaLegajoDisponibilidad = require('../controllers/inscriptosMov.controllers/validaLegajoDisponibilidad');
 
 const router = Router();
-
 
 //Traer todos los inscriptos.
 router.post('/inscriptosmov', getAllInscriptosMov);
@@ -34,5 +34,8 @@ router.post('/validatelegajoasignado', validateLegajoAsignado);
 
 //VAlida si un legajo esta en disponibilidad
 router.post('/validalegajodisponibilidad', validaLegajoDisponibilidad);
+
+//Traer pagina de inscriptos por DNI
+router.post('/getpagednimov', getPageInscriptosMovPorDni);
 
 module.exports = router;

@@ -13,6 +13,7 @@ import logo from '../../assets/JUNTA-04-xs.png';
 import { changepass } from "../../utils/changepass";
 import { fetchConfigComponente } from "../../utils/fetchConfigComponente";
 import { fetchConfigEspVisorTit } from "../../utils/fetchConfigEspVisorTit";
+import { fetchConfigEspVisorMov } from "../../utils/fetchConfigEspeVisorMov";
 
 
 const Landing = () => {
@@ -132,7 +133,7 @@ const Landing = () => {
             password:'invitadoPri'
         };
 
-        //console.log('Presiono Nivel Primario');
+        console.log('Presiono Nivel Primario');
         const datosNivel=[{id_nivel:2, descripcion:'PRIMARIO'}];
         dispatch(setNivel(datosNivel));
 
@@ -153,13 +154,21 @@ const Landing = () => {
 
         /**Trae la configuracion de los componentes */
         const dataComp = await fetchConfigComponente();
-        //console.log('que trae fetchConfigComponente: ', dataComp);
+        console.log('que trae fetchConfigComponente: ', dataComp);
         dispatch(setConfigComp(dataComp));
 
         /**Trae configuracion de Especialidad para Visor de Vacantes */
-        const dataEspeVisorVac = await fetchConfigEspVisorTit();
+
+        //--VISOR DE TITULARIZACION---
+        //const dataEspeVisorVac = await fetchConfigEspVisorTit();
         //console.log('que trae fetchConfigEspVisorTit: ', dataEspeVisorVac);
-        dispatch(setEspecialidadVisorTit(dataEspeVisorVac));
+        //dispatch(setEspecialidadVisorTit(dataEspeVisorVac));
+        
+        //---VISOR DE MOVIMIENTOS---
+        const dataEspeVisorVac = await fetchConfigEspVisorMov();
+        console.log('que trae fetchConfigEspVisorMov: ', dataEspeVisorVac);
+        dispatch(setEspecialidadVisorTit(dataEspeVisorVac));//se usa mismo set para ambos Tit y Mov
+
     };
 
     const ModalChangePass = ()=>{
@@ -240,7 +249,7 @@ const Landing = () => {
                 <div className="h-28  flex flex-col pl-4 justify-center items-center">
                     <label className="desktop:text-[38px] movil:text-xl font-bold text-white" translate='no'>Sistema Entrega de Cargos</label>
                     {/* <label className="desktop:text-[25px] movil:text-lg text-white font-semibold mt-4" translate='no'>Nivel {configSG.nivel?.descripcion}</label> */}
-                    <label className="desktop:text-[25px] movil:text-2xl text-white font-semibold mt-4" translate='no'>Nivel Primario</label>
+                    <label className="desktop:text-[25px] movil:text-2xl text-white font-semibold mt-4" translate='no'>Nivel Primario </label>
                 </div>
             </div>
 

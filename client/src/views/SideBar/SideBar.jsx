@@ -28,6 +28,10 @@ const SideBar = () => {
         dispatch(outUser());
     };
 
+    //?---------------------------------------
+    //?------  SECCION DE MOVIMIENTOS  --------
+    //?---------------------------------------
+
     const submitInscriptosMov =()=>{
         //
         console.log('Presiona en Inscriptos Movimientos');
@@ -41,10 +45,16 @@ const SideBar = () => {
     };
 
     //PROCEDIMIENTO QUE LLAMA A PANTALLA DE VACANTES PARA DOCENTES
-    const submitVacMovDoc = () =>{
-        console.log('Presiona en VacMovDoc');
-        dispatch(setPage('VacMovDoc'))
+    const submitVacantesMovDocentes = () =>{
+        //
+        console.log('Presiona en Visor Vacantes Movimientos');
+        dispatch(setPage('VacantesMovDocentes'))
     };
+
+    //const submitVacMovDoc = () =>{
+    //    console.log('Presiona en VacMovDoc');
+    //    dispatch(setPage('VacMovDoc'))
+    //};
 
     const submitListados = () =>{
         //
@@ -52,6 +62,21 @@ const SideBar = () => {
         dispatch(setPage('Listados'))
     };
 
+    const submitVisorAsignacionesMov = () =>{
+        //
+        console.log('Presiona en Visor Asignaciones Mov');
+        dispatch(setPage('VisorAsignacionesMov'))
+    };
+
+    const submitVisorAsignacionesTit = () =>{
+        //
+        console.log('Presiona en Visor Asignaciones Tit');
+        dispatch(setPage('VisorAsignacionesTit'))
+    };
+
+    //?---------------------------------------
+    //?------  SECCION DE TITULARIZACIONES  --------
+    //?---------------------------------------
     const submitInscriptosTit = () =>{
         //
         console.log('Presiona en Inscriptos Titularizacion');
@@ -82,6 +107,10 @@ const SideBar = () => {
         dispatch(setPage('ListadosTit'))
     };
 
+
+    //?---------------------------------------
+    //?------  SECCION DE PROVISIONALES Y REEMPLAZANTES  --------
+    //?---------------------------------------
     const submitInscriptosPyR = () =>{
         //
         console.log('Presiona sobre Inscriptos Provisionales y Reemplazantes');
@@ -100,6 +129,9 @@ const SideBar = () => {
         dispatch(setPage('ListadosPyR'))
     };
 
+    //?---------------------------------------
+    //?------  SECCION DE CONFIGURACION  --------
+    //?---------------------------------------
     const submitConfigPage = () =>{
         //
         console.log('Presiona sobre Configuracion');
@@ -148,6 +180,7 @@ const SideBar = () => {
         if(userSG.username===''){
             navigate('/');
         }else if(userSG.username==='invitadoPri'){ //modificar para invitadosPri
+            //dispatch(setPage('VacantesMovDocentes'));
             dispatch(setPage('VacantesTitDocentes'));
             /**
              if(userSG.permiso===3){
@@ -260,7 +293,7 @@ const SideBar = () => {
                     }
 
                     {/**ENLACE A VACANTES */}
-                    {(configCompSG[1]?.active=="1") &&
+                    {(userSG.permiso!=3 && configCompSG[1]?.active=="1") &&
                         <div 
                             className={` rounded p-[4px] flex flex-row justify-start items-center
                                 ${(pageSG==='VacantesMov')
@@ -291,7 +324,39 @@ const SideBar = () => {
                         </div>
                     }
 
+                    {/**ENLACE A VISOR DE ASIGNACIONES DE MOVIMIENTOS */}
+                    {(userSG.permiso!=3 && userSG.permiso!=4 && configCompSG[12]?.active=="1") &&
+                        <div 
+                            className={` rounded p-[4px] flex flex-row justify-start items-center
+                                ${(pageSG==='Listados')
+                                ?'bg-[#C9D991] text-[#7C8EA6]'
+                                :'hover:bg-[#C9D991]'
+                            }
+                                `}
+                            onClick={()=>submitVisorAsignacionesMov()}
+                        >
+                            <CgList className="text-xl font-bold mr-2"/>
+                            <label className="font-light desktop-xl:text-lg">Visor Asignaciones</label>
+                        </div>
+                    }
+
+                    {/**ENLACE A VACANTES DE MOVIMIENTOS VISUALIZACION PARA DOCENTES */}
+                    {(userSG.permiso!=4 && configCompSG[11]?.active=="1") &&
+                        <div 
+                            className={` rounded p-[4px] flex flex-row justify-start items-center
+                                ${(pageSG==='VacantesMovDocentes')
+                                ?'bg-[#C9D991]'
+                                :'hover:bg-[#C9D991]'
+                            }
+                                `}
+                            onClick={()=>submitVacantesMovDocentes()}
+                        >
+                            <PiListMagnifyingGlassBold className="text-xl font-bold mr-2"/>
+                            <label className="font-light desktop-xl:text-lg">Listado de Vacantes</label>
+                        </div>
+                    }
                 </div>
+
 
                 {/* MENU TITULARIZACION */}
                 <div className="ml-2 mt-6 text-white text-base">
@@ -345,6 +410,22 @@ const SideBar = () => {
                         >
                             <CgList className="text-xl font-bold mr-2"/>
                             <label className="font-light desktop-xl:text-lg">Listados y Metricas</label>
+                        </div>
+                    }
+
+                    {/**ENLACE A VISOR DE ASIGNACIONES DE TITULARES */}
+                    {(userSG.permiso!=3 && userSG.permiso!=4 && configCompSG[13]?.active=="1") &&
+                        <div 
+                            className={` rounded p-[4px] flex flex-row justify-start items-center
+                                ${(pageSG==='Listados')
+                                ?'bg-[#C9D991] text-[#7C8EA6]'
+                                :'hover:bg-[#C9D991]'
+                            }
+                                `}
+                            onClick={()=>submitVisorAsignacionesTit()}
+                        >
+                            <CgList className="text-xl font-bold mr-2"/>
+                            <label className="font-light desktop-xl:text-lg">Visor Asignaciones</label>
                         </div>
                     }
 
@@ -474,6 +555,7 @@ const SideBar = () => {
                     title="Salir"
                     onClick={()=>logOut()}
                 />
+                <div className="flex justify-center text-white text-sm">V2.0</div>
             </div>
         </nav>
     )

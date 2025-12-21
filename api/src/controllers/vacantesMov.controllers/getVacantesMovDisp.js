@@ -3,7 +3,7 @@ const pool = require('../../database/connection.js');
 module.exports = async(req,res)=>{
     //TRAE TODAS LAS VACANTES DE MOVIMIENTOS DISPONIBLES 
     //SEGUN EL NIVEL INDICADO EN EL ID_LISTADO_VAC_MOV -> LO PASO POR BODY
-    const{idListadoVacMov, limit, page, filtroBusqueda, filtroEspecialidad, orderBy, typeOrder} = req.body;
+    const{idListadoVacMov, limit, page, filtroBusqueda, filtroEspecialidad, orderBy, typeOrder, filtroRegion} = req.body;
     console.log('que trae idListadoVacMov: ', idListadoVacMov);
     console.log('que trae limit: ', limit);
     console.log('que trae page: ', page);
@@ -11,10 +11,11 @@ module.exports = async(req,res)=>{
     console.log('que trae filtroEspecialidad: ', filtroEspecialidad);
     console.log('que trae orderBy: ', orderBy);
     console.log('que trae typeOrder: ', typeOrder);
-     
+    console.log('que trae filtroRegion: ', filtroRegion);
+
     const offset = (page-1)*limit;
 
-    let armaquery=`SELECT vm.id_vacante_mov, vm.id_listado_vac_mov, vm.orden, vm.establecimiento, vm.obs_establecimiento, vm.region, vm.departamento, vm.localidad, vm.cargo, vm.turno, vm.modalidad, vm.cupof, vm.id_especialidad, vm.datetime_creacion, vm.obs_desactiva, vm.zona, vm.resolucion, am2.datetime_asignacion , am2.id_estado_asignacion
+    let armaquery=`SELECT vm.id_vacante_mov, vm.id_listado_vac_mov, vm.orden, vm.establecimiento, vm.obs_establecimiento, vm.region, vm.departamento, vm.localidad, vm.cargo, vm.turno, vm.modalidad, vm.cupof, vm.id_especialidad, vm.datetime_creacion, vm.obs_desactiva, vm.zona, vm.resolucion, am2.datetime_asignacion , am2.id_estado_asignacion, vm.datetime_creacion
             FROM vacantes_mov AS vm
             LEFT JOIN (SELECT am.id_vacante_mov, am.datetime_asignacion , am.id_estado_asignacion FROM asignacion_mov AS am WHERE am.obs_desactiva IS NULL) AS am2 ON vm.id_vacante_mov = am2.id_vacante_mov
             WHERE am2.datetime_asignacion IS NULL 
@@ -22,12 +23,38 @@ module.exports = async(req,res)=>{
             AND vm.id_listado_vac_mov=${idListadoVacMov} 
             `;
 
-
     if(filtroEspecialidad && filtroEspecialidad!=''){
         armaquery += ` AND vm.id_especialidad IN(${filtroEspecialidad}) `
     };
 
+    if(filtroRegion && filtroRegion!=''){
+        armaquery += ` AND vm.region LIKE ('${filtroRegion}') `
+    };
+
     if(filtroBusqueda && filtroBusqueda!=''){
+        if(!isNaN(filtroBusqueda)){
+            //SI ES UN NUMERO BUSCARLO EN NUMERO DE ESTABLECIMIENTO
+            armaquery+=` AND (LOWER(vm.establecimiento) LIKE '${filtroBusqueda.toLowerCase()}%' 
+
+            ) `
+
+        }else{
+            //SI NO ES UN  NUMERO, APLICO BUSQUEDAS EN OTROS CAMPOS
+            armaquery+=` AND (LOWER(vm.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%'  
+                            OR LOWER(vm.establecimiento) LIKE '${filtroBusqueda.toLowerCase()}%'
+                            
+            ) `
+             /**
+              * 
+             OR LOWER(vm.obs_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+             OR LOWER(vm.modalidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+             OR LOWER(vm.cupof) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+             OR LOWER(vm.region) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+              
+              */
+        }
+
+        /**
         armaquery+=` AND (LOWER(vm.establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                             OR LOWER(vm.obs_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                             OR LOWER(vm.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
@@ -35,6 +62,7 @@ module.exports = async(req,res)=>{
                             OR LOWER(vm.cupof) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                             OR LOWER(vm.region) LIKE '%${filtroBusqueda.toLowerCase()}%' 
                     ) `
+                     */
     };
     
     // if(filtroBusqueda && filtroBusqueda!=''){
@@ -55,7 +83,17 @@ module.exports = async(req,res)=>{
     //     armaquery+= ` ORDER BY vm.id_vacante_mov ASC`;
     // }
 
-    armaquery+= ` ORDER BY vm.id_vacante_mov ASC`
+    if(filtroBusqueda && filtroBusqueda!=''){
+        if(!isNaN(filtroBusqueda)){
+            armaquery+= ` ORDER BY vm.establecimiento ASC`
+        }else{
+            armaquery+= ` ORDER BY vm.localidad ASC`    
+        }
+    }else{
+        armaquery+= ` ORDER BY vm.id_vacante_mov ASC`
+    }
+
+    /*armaquery+= ` ORDER BY vm.id_vacante_mov ASC`*/
 
 
     try{
@@ -65,9 +103,11 @@ module.exports = async(req,res)=>{
         //y que el subselect de asignacion_mov solo traiga las asignaciones ACTIVAS -> am.obs_desactiva IS NULL
         //DESPUES VER SI SE IMPLEMENTA EL ESTADO DE ASIGNACION, SOLO TRAER COMO DISPONIBLES UNA SIGNACION RECHAZADA, YA QUE LAS ACEPTADAS ESTAN ASIGNADAS O LAS PENDIENTES ESTAN EN PROCESO DE ASIGNACION.
 
+        console.log('como arma la query getVacantesMovDisp: ', armaquery);
+
         const [result] = await pool.query(`${armaquery} LIMIT ${limit} OFFSET ${offset}`);
 
-        console.log('que trae result getVacantesMovDisp: ', result);
+        //console.log('que trae result getVacantesMovDisp: ', result);
 
         const [totalRows] = await pool.query(`SELECT COUNT(*) AS count FROM (${armaquery}) AS vacantes`);
 

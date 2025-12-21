@@ -74,7 +74,6 @@ app.use('/api', vacantesPyRRoutes);
 app.use('/api', escuelasRoutes);
 
 
-
 //server.listen(3001,()=>{console.log("Server Socket is Running")})
 
 //module.exports = app;

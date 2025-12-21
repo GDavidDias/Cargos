@@ -4,7 +4,8 @@ const{
     createAsignacionMov,
     editAsignacionMov,
     getAsignacionByVacante,
-    delAsignacionMov
+    delAsignacionMov,
+    getAllAsignacionesMov
 } = require('../controllers/asignacionMov.controllers');
 
 const router = Router();
@@ -21,5 +22,8 @@ router.post('/asignacionbyvacante/:idVacante', getAsignacionByVacante);
 
 //actualiza el campo obsDesactiva, para desactivar la asignacion (eliminarla)
 router.post('/delasignacionmov/:idAsignacionMov', delAsignacionMov);
+
+//Trae todas las asignaciones realizadas en la tabla asignacion_mov
+router.post('/allasignacionesmov', getAllAsignacionesMov);
 
 module.exports = router;

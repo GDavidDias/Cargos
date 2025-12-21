@@ -23,7 +23,7 @@ export const fetchAllInscriptosMov = async(id_listado,limit,page,idTipoInscripto
 
     try{
         const {data} = await axios.post(`${URL}/api/inscriptosmov`,dataBody);
-        //console.log('que trae data de fetchAllInscriptosMov: ', data);
+        console.log('que trae data de fetchAllInscriptosMov: ', data);
         return data;
         
     }catch(error){

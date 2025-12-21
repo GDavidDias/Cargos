@@ -11,6 +11,7 @@ const initialState = {
     especialidadVisorTit:[]
 }
 
+
 export const configSlice = createSlice({
     name:'config',
     initialState,

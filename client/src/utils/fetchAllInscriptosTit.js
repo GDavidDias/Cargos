@@ -3,7 +3,7 @@ import { URL } from '../../varGlobal';
 
 
 export const fetchAllInscriptosTit = async(id_listado,limit,page,filtroAsignacion,valorBusqueda,filtroEspecialidad) => {
-    
+
     const dataBody={
         "id_listado_inscriptos":id_listado,
         "limit":limit,
@@ -16,7 +16,7 @@ export const fetchAllInscriptosTit = async(id_listado,limit,page,filtroAsignacio
 
     try{
         const {data} = await axios.post(`${URL}/api/inscriptostit`,dataBody);
-        //console.log('que trae data de fetchAllInscriptosTit: ', data);
+        console.log('que trae data de fetchAllInscriptosTit: ', data);
         return data;
         
     }catch(error){

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import Paginador from "../Paginador/Paginador";
 import { useNavigate } from "react-router-dom";
 import {fetchAllVacantesTit} from "../../utils/fetchAllVacantesTit";
+import { fetchAllVacantesMov } from "../../utils/fetchAllVacantes";
 import {useModal} from '../../hooks/useModal';
 import ModalEdit from "../ModalEdit/ModalEdit";
 import ContentModalVerDatosVacanteTit from "../ContentModalVerDatosVacanteTit.js/ContentModalVerDatosVacanteTit";
@@ -13,24 +14,38 @@ import ContentModalVerDatosVacanteTit from "../ContentModalVerDatosVacanteTit.js
 import { FaRegUserCircle, FaPowerOff  } from "react-icons/fa";
 import { FaDotCircle, FaSearch, FaEye, FaTimes, FaEdit} from "react-icons/fa";
 import { IoTrash } from "react-icons/io5";
-import { SiGooglemaps } from "react-icons/si";
+import { MdFilterAlt } from "react-icons/md";
+
+
 import { fetchAllEspecialidades } from "../../utils/fetchAllEspecialidades";
 import Modal from "../Modal/Modal";
 import ContentModalNuevaVacanteTit from "../ContentModalNuevaVacanteTit/ContentModalNuevaVacanteTit";
+import ContentModalFiltroVacantesTit from "../ContentModalFiltroVacantesTit/ContentModalFiltroVacantesTit";
+import { setIntervalActive } from "../../redux/intervalSlice";
+import ContentModalFiltroVacantesMov from "../ContentModalFiltroVacantesMov/ContentModalFiltroVacantesMov";
+import ContentModalVerDatosVacanteMov from "../ContentModalVerDatosVacanteMov/ContentModalVerDatosVacanteMov";
 
 
-const VacantesTit = () => {
+const VacantesMovDocentes = () => {
 
     const navigate=useNavigate();
-    
+
+    /**VARIABLES LOCALES */
+    const[queryEspVisorTit, setQueryEspVisorTit]=useState(''); //para guardar concatenado las especialidades y mostrarlas
+    const[queryIdEspVisorTit, setQueryIdEspVisorTit]=useState(''); //para guardar por ID las especialidades para el visor y pasar a query por body
+
+    /**ESTADOS GLOBALES */
     const userSG = useSelector((state)=>state.user);
     const configSG = useSelector((state)=>state.config);
+    const especialidadesSG = useSelector((state)=>state.config.especialidadVisorTit);
+
 
     //E.L. para Ventanas Modales
     const[isOpenModalNuevo,openModalNuevo,closeModalNuevo]=useModal(false);
     const[isOpenModalVerVacante,openModalVerVacante,closeModalVerVacante]=useModal(false);
     const[isOpenModal, openModal, closeModal]=useModal(false);
     const[isOpenModalConfirm, openModalConfirm, closeModalConfirm]=useModal(false);
+    const[isOpenModalFilter, openModalFilter, closeModalFilter]=useModal(false);
 
     //E.L. para Mensaje en Modal de Notificaciones
     const[mensajeModalInfo, setMensajeModalInfo]=useState('');
@@ -40,7 +55,7 @@ const VacantesTit = () => {
 
     //E.L. donde se almacena el listado de Vacantes  (carga inicial)
     //y segun el tipo de listado de vacantes indicado en configuracion
-    const[listadoVacantesTit, setListadoVacantesTit]=useState([]);
+    const[listadoVacantesMov, setListadoVacantesMov]=useState([]);
 
     //E.L. para filtro de estado de las vacantes
     //puede ser: "todas", "disponibles" o "asignadas"
@@ -56,7 +71,7 @@ const VacantesTit = () => {
     const[paginacionVac, setPaginacionVac]=useState('');
 
     //E.L. guardo el id del lsitado de vacantes de titularizacion
-    const[idListadoVacantesTit, setIdListadoVacantesTit]=useState('');
+    const[idListadoVacantesMov, setIdListadoVacantesMov]=useState('');
 
     //E.L. donde guarda la especialidad seleccionada
     const[filtroEspecialidadVac, setFiltroEspecialidadVac]=useState("");
@@ -113,6 +128,10 @@ const VacantesTit = () => {
     const[obsEliminaVacante, setObsEliminaVacante]=useState("");
 
     const[filtroRegionVac, setFiltroRegionVac]=useState('');
+    const[filtroModalidadVac, setFiltroModalidadVac]=useState('');
+    //const[filtroEspecialidadVac, setFiltroEspecialidadVac]=useState('');
+
+    const[isIntervalActive, setIsIntervalActive]=useState(true);
 
     //--------------PROCESOS Y FUNCIONES----------
 
@@ -124,34 +143,50 @@ const VacantesTit = () => {
     const buscoIDListadoVacantes = async(id_nivel) =>{
         //Filtro configuracion para el nivel
         const configFilterNivel = await configSG.config.filter((configNivel)=>configNivel.id_nivel==id_nivel);
-        //console.log('que trae configFilterNivel: ', configFilterNivel);
+        console.log('que trae configFilterNivel: ', configFilterNivel);
 
         //Traigo el id del listado cargado en configuracion para:
         //LISTADO DE VACANTES DE MOVIMIENTOS -> id_listado_vacantes_mov
-        const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_tit;
+        const idFilterListado = configFilterNivel[0]?.id_listado_vacantes_mov;
         //console.log('que tiene idFilterListado: ',idFilterListado);
 
         //Guardo id_listado_vacantes_mov para usarlo en nueva Vacante
-        setIdListadoVacantesTit(idFilterListado);
+        setIdListadoVacantesMov(idFilterListado);
 
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE VACANTES DISPONIBLES
-        await getVacantesTit(idFilterListado, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac);
+        await getVacantesMov(idFilterListado, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
     };
 
     //Este Proc carga el listado de VACANTES Disponibles al E.L
-    const getVacantesTit = async(id_listado,page,filtroAsignacion,filtroEspecialidad,valorBusqueda, filtroRegion) =>{
+    const getVacantesMov = async(id_listado,page,filtroAsignacion,filtroEspecialidad,valorBusqueda, filtroModalidad, filtroRegionVac) =>{
+        console.log('filtroEspecialidadVac: ', filtroEspecialidadVac);
+        console.log('queryIdEspVisorTit: ', queryIdEspVisorTit);
+        if(filtroEspecialidadVac==''){
+            filtroEspecialidad=queryIdEspVisorTit;
+        }else{
+            filtroEspecialidad=filtroEspecialidadVac
+        }
+        console.log('que ingresa por id_listado: ', id_listado);
+        console.log('que ingresa por page: ', page);
+        console.log('que ingresa por filtroAsignacion: ', filtroAsignacion);
+        console.log('que ingresa por filtroEspecialidad: ', filtroEspecialidad);
+        console.log('que ingresa por valorBusqueda: ', valorBusqueda);
+        console.log('que ingresa por filtroModalidad: ', filtroModalidad);
+        console.log('que ingresa por filtroRegion: ', filtroRegionVac);
         let data;
         const limit=10;
         //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
-            data = await fetchAllVacantesTit(id_listado,limit,page, filtroAsignacion, filtroEspecialidad, valorBusqueda,"", filtroRegion);
-            //console.log('que trae data de fetchAllVacantesTit: ', data);
+            //fetchAllVacantesMov = async(id_listado,limit,page,filtroAsignacion,valorBusqueda,filtroEspecialidad, filtroRegionVac)
+            data = await fetchAllVacantesMov(id_listado,limit,page, filtroAsignacion, valorBusqueda, filtroEspecialidad, filtroRegionVac, filtroModalidad );
+            //console.log('que trae data de fetchAllVacantesMov: ', data);
 
             if(data.result?.length!=0){
-                setListadoVacantesTit(data.result); 
+                setListadoVacantesMov(data.result); 
                 setPaginacionVac(data.paginacion);
+
             }else{
-                setListadoVacantesTit([]);
+                setListadoVacantesMov([]);
                 setPaginacionVac(data.paginacion);
             }
         };
@@ -160,10 +195,12 @@ const VacantesTit = () => {
     //Este Proc carga el listado de especialidades en E.L.
     const cargaEspecidalidades=async()=>{
         const data = await fetchAllEspecialidades();
-        //console.log('que tiene especialidades: ', data);
+        console.log('que tiene especialidades: ', data);
         if(data?.length!=0){
             setListadoEspecialidades(data);
-        }
+            especialidadesActivasVisorTit();
+        };
+
     };
 
 
@@ -177,7 +214,6 @@ const VacantesTit = () => {
     const handleInputSearchVacChange = (event)=>{
         const {value}=event.target;
         setInputSearchVac(value);
-        setCurrentPageVac(1);
     };
     //Presiono boton Cancelar (X) dentro de input busqueda
     const handleCancelSearch=async()=>{
@@ -206,9 +242,9 @@ const VacantesTit = () => {
         if(datosVacante.datetime_asignacion!=null){
             //console.log('Busco datos del inscripto asignado')
             try{
-                await axios.post(`${URL}/api/vacantetitasignadainscripto/${datosVacante.id_vacante_tit}`)
+                await axios.post(`${URL}/api/vacanteasignadainscripto/${datosVacante.id_vacante_mov}`)
                     .then(async res=>{
-                        //console.log('que trae res de vacanteasignadainscripto: ', res.data);
+                        console.log('que trae res de vacanteasignadainscripto: ', res.data);
                         if(res.data.length!=0){
                             setDatosInscriptoAsignado(res.data[0]);
                             //setMensajeModalInfo(`Para eliminar la Vacante generada del Movimiento de: ${res.data[0].apellido}, ${res.data[0].nombre} (DNI: ${res.data[0].dni}), dirigase a Inscriptos`);
@@ -235,8 +271,8 @@ const VacantesTit = () => {
 
     const seteoDatosInicialesFormVacante = () =>{
         setFormVacante({
-            nro_establecimiento:datosVacanteSelect.nro_establecimiento, 
-            nombre_establecimiento:datosVacanteSelect.nombre_establecimiento, 
+            nro_establecimiento:datosVacanteSelect.establecimiento, 
+            nombre_establecimiento:datosVacanteSelect.obs_establecimiento, 
             cargo:datosVacanteSelect.cargo, 
             modalidad:datosVacanteSelect.modalidad, 
             turno:datosVacanteSelect.turno, 
@@ -273,7 +309,7 @@ const VacantesTit = () => {
         //cambio estado de formVacante
         setEstadoForm('ver');
         //recargo listao de inscriptos con datos actualizados
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroRegionVac);
+        getVacantesMov(idListadoVacantesMov, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
     };
     
 
@@ -312,7 +348,7 @@ const VacantesTit = () => {
             console.error(error.message);
         }
         //Al final del Proceso de Eliminar Vacante recargo el listado de Vacantes Disponibles
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroRegionVac);
+        getVacantesMov(idListadoVacantesMov, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac);
 
     };
 
@@ -341,7 +377,7 @@ const VacantesTit = () => {
     const setInicialFormNuevaVacante=async()=>{
         const fechaHoraActualNuevaVac = await traeFechaHoraActual();
         setFormNuevaVacante({
-            id_listado_vac_tit:idListadoVacantesTit, //sale del listado de configuracion
+            id_listado_vac_tit:idListadoVacantesMov, //sale del listado de configuracion
             orden:null, //va a ser null
             id_especialidad:'', 
             datetime_creacion:fechaHoraActualNuevaVac, //traigo hora y fecha actual
@@ -401,39 +437,80 @@ const VacantesTit = () => {
         setFiltroEspecialidadVac("");
     };
 
+    const handleSelectFiltroEspecialidadVac = (event) =>{
+        const{value}=event.target;
+        console.log('que tiene data en handleSelectFiltroEspecialidadVac: ', value);
+        setFiltroEspecialidadVac(value);
+        setCurrentPageVac(1);
+    };
+
     const handleChangeObsEliminaVacante = (event) =>{
         const {name, value}=event.target;
         setObsEliminaVacante(value);
     };
 
+    const submitFilterModal = () =>{
+        //Se presiona sobre el boton Filtro Modal
+        //console.log('se presiona sobre boton Filtro Modal');
+        openModalFilter();
+    };
 
-    /**PROCESO DE FILTRO DE REGION */
-    const handleSelectFiltroRegion = (event) => {
-        const {value}=event.target;
-        //Seleccion de Region
-        //console.log('que trae value handleSelectFiltroRegion: ', value);
+    /**PROCESOS DE FILTROS MODALES */
+    const handleSelectFiltroModalidad = (event) =>{
+        const{value}=event.target;
+        //console.log('que tiene data en handleSelectFiltroModalidad: ', value);
+        setFiltroModalidadVac(value);
+        setCurrentPageVac(1);
+    };
+
+    const handleSelectFiltroRegion = (event) =>{
+        const{value}=event.target;
+        //console.log('que tiene data en handleSelectFiltroRegion: ', value);
         setFiltroRegionVac(value);
         setCurrentPageVac(1);
     };
 
-    const handleCancelFiltroRegionVac = (event) => {
-        const{value}=event.target;
-        //Cancelar Filtro de Region
-        //console.log('que trae value handleCancelFiltroRegionVac: ', value);
+    const handleCancelFiltroModalidadVac =()=>{
+        setFiltroModalidadVac('');
+    };
+
+    const handleCancelFiltroRegionVac=()=>{
         setFiltroRegionVac('');
-        setCurrentPageVac(1);
-    }; 
-    
-    function abrirEnGoogleMaps(lat, lng, zoom = 17) {
-        const url = `https://www.google.com/maps/@${lat},${lng},${zoom}z`;
-        window.open(url, "_blank");
     }
 
-    //?---------------------------------
-    //?-------------USEEFFECTS----------------
-    //?---------------------------------
+    const submitCloseModalFilter = () =>{
+        setFiltroModalidadVac('');
+        setFiltroRegionVac('');
+        closeModalFilter();
+    };
+
+    const submitAplicarFiltrosModales=()=>{
+        //Presiono Boton Aplicar
+    };
+
+    const especialidadesActivasVisorTit=async()=>{
+        //console.log('entra a concatenar especialidades');
+        //console.log('que tiene listadoEspecialidades: ', listadoEspecialidades);
+        const data = await listadoEspecialidades
+            .filter((fila)=>fila.activo_visor_tit=='1')
+            .map((fila)=>fila.abreviatura)
+            .join(", ");
+
+        setQueryEspVisorTit(data);
+        //console.log('especialidad concatenado: ', data);
+
+        const dataIdEspecialidades = await listadoEspecialidades
+            .filter((fila)=>fila.activo_visor_tit=='1')
+            .map((fila)=>fila.id_especialidad)
+            .join(", ");
+
+        setQueryIdEspVisorTit(dataIdEspecialidades);
+        //console.log('id_epecialidad concatenado: ', dataIdEspecialidades);
+        
+    };
 
 
+    /**PROCESOS DE ESTADO */
     useEffect(()=>{
         if(formNuevaVacante.nro_establecimiento!='' && formNuevaVacante.id_especialidad!=''){
             setValidaFormNuevaVacante(true);
@@ -452,14 +529,31 @@ const VacantesTit = () => {
     },[datosVacanteSelect])
 
     useEffect(()=>{
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac,filtroRegionVac);
+
+        getVacantesMov(idListadoVacantesMov, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
     },[currentPageVac])
 
     useEffect(()=>{
-        //console.log('APLICO FILTRO');
-        getVacantesTit(idListadoVacantesTit, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac,filtroRegionVac);
-    },[estadoVacantes,inputSearchVac,filtroEspecialidadVac,filtroRegionVac])
 
+        //console.log('APLICO FILTROS');
+        getVacantesMov(idListadoVacantesMov, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
+    },[estadoVacantes,inputSearchVac, filtroModalidadVac, filtroRegionVac, filtroEspecialidadVac])
+
+    useEffect(()=>{
+
+        //if(!isIntervalActive) return;
+        const intervalId=setInterval(()=>{
+            //console.log('se ejecuta intervalo');
+            cargaEspecidalidades();
+            getVacantesMov(idListadoVacantesMov, currentPageVac,estadoVacantes,filtroEspecialidadVac,inputSearchVac, filtroModalidadVac, filtroRegionVac);
+            if(paginacionVac.totalPages==1){
+                setCurrentPageVac(1);
+            }
+        },5000);
+
+        return()=>clearInterval(intervalId);
+
+    },[currentPageVac, inputSearchVac, filtroModalidadVac, filtroRegionVac, filtroEspecialidadVac,listadoEspecialidades])
 
     useEffect(()=>{
         //console.log('que tiene configSG: ', configSG);
@@ -469,33 +563,51 @@ const VacantesTit = () => {
         //console.log('que tiene userSG: ', userSG);
     },[userSG])
 
+    useEffect(()=>{
+        //console.log('que tiene especialidadesSG: ', listadoEspecialidades);
+        /**Trae las especialidades activas para el visor */
+        //especialidadesActivasVisorTit();
+        //setCurrentPageVac(1);
+
+    },[listadoEspecialidades]);
+
     //CARGO LISTADO DE VACANTES AL RENDERIZAR
     useEffect(()=>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
-        //LLAMO AL PROCEDIMIENTO buscoIDListadoVacantes Y PASO EL NIVEL CARGADO EN STORE GLOBAL
-        buscoIDListadoVacantes(configSG.nivel.id_nivel);
+        //cargo especialidades visor
+        especialidadesActivasVisorTit();
         //Cargo las especialidades
         cargaEspecidalidades();
+        //LLAMO AL PROCEDIMIENTO buscoIDListadoVacantes Y PASO EL NIVEL CARGADO EN STORE GLOBAL
+        buscoIDListadoVacantes(configSG.nivel.id_nivel);
     },[])
 
     return(
-        <div className=" notranslate h-full w-full">
+        <div className=" notranslate h-full w-full ">
             {/* ENCABEZADO DE PAGINA */}
             <div className="bg-[#C9D991] desktop:h-[12vh] movil:h[5vh] flex flex-row">
                 {/* TITULOS - BOTONES - NIVEL */}
                 <div className="desktop:w-[60vw] flex desktop:flex-col desktop:justify-center desktop:items-start  movil:flex-row movil:w-full movil:items-center movil:justify-center ">
-                    <label className="ml-4 text-base font-semibold">NIVEL {configSG.nivel.descripcion}</label>
+                    <label className="desktop:flex movil:hidden ml-4 text-base font-semibold">NIVEL {configSG.nivel.descripcion}</label>
                     <div className="flex flex-col">
-                        <div className="flex flex-row mb-2">
-                            <label className="ml-4 text-lg font-sans font-bold">VACANTES</label>
-                            {(userSG.permiso!=4) &&
+                        <div className="flex flex-row desktop:mb-2">
+                            <label className="desktop:ml-4 text-lg font-sans font-semibold">LISTADO DE VACANTES MOVIMIENTOS</label>
+                            {/*(userSG.permiso!=3) &&
                                 <button 
                                     className="ml-4 px-[2px] border-[1px] border-[#73685F] rounded hover:bg-[#7C8EA6] hover:text-white hover:border-[#7C8EA6] shadow"
                                     onClick={submitNuevaVacante}
                                 >Nueva Vacante</button>
-                            }
-                            
+                            */}
                         </div>
+
+                        {/**
+                         
+                        <div>
+                            <label className="desktop:ml-4  font-semibold text-silver-500">Especialidad: {(queryEspVisorTit==="") ?`Todas` :queryEspVisorTit}</label>
+                        </div>
+                         */}
+
+                        {/**
                         <div className="flex flex-row">
                             <label className="mx-4 ">Especialidad: </label>
                             <div className="border-[1px] rounded border-gray-500 bg-neutral-50">
@@ -523,24 +635,8 @@ const VacantesTit = () => {
                                     >X</label>
                                 }
                             </div>
-                            {/* <select
-                                className="w-[40vw] border-[1px] rounded border-gray-500"
-                                name="filtroEspecialidad"
-                                onChange={handleSelectFiltroEspecialidad}
-                                value={filtroEspecialidadVac}
-                            >
-                                <option value='' selected disabled>Seleccione...</option>
-                                {
-                                    listadoEspecialidades?.map((especialidad,index)=>(
-                                        <option 
-                                            key={index} 
-                                            value={especialidad.id_especialidad}
-                                            className="text-base"
-                                        >{especialidad.abreviatura} - {especialidad.descripcion}</option>
-                                    ))
-                                }
-                            </select> */}
                         </div>
+                         */}
                     </div>
                 </div>
                 {/* SECCION DATOS USUARIO */}
@@ -556,75 +652,62 @@ const VacantesTit = () => {
             </div>
 
             {/* CONTENIDO DE PAGINA */}
-            <div className="h-[87vh] flex flex-col items-center">
-                <div className="desktop:h-[73vh] movil:h-[72vh] m-2 border-[1px] border-[#758C51] rounded desktop:w-[83vw] movil:w-[99vw]">
+            <div className="h-[87vh] flex flex-col items-center ">
+                <div className="desktop:h-[73vh] movil:h-[69vh] m-2 desktop:border-[1px] border-[#758C51] rounded desktop:w-[83vw] movil:w-[99vw] ">
                     {/* PARTE SUPERIOR DE TABLA */}
-                    <div className="border-b-[1px] border-slate-300 desktop:h-[6vh] flex desktop:flex-row desktop:items-center movil:h-[9vh] movil:flex-col-reverse movil:items-start">
+                    <div className="border-b-[1px] border-slate-300 desktop:h-[6vh] flex desktop:flex-row desktop:items-center movil:h-[6vh] movil:flex-row movil:items-start">
                         {/* Filtros */}
-                        <div className="text-base w-[50%] ">
-                            <label 
-                                className={`font-semibold border-b-2 px-2 cursor-pointer transition-all duration-500 
-                                    ${(estadoVacantes==='todas')
-                                        ?`border-sky-500 text-sky-500`
-                                        :`border-zinc-300 text-black`
-                                    }
-                                    `}
-                                onClick={()=>{setEstadoVacantes('todas');setCurrentPageVac(1)}}
-                            >Todas</label>
-                            <label 
-                                className={`font-semibold border-b-2 px-2 cursor-pointer transition-all duration-500 
-                                    ${(estadoVacantes==='disponibles')
-                                        ?`border-sky-500 text-sky-500`
-                                        :`border-zinc-300 text-black`
-                                    }
-                                    `}
-                                onClick={()=>{setEstadoVacantes('disponibles');setCurrentPageVac(1)}}
-                            >Disponibles</label>
-                            <label 
-                                className={`font-semibold border-b-2 px-2 cursor-pointer transition-all duration-500 
-                                    ${(estadoVacantes==='asignadas')
-                                        ?`border-sky-500 text-sky-500`
-                                        :`border-zinc-300 text-black`
-                                    }
-                                    `}
-                                onClick={()=>{setEstadoVacantes('asignadas');setCurrentPageVac(1)}}
-                            >Asignadas</label>
-                        </div>
+                        {/**
+                            <div className="text-base w-[50%] ">
+                                <label 
+                                    className={`font-semibold border-b-2 px-2 cursor-pointer transition-all duration-500 
+                                        ${(estadoVacantes==='todas')
+                                            ?`border-sky-500 text-sky-500`
+                                            :`border-zinc-300 text-black`
+                                        }
+                                        `}
+                                    onClick={()=>{setEstadoVacantes('todas');setCurrentPageVac(1)}}
+                                >Todas</label>
+                                <label 
+                                    className={`font-semibold border-b-2 px-2 cursor-pointer transition-all duration-500 
+                                        ${(estadoVacantes==='disponibles')
+                                            ?`border-sky-500 text-sky-500`
+                                            :`border-zinc-300 text-black`
+                                        }
+                                        `}
+                                    onClick={()=>{setEstadoVacantes('disponibles');setCurrentPageVac(1)}}
+                                >Disponibles</label>
+                                <label 
+                                    className={`font-semibold border-b-2 px-2 cursor-pointer transition-all duration-500 
+                                        ${(estadoVacantes==='asignadas')
+                                            ?`border-sky-500 text-sky-500`
+                                            :`border-zinc-300 text-black`
+                                        }
+                                        `}
+                                    onClick={()=>{setEstadoVacantes('asignadas');setCurrentPageVac(1)}}
+                                >Asignadas</label>
+                            </div>
+                         */}
 
-                        {/**Filtro de Region */}
-                        <label className="mr-[2mm]">Region</label>
-                        <div className="border-[1px]  h-[26px] rounded border-zinc-400 bg-neutral-50 desktop-xl:h-[30px] flex flex-row">
-                            <select 
-                                className={`x h-[24px] border-[1px] rounded focus:outline-none focus:ring-0 focus:border-none desktop-xl:text-lg
-                                    ${(filtroRegionVac==="")
-                                        ?` w-[6vw] `
-                                        :` w-[4vw] `
-                                    }
-                                    `}
-                                name="filtroRegion"
-                                onChange={handleSelectFiltroRegion}
-                                value={filtroRegionVac}
-                            >
-                                <option value='' selected disabled>Region...</option>
-                                <option value='I'>I</option>
-                                <option value='II'>II</option>
-                                <option value='III'>III</option>
-                                <option value='IV'>IV</option>
-                                <option value='V'>V</option>
-                                <option value='VI'>VI</option>
-                                <option value='VII'>VII</option>
-                            </select>
-                            {(filtroRegionVac!="") &&
-                                    <label 
-                                        className="font-bold mx-2 cursor-pointer"
-                                        onClick={handleCancelFiltroRegionVac}
-                                    >X</label>
+                        {/*Filtros Modales */}
+                        <div 
+                            className={`flex flex-row items-center desktop:w-[50%] 
+                                ${(filtroModalidadVac!='' || filtroRegionVac!='' || filtroEspecialidadVac!='')
+                                    ?` text-sky-500`
+                                    :` `
                                 }
+                                `}
+                        >
+                            <MdFilterAlt className="text-xl" />
+                            <label 
+                                className="cursor-pointer"
+                                onClick={submitFilterModal}
+                            >Filtros</label>
                         </div>
 
                         {/* Campo de Busqueda */}
                         <div className="desktop:w-[50%]  flex desktop:justify-end movil:w-full ">
-                            <div className="desktop:w-[20vw] movil:w-[90vw] border-[1px] border-zinc-400  rounded flex flex-row items-center justify-between mx-2">
+                            <div className="desktop:w-[20vw] movil:w-[75vw] border-[1px] border-zinc-400  rounded flex flex-row items-center justify-between mx-2">
                                 <input 
                                     className="desktop:w-[15vw] movil:w-[85vw] focus:outline-none rounded"
                                     placeholder="Buscar..."
@@ -649,61 +732,48 @@ const VacantesTit = () => {
                     </div>
 
                     {/* PARTE INFERIOR DE DATOS DE TABLA */}
-                    <div className=" desktop:h-[70vh] movil:h-[63vh] overflow-y-auto">
-                        <table className="border-[1px] bg-slate-50 w-full">
+                    <div className=" desktop:h-[70vh] movil:h-[63vh] overflow-y-auto overflow-x-auto">
+                        <table className="border-[1px] bg-slate-50 desktop:w-full movil:w-[300%]">
                             <thead>
-                                <tr className="sticky top-0 text-sm border-b-[2px] border-zinc-300 bg-zinc-200">
-                                    <th className="border-r-[1px] border-zinc-300">ID</th>
-                                    <th className="border-r-[1px] border-zinc-300">Orden</th>
-                                    <th className="border-r-[1px] border-zinc-300">Establecimiento</th>
-                                    <th className="border-r-[1px] border-zinc-300">Mapa</th>
-                                    <th className="border-r-[1px] border-zinc-300">Cargo</th>
-                                    <th className="border-r-[1px] border-zinc-300">Modalidad</th>
-                                    <th className="border-r-[1px] border-zinc-300">Turno</th>
-                                    <th className="border-r-[1px] border-zinc-300">Region</th>
-                                    <th className="border-r-[1px] border-zinc-300">Localidad</th>
-                                    <th className="border-r-[1px] border-zinc-300">Zona</th>
-                                    <th className="">Acciones</th>
+                                <tr className="sticky top-0 text-sm border-b-[2px] border-zinc-400 bg-zinc-200">
+                                    <th className="w-[1vw] border-r-[1px] border-zinc-300">ID</th>
+                                    <th className="w-[1vw] border-r-[1px] border-zinc-300">Orden</th>
+                                    <th className="w-[20vw] border-r-[1px] border-zinc-300">Establecimiento</th>
+                                    {/*<th className="w-[5vw] border-r-[1px] border-zinc-300">Mapa</th>*/}
+                                    <th className="w-[20vw] border-r-[1px] border-zinc-300">Cargo</th>
+                                    <th className="w-[5vw] border-r-[1px] border-zinc-300">Modalidad</th>
+                                    <th className="w-[6vw] border-r-[1px] border-zinc-300">Turno</th>
+                                    <th className="w-[5vw] border-r-[1px] border-zinc-300">Region</th>
+                                    <th className="w-[20vw] border-r-[1px] border-zinc-300">Localidad</th>
+                                    <th className="w-[5vw] border-r-[1px] border-zinc-300">Zona</th>
+                                    <th className="w-[10vw]">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
 
                                 {
                                     // filterListadoVacantesMov?.map((vacante, index)=>{
-                                    listadoVacantesTit?.map((vacante, index)=>{
-                                        const colorFila = vacante.datetime_asignacion ?`bg-red-200` :(((vacante.id_vacante_tit %2)===0) ?'bg-zinc-200' :'')
+                                    listadoVacantesMov?.map((vacante, index)=>{
+                                        const colorFila = vacante.datetime_asignacion ?`bg-red-200` :''
                                         return(
                                             <tr 
-                                                className={`text-lg font-medium border-b-[1px] border-zinc-300 h-[5vh] hover:bg-orange-300 ${colorFila}`}
+                                                className={`text-lg font-medium border-b-[1px] border-black h-[5vh] hover:bg-orange-300 ${colorFila}`}
                                                 key={index}
                                             >
-                                                <td className="w-[2vw] pl-[4px] font-light text-sm">{vacante.id_vacante_tit}</td>
-                                                <td className="text-center">{vacante.orden}</td>
-                                                {/*<td className="text-center">{vacante.nro_establecimiento} {vacante.nombre_establecimiento}</td>*/}
-                                                <td className="text-center"> 
-                                                    <span className="text-red-500">{vacante.nro_establecimiento}</span> - 
-                                                    <span>{vacante.nombre_establecimiento}</span>
+                                                <td className="w-[2vw] pl-[4px] font-light text-sm">{vacante.id_vacante_mov}</td>
+                                                <td className="w-[2vw] text-center">{vacante.orden}</td>
+                                                {/*<td className="w-[20vw] text-center">{vacante.nro_establecimiento} - {vacante.nombre_establecimiento}</td>*/}
+                                                <td className="w-[20vw] text-center text-base">
+                                                    <span className="text-red-500">{vacante.establecimiento}</span> - 
+                                                    <span>{vacante.obs_establecimiento}</span>
                                                 </td>
-                                                <td 
-                                                    className="flex justify-center mt-2 text-blue-600 hover:scale-125 transition-all duration-500 cursor-pointer"
-                                                >
-                                                    <a 
-                                                        href={vacante.link_map} 
-                                                        target="_blank" 
-                                                        rel="noopener noreferrer"
-                                                        onClick="abrirEnGoogleMaps(vacante.latitud, vacante.longitud)"
-                                                    
-                                                    >
-                                                        <SiGooglemaps className="" />
-                                                        
-                                                    </a>
-                                                </td>
-                                                <td className="text-center">{vacante.cargo}</td>
-                                                <td className="text-center">{vacante.modalidad}</td>
-                                                <td className="text-center">{vacante.turno}</td>
-                                                <td className="text-center w-[10vw]">{vacante.region}</td>
-                                                <td className="text-center">{vacante.localidad}</td>
-                                                <td className="text-center">{vacante.zona}</td>
+                                                {/*<td className="w-[5vw] text-center text-purple-700"></td>*/}
+                                                <td className="w-[20vw] text-center text-purple-700">{vacante.cargo}</td>
+                                                <td className="w-[5vw] text-center">{vacante.modalidad}</td>
+                                                <td className="w-[6w] text-center">{vacante.turno}</td>
+                                                <td className="w-[5vw] text-center w-[10vw]">{vacante.region}</td>
+                                                <td className="w-[20vw] text-center">{vacante.localidad}</td>
+                                                <td className="w-[5vw] text-center">{vacante.zona}</td>
                                                 <td>
                                                     <div className="flex flex-row items-center justify-center  ">
                                                         <FaEye 
@@ -711,15 +781,15 @@ const VacantesTit = () => {
                                                             title="Ver Datos"
                                                             onClick={()=>submitVerDatosVacante(vacante)}
                                                         />
-                                                        {
-                                                            (vacante.datetime_asignacion===null && userSG.permiso!=4)
+                                                        {/*
+                                                            (vacante.datetime_asignacion===null && userSG.permiso!=3)
                                                             ?<IoTrash 
                                                                 className="font-bold text-xl text-red-500 hover:scale-150 transition-all duration-500 cursor-pointer"
                                                                 title="Eliminar Vaante"
                                                                 onClick={()=>submitEliminarVacante(vacante)}
                                                             />
                                                             :``
-                                                        }
+                                                        */}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -746,8 +816,8 @@ const VacantesTit = () => {
 
             {/* MODAL VER DATOS VACANTE */}
             <ModalEdit isOpen={isOpenModalVerVacante} closeModal={closeModalVerVacante}>
-                <ContentModalVerDatosVacanteTit
-                    idVacante={datosVacanteSelect?.id_vacante_tit}
+                <ContentModalVerDatosVacanteMov
+                    idVacante={datosVacanteSelect?.id_vacante_mov}
                     formVacante={formVacante}
                     closeModal={closeModalVerVacante}
                     handleChangeFormVacante={handleChangeFormVacante}
@@ -800,6 +870,25 @@ const VacantesTit = () => {
                 />
             </ModalEdit>
 
+            {/* MODAL DE FILTROS */}
+            <ModalEdit isOpen={isOpenModalFilter} closeModal={closeModalFilter}>
+                <ContentModalFiltroVacantesMov
+                    closeModalFilter={closeModalFilter}
+                    submitCloseModalFilter={submitCloseModalFilter}
+                    filtroRegionVac={filtroRegionVac}
+                    handleSelectFiltroRegion={handleSelectFiltroRegion}
+                    handleCancelFiltroRegionVac={handleCancelFiltroRegionVac}
+                    filtroModalidadVac={filtroModalidadVac}
+                    handleSelectFiltroModalidad={handleSelectFiltroModalidad}
+                    handleCancelFiltroModalidadVac={handleCancelFiltroModalidadVac}
+                    submitAplicarFiltrosModales={submitAplicarFiltrosModales}
+                    listadoEspecialidades={listadoEspecialidades}
+                    filtroEspecialidadVac={filtroEspecialidadVac}
+                    handleCancelFiltroEspecialidadVac={handleCancelFiltroEspecialidadVac}
+                    handleSelectFiltroEspecialidadVac={handleSelectFiltroEspecialidadVac}
+                />
+            </ModalEdit>
+
 
             {/* MODAL DE NOTIFICACIONES */}
             <Modal isOpen={isOpenModal} closeModal={closeModal}>
@@ -818,4 +907,4 @@ const VacantesTit = () => {
     )
 };
 
-export default VacantesTit;
+export default VacantesMovDocentes;

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { URL } from '../../varGlobal';
 
 
-export const fetchVacantesDispMov = async(id_listado,limit,page,valorBusqueda,filtroEspecialidad,orderBy,typeOrder) => {
+export const fetchVacantesDispMov = async(id_listado,limit,page,valorBusqueda,filtroEspecialidad,orderBy,typeOrder,inputFiltroRegionVac) => {
     const dataBody={
         "idListadoVacMov":id_listado,
         "limit":limit,
@@ -10,13 +10,14 @@ export const fetchVacantesDispMov = async(id_listado,limit,page,valorBusqueda,fi
         "filtroBusqueda":valorBusqueda,
         "filtroEspecialidad":filtroEspecialidad,
         "orderBy":orderBy,
-        "typeOrder":typeOrder
+        "typeOrder":typeOrder,
+        "filtroRegion":inputFiltroRegionVac
     };
-    //console.log('que tiene datos que pasa a body en fetchVacantesDispMov: ', dataBody);
+    console.log('que tiene datos que pasa a body en fetchVacantesDispMov: ', dataBody);
 
     try{
         const {data} = await axios.post(`${URL}/api/vacantesdisp`,dataBody);
-        //console.log('que trae data de fetchVacantesDispMov: ', data);
+        console.log('que trae data de fetchVacantesDispMov: ', data);
         return data;
         
     }catch(error){

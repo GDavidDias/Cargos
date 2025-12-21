@@ -25,6 +25,9 @@ import { fetchVacanteAsignadaTit } from "../../utils/fetchVacanteAsignadaTit";
 import { updateEstadoAsignadoInscripto } from "../../utils/updateEstadoAsignadoInscripto";
 import { updEstadoAsignadoInscriptoTit } from "../../utils/updateEstadoAsignadoInscriptoTit";
 import PaginaAsistenciaTitular from "../PaginaAsistenciaTitular/PaginaAsistenciaTitular";
+import { RiProgress6Line } from "react-icons/ri";
+//import { BiTransferAlt } from "react-icons/bi";
+import { FiAlertTriangle } from "react-icons/fi";
 
 const InscriptosTit = () =>{
     
@@ -74,14 +77,14 @@ const InscriptosTit = () =>{
     const[idListadoVacantesTit, setIdListadoVacantesTit]=useState('');
 
     //E.L. donde se almacena el listado de especialidades
-    const[listadoEspecialidades, setListadoEspecialidades]=useState([]);
+    const[listadoEspecialidades, setListadoEspecialidades]=useState([]);    
 
     //E.L. para input busqueda Inscriptos
     const[inputSearch, setInputSearch]=useState('');
 
     //E.L. para input busqueda Vacantes
+    
     const[inputSearchVac, setInputSearchVac]=useState('');
-
     const[datosInscriptoSelect, setDatosInscriptoSelect]=useState({})
 
     const[idInscriptoSelect, setIdInscriptoSelect]=useState('');
@@ -115,6 +118,8 @@ const InscriptosTit = () =>{
     const[filtroModalidadVac, setFiltroModalidadVac]=useState('');
 
     const isIntervalActive = useSelector((state)=>state.interval.isIntervalActive);
+
+    const[habilitaAsigna, setHabilitaAsigna]=useState(true);
 
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
@@ -217,6 +222,7 @@ const InscriptosTit = () =>{
         };
     };  
 
+    
 
 
     //-----------PROCESOS DE BUSQUEDA EN LISTADO INSCRIPTOS------------
@@ -342,8 +348,14 @@ const InscriptosTit = () =>{
         setFiltroEspecialidadVac("");
     };
 
-    const submitVerVacantes = (datosInscripto) =>{
+    const submitVerVacantes = async(datosInscripto) =>{
         //console.log('que tien datosInscriptos: ', datosInscripto);
+
+        //?VALIDA SI ESTA HABILITADO PARA ASIGNACION
+        //const habilitaAsigna = await habilitadoAsignacion(datos?.id_inscriptos_mov);
+
+        console.log('esta habilitado ?: ', await habilitaAsigna);
+
         //setCurrentPageVac(1);
         setDatosInscriptoSelect(datosInscripto);
         //cargo listado de vacantes disponibles
@@ -368,6 +380,7 @@ const InscriptosTit = () =>{
     };
 
     const handleInputSearchVacChange = (event)=>{
+        console.log('ingresa a handleInputSearchVacChange')
         const {value}=event.target;
         setInputSearchVac(value);
         setCurrentPageVac(1);
@@ -528,6 +541,22 @@ const InscriptosTit = () =>{
 
     };
 
+    //?-------------------------------------------------
+    //?-  PROCESO DE CAMBIO DE ESTADO DE INSCRIPTO POR BOTON A AUSENTE
+    //?-------------------------------------------------
+    const submitGuardarEstadoInscriptoButton=async(datosInscripto)=>{
+        console.log('que tiene datosInscripto: ', datosInscripto)
+        try{
+            const datosUpdateEstado = await updEstadoAsignadoInscriptoTit(datosInscripto.id_inscriptos_tit, 4); //4= Ausente
+            //console.log('que trae datosUpdateEstado: ', datosUpdateEstado)
+            setMensajeModalInfo('Estado del Inscripto Actualizado');
+            openModal();
+            setEstadoAsignadoInscripto('');
+        }catch(error){
+            console.log('error en updEstadoAsignadoInscriptoTit', error);
+        }
+    };
+
     /**PROCESO QUE ELIMINA LOS SUBFILTROS APLICADOS DE REGION Y MODALIDAD 
      * VER FACTIBILIDAD DE APLICACION
     */
@@ -572,7 +601,98 @@ const InscriptosTit = () =>{
         setCurrentPage(1);
     };
 
-    //?--------------------------------------------------
+
+
+    //Proc: controla si el inscripto puede realizar asignacion
+    const habilitadoAsignacion = async(datosInscripto) =>{
+        //Proceso para controlar si el inscripto puede realizar asignacion
+        //Si el id_titular ya tiene una asignacion o un estado de inscripto
+        //no puede realizar asignacion
+        console.log('que tiene idTitular en habilitadoAsignacion: ', datosInscripto);
+
+        const datosBody={
+            "id_listado": idListadoInscriptosTit,
+            "idTitular": datosInscripto.id_inscriptos_tit
+        };
+
+        console.log('que tiene datosBody haynulostit: ', datosBody);
+
+        //BUSCA SI HAY NULOS EN ESTADO DE MOVIMIENTO
+        await axios.post(`${URL}/api/haynulostit`,datosBody)
+        .then(async res=>{
+            //TRAE DATOS
+            console.log('que trae res de haynulostit: ', res.data[0].hay_nulos);
+            const resHayNulosMov = await res.data[0].hay_nulos;
+            if(resHayNulosMov===1){
+                console.log('NO ESTA HABILITADO PARA ASIGNACION');
+                setHabilitaAsigna(false)
+                return false;
+            }else{
+                console.log('SI ESTA HABILITADO PARA ASIGNACION');
+                setHabilitaAsigna(true)
+                return true;
+            };
+            //setHabilitaAsigna(resHayNulosMov===1 ?false :true);
+        })
+        .catch(error=>{
+            //INGRESA A ERRORES
+            console.log('que trae error editinscriptosmov: ', error);
+        });
+    };
+
+
+    //?-----------------------------------------------------------------
+    //?  -  -  -  BUSQUEDA DE PAGINA POR DNI EN LISTADO DE INSCRIPTOS MOVIMIENTO
+    //?---------------------------------------------------------------
+    const handleSearchDni = async (inputDni) => {
+        //const {value} = event.target;
+        //setCurrentPage(1);
+        //setInputSearchDni(inputDni);
+        if (!inputDni) return;
+        setInputSearch(''); // Limpia el input de búsqueda regular
+
+        const datosBody={
+            id_listado_inscriptos: idListadoInscriptosMov,
+            limit: paginacion.limit,         // 10  
+            idTipoInscripto: (tipoInscripto==1) ?'1' :'2,3',  // 1= activos, 2=disponibilidad
+            filtroAsignacion: estadoInscripto,
+            idListadoInscriptosCompara: idListadoInscriptosMovCompara,
+            idEspecialidadLuom: filtroEspecialidadLuom,
+            dniBuscado: inputDni         // 👈 DNI del input
+        };
+        console.log('que tiene datosBody para buscar pagina por dni: ', datosBody);
+
+        try {
+            const datosRes = await axios.post(`${URL}/api/getpagednimov`, datosBody);
+
+            console.log('que trae data de getpagednimov: ', datosRes.data);
+
+            if (!datosRes.data.ok || !datosRes.data.found) {
+            alert(datosRes.data.message || 'No se encontró el DNI');
+            return;
+            }
+
+            // Ir a la página donde está el DNI
+            //handlePageChange(data.page);
+            setCurrentPage(datosRes.data.page);
+
+            // (opcional) guardar el DNI para resaltar la fila cuando se cargue
+            //setDniSeleccionado(inputSearch);
+        } catch (err) {
+            console.error(err);
+            alert('Error al buscar el DNI');
+        }
+    };
+
+
+
+    //?---------------------------------------------------------------
+    //?  -  -  -  USEEFFECTS
+    //?---------------------------------------------------------------
+
+    useEffect(()=>{ 
+        console.log('que tiene habilitaAsigna: ', habilitaAsigna);
+    },[habilitaAsigna]);
 
     useEffect(()=>{
         //console.log('que tiene EstadoAsignadoInscriptos: ', estadoAsignadoInscripto);
@@ -623,6 +743,15 @@ const InscriptosTit = () =>{
         const intervalId = setInterval(()=>{
             //console.log('ACTIVO INTERVALO')
             getInscriptosTit(idListadoInscriptosTit,currentPage,estadoInscripto,inputSearch,selectFiltroEspecialidad);
+
+            //PARA CONTROLAR SI ESTA HABILITADO PARA ASIGNACION
+            console.log('que tiene id_titular: ', datosInscriptoSelect);
+            if(datosInscriptoSelect?.id_inscriptos_tit){
+                //console.log('verifico si esta habilitado para asignacion');
+                const idTitular = datosInscriptoSelect.id_inscriptos_tit;
+                habilitadoAsignacion(datosInscriptoSelect);
+            };
+
         }, 5000);
         
         return()=>clearInterval(intervalId);
@@ -784,7 +913,20 @@ const InscriptosTit = () =>{
                                                 <td>{inscripto.dni}</td>
                                                 <td className="font-sans font-light">{inscripto.especialidad}</td>
                                                 <td className="text-sm font-sans font-light">{inscripto.observaciones}</td>
-                                                <td>{inscripto.descripcion_estado_inscripto}</td>
+                                                <td 
+                                                    className={`text-sm text-center
+                                                            ${(inscripto.descripcion_estado_inscripto=='Ausente')
+                                                                ?`text-red-500`
+                                                                : ''
+                                                            }
+                                                        `}
+                                                >{(inscripto.descripcion_estado_inscripto=='' || inscripto.descripcion_estado_inscripto == null)
+                                                    ?<RiProgress6Line className="mr-2 blink  text-red-500 cursor-pointer" 
+                                                        title="Ausente"
+                                                        onClick={()=>submitGuardarEstadoInscriptoButton(inscripto)}
+                                                        />
+                                                    :inscripto.descripcion_estado_inscripto
+                                                }</td>
                                                 <td>
                                                     <div className="flex flex-row items-center justify-center  ">
                                                         {/* {(inscripto.vacante_asignada===null )
@@ -803,7 +945,10 @@ const InscriptosTit = () =>{
                                                             ?<BiTransferAlt 
                                                                 className="text-2xl hover:cursor-pointer hover:text-[#83F272] ml-2"      
                                                                 title="Vacantes"
-                                                                onClick={()=>submitVerVacantes(inscripto)}
+                                                                onClick={()=>{
+                                                                    habilitadoAsignacion(inscripto);
+                                                                    submitVerVacantes(inscripto);
+                                                                }}
                                                             />
                                                             :``
                                                         }
@@ -881,6 +1026,7 @@ const InscriptosTit = () =>{
                     handleSelectFiltroModalidad={handleSelectFiltroModalidad}
                     filtroModalidadVac={filtroModalidadVac}
                     handleCancelFiltroModalidadVac={handleCancelFiltroModalidadVac}
+                    habilitaAsigna={habilitaAsigna}
                 />
             </ModalEdit>
 

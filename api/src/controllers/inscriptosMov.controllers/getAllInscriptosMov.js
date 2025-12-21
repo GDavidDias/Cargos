@@ -19,18 +19,16 @@ module.exports = async(req,res)=>{
     //Filtro Especialidad Luom
     console.log('que trae idEspecialidadLuom: ', idEspecialidadLuom);
 
-
     const offset = (page-1)*limit;
 
 
-    let armaquery=`SELECT im.id_inscriptos_mov, im.cargo_actual, im.turno_actual, im.cargo_solicitado, im.dni, im.apellido, im.nombre, im.observacion, im.total, im.orden, im.nro_escuela, im.legajo, im.id_especialidad, e.descripcion AS especialidad, im.id_tipo_inscripto, ti.descripcion AS tipoinscripto, im.id_listado_inscriptos, li.descripcion, am2.id_vacante_mov AS vacante_asignada, im.id_vacante_generada_cargo_actual, im.id_estado_inscripto, im.genera_vacante, ei.descripcion AS estado_inscripto, imCompara.legajo AS legajoEnOtroNivel
+    let armaquery=`SELECT im.id_inscriptos_mov, im.cargo_actual, im.turno_actual, im.cargo_solicitado, im.dni, im.apellido, im.nombre, im.observacion, im.total, im.orden, im.nro_escuela, im.obs_escuela, im.legajo, im.id_especialidad, e.descripcion AS especialidad, im.id_tipo_inscripto, ti.descripcion AS tipoinscripto, im.id_listado_inscriptos, li.descripcion, am2.id_vacante_mov AS vacante_asignada, im.id_vacante_generada_cargo_actual, im.id_estado_inscripto, im.genera_vacante, im.estado_solicitud, ei.descripcion AS estado_inscripto, imCompara.legajo AS legajoEnOtroNivel
             FROM inscriptos_mov AS im
             LEFT JOIN especialidad AS e ON im.id_especialidad = e.id_especialidad 
             LEFT JOIN tipo_inscripto AS ti ON im.id_tipo_inscripto = ti.id_tipo_inscripto
             LEFT JOIN listado_inscriptos AS li ON im.id_listado_inscriptos = li.id_listado_inscriptos
             LEFT JOIN estado_inscripto AS ei ON im.id_estado_inscripto = ei.id_estado_inscripto
             LEFT JOIN (SELECT am.id_inscripto_mov, am.id_vacante_mov FROM asignacion_mov AS am WHERE am.obs_desactiva IS NULL) AS am2 ON im.id_inscriptos_mov = am2.id_inscripto_mov
-
             `;
 
     //arma subonsulta para saber si se encuentra en otro listado con alguna asignacion.
@@ -55,8 +53,6 @@ module.exports = async(req,res)=>{
                         `;
     };
 
-
-
     armaquery += `WHERE im.id_listado_inscriptos = ${id_listado_inscriptos}
             AND im.id_tipo_inscripto IN (${idTipoInscripto})            
             `;
@@ -68,14 +64,20 @@ module.exports = async(req,res)=>{
     };
 
     if(filtroBusqueda && filtroBusqueda!=''){
-        armaquery+=` AND (LOWER(im.apellido) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                        OR LOWER(im.nombre) LIKE '%${filtroBusqueda.toLowerCase()}%'
+        armaquery+=` AND ( LOWER(im.nombre) LIKE '%${filtroBusqueda.toLowerCase()}%'
                         OR LOWER(im.dni) LIKE '%${filtroBusqueda.toLowerCase()}%'
-                        OR LOWER(im.legajo) LIKE '%${filtroBusqueda.toLowerCase()}%'
-                        OR LOWER(im.cargo_actual) LIKE '%${filtroBusqueda.toLowerCase()}%'
-                        OR LOWER(im.cargo_solicitado) LIKE '%${filtroBusqueda.toLowerCase()}%'
-                        OR LOWER(im.nro_escuela) LIKE '%${filtroBusqueda.toLowerCase()}%'
                         )`
+        {/**
+            
+            armaquery+=` AND (LOWER(im.apellido) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                            OR LOWER(im.nombre) LIKE '%${filtroBusqueda.toLowerCase()}%'
+                            OR LOWER(im.dni) LIKE '%${filtroBusqueda.toLowerCase()}%'
+                            OR LOWER(im.legajo) LIKE '%${filtroBusqueda.toLowerCase()}%'
+                            OR LOWER(im.cargo_actual) LIKE '%${filtroBusqueda.toLowerCase()}%'
+                            OR LOWER(im.cargo_solicitado) LIKE '%${filtroBusqueda.toLowerCase()}%'
+                            OR LOWER(im.nro_escuela) LIKE '%${filtroBusqueda.toLowerCase()}%'
+                            )`
+            */}
     };
 
     //Filtro Luom Especialidad
@@ -86,11 +88,12 @@ module.exports = async(req,res)=>{
     armaquery+=` ORDER BY im.id_inscriptos_mov ASC `
 
     try{
+        console.log('como va el armaquery en getAllInscriptosMov: ', armaquery);
         const [result] = await pool.query(`${armaquery} LIMIT ${limit} OFFSET ${offset}`);
 
-        console.log('que trae result getAllInscriptosMov: ', result);
+        //console.log('que trae result getAllInscriptosMov: ', result);
 
-        const [totalRows]= await pool.query(`SELECT COUNT(*) AS count FROM (${armaquery}) AS inscriptos`)
+        const [totalRows]= await pool.query(`SELECT COUNT(*) AS count FROM (${armaquery}) AS inscriptos`);
 
         const totalPages= Math.ceil(totalRows[0]?.count/limit);
         const totalItems=totalRows[0]?.count;

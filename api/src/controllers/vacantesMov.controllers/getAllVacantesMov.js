@@ -2,12 +2,15 @@ const pool = require('../../database/connection.js');
 
 module.exports = async(req,res)=>{
     //TRAE TODAS LAS VACANTES DE MOVIMIENTOS SEGUN EL NIVEL INDICADO EN EL LISTADO_VAC_MOV
-    const{idListadoVacMov,limit,page,filtroAsignacion,filtroBusqueda,filtroEspecialidad} = req.body;
+    const{idListadoVacMov,limit,page,filtroAsignacion,filtroBusqueda,filtroEspecialidad,filtroRegionVac,filtroModalidadVac} = req.body;
     console.log('que trae idListadoVacMov: ', idListadoVacMov);
     console.log('que trae limit: ', limit);
     console.log('que trae page: ', page);
     console.log('que trae filtroAsignacion: ', filtroAsignacion);
     console.log('que trae filtroBusqueda: ', filtroBusqueda);
+    console.log('que trae filtroEspecialidad: ', filtroEspecialidad);
+    console.log('que trae filtroRegionVac: ', filtroRegionVac);
+    console.log('que trae filtroModalidadVac: ', filtroModalidadVac);
 
     const offset = (page-1)*limit;
 
@@ -22,6 +25,14 @@ module.exports = async(req,res)=>{
         armaquery += ` AND vm.id_especialidad IN(${filtroEspecialidad}) `
     };
 
+    if(filtroRegionVac && filtroRegionVac!=''){
+        armaquery += ` AND vm.region LIKE ('${filtroRegionVac}') `
+    };
+
+    if(filtroModalidadVac && filtroModalidadVac!=''){
+        armaquery += ` AND vm.modalidad LIKE ('${filtroModalidadVac}') `
+    };
+
     if(filtroAsignacion==='asignadas'){
         armaquery+=` AND am2.datetime_asignacion IS NOT NULL`;
     }else if(filtroAsignacion==='disponibles'){
@@ -29,24 +40,61 @@ module.exports = async(req,res)=>{
     };
 
     if(filtroBusqueda && filtroBusqueda!=''){
-        armaquery+=` AND (LOWER(vm.establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vm.obs_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vm.cargo) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vm.modalidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vm.turno) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vm.region) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vm.departamento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                            OR LOWER(vm.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
-                    ) `
+        if(!isNaN(filtroBusqueda)){
+            //SI ES UN NUMERO BUSCARLO EN NUMERO DE ESTABLECIMIENTO
+            armaquery+=` AND (LOWER(vm.establecimiento) LIKE '${filtroBusqueda.toLowerCase()}%' 
+            ) `
+
+        }else{
+            //SI NO ES UN  NUMERO, APLICO BUSQUEDAS EN OTROS CAMPOS
+            armaquery+=` AND ( LOWER(vm.establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%'
+                                OR LOWER(vm.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+            ) `
+             /**
+              OR LOWER(vm.obs_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+ OR LOWER(vm.cargo) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+ OR LOWER(vm.modalidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+ OR LOWER(vm.turno) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+ OR LOWER(vm.region) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+ OR LOWER(vm.departamento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+              * 
+              * 
+              */
+        }
+
+        {/**
+            
+            armaquery+=` AND (LOWER(vm.establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                                OR LOWER(vm.obs_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                                OR LOWER(vm.cargo) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                                OR LOWER(vm.modalidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                                OR LOWER(vm.turno) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                                OR LOWER(vm.region) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                                OR LOWER(vm.departamento) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                                OR LOWER(vm.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%' 
+                        ) `
+            */}
     }
 
-    armaquery+= ` ORDER BY vm.id_vacante_mov ASC`
+    if(filtroBusqueda && filtroBusqueda!=''){
+        if(!isNaN(filtroBusqueda)){
+            armaquery+= ` ORDER BY vm.establecimiento ASC`
+        }else{
+            armaquery+= ` ORDER BY vm.id_vacante_mov ASC`    
+        }
+    }else{
+        armaquery+= ` ORDER BY vm.id_vacante_mov ASC`
+    }
+
+    /**armaquery+= ` ORDER BY vm.id_vacante_mov ASC`*/
+
+    console.log('como queda generado armaquery: ', armaquery);
 
     try{
 
         const [result] = await pool.query(`${armaquery} LIMIT ${limit} OFFSET ${offset}`);
 
-        console.log('que trae result getAllVacantesMov: ', result);
+        //console.log('que trae result getAllVacantesMov: ', result);
 
         const [totalRows]= await pool.query(`SELECT COUNT(*) AS count FROM (${armaquery}) AS vacantes`)
 

@@ -41,16 +41,19 @@ const PaginaAsistenciaTitular = ({datosInscripto,id_nivel})=>{
                     <p className='ml-2 '>D.N.I. N°</p>
                     <p className='border-b-[1px] border-black border-dotted w-[100px] text-center font-medium'>{datosInscripto.dni}</p>
                     <p className='ml-2 '>Asistió a la </p>
-                    <p className='ml-2  italic'>"Entrega</p>
+                    <p className='ml-2  italic'>"Instancia</p>
                 </div>
                 <div className='flex flex-row mb-2'>
-                    <p className='ml-2  italic'>de Cargos de Titularizacion",</p>
-                    <p className='ml-2  italic'>  el/los dias: </p>
-                    <p className='border-b-[1px] border-black border-dotted w-[400px] text-center font-medium'></p>
+                    <p className='ml-2  italic'>de Ingreso a la Titularidad",</p>
+                    <p className='ml-2  italic'>  en el dia de la fecha. </p>
+                    {/*<p className='border-b-[1px] border-black border-dotted w-[400px] text-center font-medium'></p>*/}
                 </div>
+                {/* 
+                
                 <div className='flex flex-row mb-2 mt-10'>
                     <p className='border-b-[1px] border-black border-dotted w-[500px] text-center font-medium'></p>
                 </div>
+                */}
                 <div className='flex flex-row mb-4 justify-center'>
                     <p className='ml-2  '>Se extiende la misma para ser presentada ante las autoridades que la requieran.</p>
                 </div>

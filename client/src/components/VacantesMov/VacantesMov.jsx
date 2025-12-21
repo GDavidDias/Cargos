@@ -122,6 +122,8 @@ const VacantesMov = () =>{
         asignadas:0
     });
 
+    const[filtroRegionVac, setFiltroRegionVac]=useState('');
+
     //-----------PROCESOS Y FUNCIONES-----------
 
     const handleChangeFormVacante =(event)=>{
@@ -176,17 +178,18 @@ const VacantesMov = () =>{
         setIdListVacMov(idFilterListado);
 
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE VACANTES
-        await getVacantesMov(idFilterListado,currentPage,estadoVacantes,inputSearch,filtroEspecialidadVac)
+        await getVacantesMov(idFilterListado,currentPage,estadoVacantes,inputSearch,filtroEspecialidadVac,filtroRegionVac)
     };
 
     //Este Proc carga el listado de VACANTES al E.L
-    const getVacantesMov = async(id_listado,page,filtroAsignacion,valorBusqueda,filtroEspecialidad) =>{
+    const getVacantesMov = async(id_listado,page,filtroAsignacion,valorBusqueda,filtroEspecialidad, filtroRegionVac) =>{
+        console.log('Ingresa a getVacantesMov');
         let data;
         const limit=10;
         //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
             //paso idListado, limit y page
-            data = await fetchAllVacantesMov(id_listado,limit,page,filtroAsignacion,valorBusqueda,filtroEspecialidad);
+            data = await fetchAllVacantesMov(id_listado,limit,page,filtroAsignacion,valorBusqueda,filtroEspecialidad, filtroRegionVac);
 
             //console.log('que trae data de fetchVacantesDispMov: ', data);
 
@@ -495,6 +498,24 @@ const VacantesMov = () =>{
         setObsEliminaVacante(value);
     };
 
+    /**PROCESO DE FILTRO DE REGION */
+    const handleSelectFiltroRegion = (event) => {
+        const {value}=event.target;
+        //Seleccion de Region
+        console.log('que trae value handleSelectFiltroRegion: ', value);
+        setFiltroRegionVac(value);
+        setCurrentPage(1);
+    };
+
+    const handleCancelFiltroRegionVac = (event) => {
+        const{value}=event.target;
+        //Cancelar Filtro de Region
+        console.log('que trae value handleCancelFiltroRegionVac: ', value);
+        setFiltroRegionVac('');
+        setCurrentPage(1);
+    };  
+
+    //-----------USEEFFECTS-----------
     useEffect(()=>{
         //console.log('que tiene CONTADOR: ',totalVacantes);
     },[totalVacantes])
@@ -528,19 +549,21 @@ const VacantesMov = () =>{
         //console.log('APLICO FILTRO');
         //console.log('que tiene estado local estadoVacantes: ', estadoVacantes);
         //aplicoFiltroListadoVacantes(listadoVacantesMov);
-        getVacantesMov(idListVacMov,currentPage,estadoVacantes,inputSearch,filtroEspecialidadVac)
+        getVacantesMov(idListVacMov,currentPage,estadoVacantes,inputSearch,filtroEspecialidadVac, filtroRegionVac)
     },[estadoVacantes,currentPage,inputSearch,filtroEspecialidadVac])
 
     useEffect(()=>{
-        if (!isIntervalActive) return;
+        //if (!isIntervalActive) return;
 
-        const intervalId = setInterval(()=>{
-            getVacantesMov(idListVacMov,currentPage,estadoVacantes,inputSearch,filtroEspecialidadVac)
-        }, 10000);
+        //const intervalId = setInterval(()=>{
+        //    getVacantesMov(idListVacMov,currentPage,estadoVacantes,inputSearch,filtroEspecialidadVac, filtroRegionVac)
+        //}, 5000);
 
-        return()=>clearInterval(intervalId);
+        //return()=>clearInterval(intervalId);
 
-    },[isIntervalActive,idListVacMov,estadoVacantes,currentPage,inputSearch,filtroEspecialidadVac])
+        getVacantesMov(idListVacMov,currentPage,estadoVacantes,inputSearch,filtroEspecialidadVac, filtroRegionVac)
+
+    },[isIntervalActive,idListVacMov,estadoVacantes,currentPage,inputSearch,filtroEspecialidadVac, filtroRegionVac])
 
     useEffect(()=>{
         seteoDatosInicialesFormVacante()
@@ -659,7 +682,36 @@ const VacantesMov = () =>{
                         </div>
 
                         {/* CAMPO DE FILTRO */}
-
+                        {/**Filtro de Region */}
+                        <label className="mr-[2mm]">Region</label>
+                        <div className="border-[1px]  h-[26px] rounded border-zinc-400 bg-neutral-50 desktop-xl:h-[30px] flex flex-row">
+                            <select 
+                                className={`x h-[24px] border-[1px] rounded focus:outline-none focus:ring-0 focus:border-none desktop-xl:text-lg
+                                    ${(filtroRegionVac==="")
+                                        ?` w-[6vw] `
+                                        :` w-[4vw] `
+                                    }
+                                    `}
+                                name="filtroRegion"
+                                onChange={handleSelectFiltroRegion}
+                                value={filtroRegionVac}
+                            >
+                                <option value='' selected disabled>Region...</option>
+                                <option value='I'>I</option>
+                                <option value='II'>II</option>
+                                <option value='III'>III</option>
+                                <option value='IV'>IV</option>
+                                <option value='V'>V</option>
+                                <option value='VI'>VI</option>
+                                <option value='VII'>VII</option>
+                            </select>
+                            {(filtroRegionVac!="") &&
+                                    <label 
+                                        className="font-bold mx-2 cursor-pointer"
+                                        onClick={handleCancelFiltroRegionVac}
+                                    >X</label>
+                                }
+                        </div>
 
                         {/* Campo de Busqueda */}
                         <div className="desktop:w-[50%]  flex desktop:justify-end movil:w-full ">

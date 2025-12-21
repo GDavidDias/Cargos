@@ -28,7 +28,7 @@ import { MdOutlineDoubleArrow } from "react-icons/md";
 import Paginador from "../Paginador/Paginador";
 import PaginaDesignacion from "../PaginaDesignacion/PaginaDesignacion";
 import { outUser } from "../../redux/userSlice";
-import { IoMdPrint } from "react-icons/io";
+import { IoMdPrint, IoMdLocate  } from "react-icons/io";
 import { fetchAllEspecialidades } from "../../utils/fetchAllEspecialidades";
 import { fetchAllVacantesMov } from "../../utils/fetchAllVacantes";
 import { validaDniAsignadoListado } from "../../utils/validaDniAsignadoListado";
@@ -36,6 +36,9 @@ import { IoMdMore } from "react-icons/io";
 import { updateEstadoAsignadoInscripto } from "../../utils/updateEstadoAsignadoInscripto";
 import PaginaAsistencia from "../PaginaAsistencia/PaginaAsistencia";
 import { validaLegajoAsignadoListado } from "../../utils/validateLegajoAsignadoListado";
+import { IoLocateSharp } from "react-icons/io5";
+import PaginaDesignacionMov from "../PaginaDesignacion/PaginaDesignacionMov";
+import { RiProgress6Line } from "react-icons/ri";
 
 
 
@@ -183,6 +186,12 @@ const InscriptosMov = ()=>{
 
     const[isSubmitting, setIsSubmitting] = useState(false);
 
+    const[filtroRegionVac, setFiltroRegionVac]=useState('');
+    
+    const[habilitaAsigna, setHabilitaAsigna]=useState(true);
+    
+    const[inputSearchDni, setInputSearchDni]=useState('');
+
     //-------------------------------------
     //      PROCEDIMIENTOS Y FUNCIONES
     //-------------------------------------
@@ -226,7 +235,7 @@ const InscriptosMov = ()=>{
         if(id_listado){
             //paso id_listado, limit y page
             data = await fetchAllInscriptosMov(id_listado, limit, page,idTipoInscripto,filtroAsignacion, valorBusqueda, idListadoCompara,especialidadLuom);
-            //console.log('que trae data de fetchAllInscriptosMov: ', data);
+            console.log('que trae data de fetchAllInscriptosMov: ', data);
 
             if(data.result?.length!=0){
                 setListadoInscriptosMov(data.result); 
@@ -280,19 +289,19 @@ const InscriptosMov = ()=>{
         setIdListVacMov(idFilterListado);
 
         //LLAMO AL PROCEDIMIENTO PARA TRAER EL LISTADO DE VACANTES
-        await getVacantesDisponiblesMov(idFilterListado,currentPageVac,inputSearchVac,filtroEspecialidadVac,orderBy,typeOrder)
+        await getVacantesDisponiblesMov(idFilterListado,currentPageVac,inputSearchVac,filtroEspecialidadVac,orderBy,typeOrder,filtroRegionVac)
     };
 
     //Este Proc carga el listado de VACANTES Disponibles al E.L
-    const getVacantesDisponiblesMov = async(id_listado,page,valorBusqueda,filtroEspecialidad,orderBy, typeOrder) =>{
+    const getVacantesDisponiblesMov = async(id_listado,page,valorBusqueda,filtroEspecialidad,orderBy, typeOrder,inputFiltroRegionVac) =>{
         let data;
         const limit=10;
         //console.log('que trae id_listado getVacantesDisponiblesMov: ', id_listado);
         if(id_listado){
-            data = await fetchVacantesDispMov(id_listado,limit,page,valorBusqueda,filtroEspecialidad,orderBy, typeOrder);
-            //console.log('que trae data de fetchVacantesDispMov: ', data);
+            data = await fetchVacantesDispMov(id_listado,limit,page,valorBusqueda,filtroEspecialidad,orderBy, typeOrder, inputFiltroRegionVac);
+            console.log('que trae data de fetchVacantesDispMov: ', data);
 
-            if(data.result?.length!=0){
+            if(data && data.result?.length!=0){
                 setListadoVacantesDispMov(data.result); 
                 //setFilterListadoVacantesDispMov(data);
                 setPaginacionVac(data.paginacion);
@@ -306,11 +315,11 @@ const InscriptosMov = ()=>{
 
     //Proc al presionar icono "Ver Datos", setea en E.L los datos del inscripto
     const submitVerDatosInscripto = async(datos) =>{
-        //console.log('que recibe datos inscripto: ', datos);
+        console.log('que recibe datos inscripto: ', datos);
         setDatosInscriptoSelect(datos);
 
         //seteo el estadoAsignadoInscripto
-        //console.log('QUE TIENE datos.id_estado_inscripto: ', datos.id_estado_inscripto);
+        console.log('QUE TIENE datos.id_estado_inscripto: ', datos.id_estado_inscripto);
         if(datos.id_estado_inscripto!=null){
             setEstadoAsignadoInscripto(datos.id_estado_inscripto);
         }else{
@@ -332,7 +341,7 @@ const InscriptosMov = ()=>{
         //Traigo los datos de asignacion de su cargo original y docente quien lo tomo
         
         const datosAsignacion = await fetchAsignacionByVacante(datos.id_vacante_generada_cargo_actual);
-        //console.log('que tra datosAsignacion de vacante generada: ', datosAsignacion);
+        console.log('que tra datosAsignacion de vacante generada: ', datosAsignacion);
         setAsignacionCargoOriginal(datosAsignacion);
 
         openModalEdit();
@@ -618,6 +627,12 @@ const InscriptosMov = ()=>{
         //VALIDACION DNI YA TOMO CARGO
         // const datosValidate = await validaDniAsignadoListado(idListadoInscriptosMov,datos.dni);
         // console.log('que trae validaDniAsignadoListado: ', datosValidate);
+        console.log('que recibe datos inscripto al Ver Vacantes: ', datos);
+
+        //?VALIDA SI ESTA HABILITADO PARA ASIGNACION
+        //const habilitaAsigna = await habilitadoAsignacion(datos?.id_inscriptos_mov);
+
+        console.log('esta habilitado ?: ', await habilitaAsigna);
 
         //VALIDA CANTIDAD DE LEGAJOS QUE TIENE EL DNI PARA VALIDAR TURNO
         validacantidadlegajo(datos.dni);
@@ -630,11 +645,27 @@ const InscriptosMov = ()=>{
         setEstadoAsignadoInscripto(datos.id_estado_inscripto);
 
 
+
         if(datosValidate.length!=0){
             setDatosValidaDni(datosValidate[0]);
             //console.log('Inscripto ya tomo cargo');
             setMensajeModalDatos(`El Docente ${datosValidate[0].apellido}, ${datosValidate[0].nombre} con DNI(${datosValidate[0].dni}) ya tomo el siguiente cargo:`);
-            openModalDatos();
+
+            //?--- PARCHE PARA ASIGNACION 17112025 / SE COMENTA PARA QUE NO APAREZCA EL MODAL Y PERMITA ACTUALIZAR--------
+            //openModalDatos();
+            
+            //?------------------------------------------
+            //?--- PARCHE PARA ASIGNACION 17112025 / SACAR Y RESOLVER--------
+            //?------------------------------------------
+            //vacion input busqueda
+            setInputSearchVac('')
+            //console.log('que recibe datos inscripto al Ver Vacantes: ', datos);
+            setDatosInscriptoSelect(datos);
+            //cargo listado original de vacantes disponibles
+            setFilterListadoVacantesDispMov(listadoVacantesDispMov);
+            openModalVac();
+            //?------------------------------------------
+
         }else{
             //vacion input busqueda
             setInputSearchVac('')
@@ -651,6 +682,23 @@ const InscriptosMov = ()=>{
         //console.log('datos recibidos de Vacante: ', vacante);
         setDatosVacanteSelect(vacante);
         openModalAsign();
+    };
+
+    /**PROCESO DE FILTRO DE REGION */
+    const handleSelectFiltroRegion = (event) => {
+        const {value}=event.target;
+        //Seleccion de Region
+        console.log('que trae value handleSelectFiltroRegion: ', value);
+        setFiltroRegionVac(value);
+        setCurrentPageVac(1);
+    };
+
+    const handleCancelFiltroRegionVac = (event) => {
+        const{value}=event.target;
+        //Cancelar Filtro de Region
+        //console.log('que trae value handleCancelFiltroRegionVac: ', value);
+        setFiltroRegionVac('');
+        setCurrentPageVac(1);
     };
 
     //?---------------------------------------------------------------
@@ -747,7 +795,7 @@ const InscriptosMov = ()=>{
             turno:(datosInscriptoSelect.turno_actual) ?datosInscriptoSelect.turno_actual :``, //VARCHAR
             modalidad:'', //VARCHAR
             cupof:'', //VARCHAR
-            id_especialidad:null, //INTEGER
+            id_especialidad:(datosInscriptoSelect.id_especialidad) ?datosInscriptoSelect.id_especialidad :null, //INTEGER
             datetime_creacion:fechaHoraActualNuevaVac, //VARCHAR
             zona:'' //VARCHAR
         }
@@ -974,7 +1022,7 @@ const InscriptosMov = ()=>{
         
         setCurrentPageVac(1);
         //al seleccionar una especialidad, regrso a la primer pagina, por si no hay tantos inscriptos
-        
+
     };
 
     const handleSelectFiltroEspecialidadLuom=(event)=>{
@@ -984,7 +1032,6 @@ const InscriptosMov = ()=>{
         
         setCurrentPageVac(1);
         //al seleccionar una especialidad, regrso a la primer pagina, por si no hay tantos inscriptos
-        
     };
 
     const submitCloseModalVac = () =>{
@@ -995,6 +1042,7 @@ const InscriptosMov = ()=>{
         setTypeOrder('');
         setEstadoAsignadoInscripto('');
         setCantLegajoDni(0);
+        setFiltroRegionVac('');
         closeModalVac();
     };
 
@@ -1026,8 +1074,25 @@ const InscriptosMov = ()=>{
         }catch(error){
             console.log('error en updateEstadoAsignadoInscripto', error);
         }
-
     };
+
+
+    //?-------------------------------------------------
+    //?-  PROCESO DE CAMBIO DE ESTADO DE INSCRIPTO POR BOTON A AUSENTE
+    //?-------------------------------------------------
+    const submitGuardarEstadoInscriptoButton=async(datosInscripto)=>{
+        //console.log('que tiene estadoAsignadoInscripto: ', estadoAsignadoInscripto)
+        try{
+            const datosUpdateEstado = await updateEstadoAsignadoInscripto(datosInscripto.id_inscriptos_mov, 4); //4= Ausente
+            //console.log('que trae datosUpdateEstado: ', datosUpdateEstado)
+            setMensajeModalInfo('Estado del Inscripto Actualizado');
+            openModal();
+            setEstadoAsignadoInscripto('');
+        }catch(error){
+            console.log('error en updateEstadoAsignadoInscripto', error);
+        }
+    };
+
 
     const validacantidadlegajo=async(dni)=>{
         const result =  await validaDniAsignadoListado(idListadoInscriptosMov, dni);
@@ -1045,13 +1110,101 @@ const InscriptosMov = ()=>{
     //     setTimeout(()=>setIsIntervalActive(true),0);
     // },[]);
 
+
+    //Proc: controla si el inscripto puede realizar asignacion
+    const habilitadoAsignacion = async(datosInscripto) =>{
+        //Proceso para controlar si el inscripto puede realizar asignacion
+        //Si el id_titular ya tiene una asignacion o un estado de inscripto
+        //no puede realizar asignacion
+        console.log('que tiene idTitular en habilitadoAsignacion: ', datosInscripto.id_inscripto_mov);
+
+        const datosBody={
+            "id_listado": idListadoInscriptosMov,
+            "idTitular": datosInscripto.id_inscriptos_mov,
+            "tipoInscripto": (datosInscripto.id_tipo_inscripto==1) ?'1' :'2,3',  // 1= activos, 2=disponibilidad
+        };
+
+        console.log('que tiene datosBody: ', datosBody);
+
+        //BUSCA SI HAY NULOS EN ESTADO DE MOVIMIENTO
+        await axios.post(`${URL}/api/haynulosmov`,datosBody)
+        .then(async res=>{
+            //TRAE DATOS
+            console.log('que trae res de haynulosmov: ', res.data[0].hay_nulos);
+            const resHayNulosMov = await res.data[0].hay_nulos;
+            if(resHayNulosMov===1){
+                console.log('NO ESTA HABILITADO PARA ASIGNACION');
+                setHabilitaAsigna(false)
+                return false;
+            }else{
+                console.log('SI ESTA HABILITADO PARA ASIGNACION');
+                setHabilitaAsigna(true)
+                return true;
+            };
+            //setHabilitaAsigna(resHayNulosMov===1 ?false :true);
+        })
+        .catch(error=>{
+            //INGRESA A ERRORES
+            console.log('que trae error editinscriptosmov: ', error);
+        });
+    };
+
+
+    //?-----------------------------------------------------------------
+    //?  -  -  -  BUSQUEDA DE PAGINA POR DNI EN LISTADO DE INSCRIPTOS MOVIMIENTO
+    //?---------------------------------------------------------------
+    const handleSearchDni = async (inputDni) => {
+        //const {value} = event.target;
+        //setCurrentPage(1);
+        //setInputSearchDni(inputDni);
+        if (!inputDni) return;
+        setInputSearch(''); // Limpia el input de búsqueda regular
+
+        const datosBody={
+            id_listado_inscriptos: idListadoInscriptosMov,
+            limit: paginacion.limit,         // 10  
+            idTipoInscripto: (tipoInscripto==1) ?'1' :'2,3',  // 1= activos, 2=disponibilidad
+            filtroAsignacion: estadoInscripto,
+            idListadoInscriptosCompara: idListadoInscriptosMovCompara,
+            idEspecialidadLuom: filtroEspecialidadLuom,
+            dniBuscado: inputDni         // 👈 DNI del input
+        };
+        console.log('que tiene datosBody para buscar pagina por dni: ', datosBody);
+
+        try {
+            const datosRes = await axios.post(`${URL}/api/getpagednimov`, datosBody);
+
+            console.log('que trae data de getpagednimov: ', datosRes.data);
+
+            if (!datosRes.data.ok || !datosRes.data.found) {
+            alert(datosRes.data.message || 'No se encontró el DNI');
+            return;
+            }
+
+            // Ir a la página donde está el DNI
+            //handlePageChange(data.page);
+            setCurrentPage(datosRes.data.page);
+
+            // (opcional) guardar el DNI para resaltar la fila cuando se cargue
+            //setDniSeleccionado(inputSearch);
+        } catch (err) {
+            console.error(err);
+            alert('Error al buscar el DNI');
+        }
+    };
+
+
+    //?---------------------------------------------------------------
+    //?  -  -  -  USEEFFECTS
+    //?---------------------------------------------------------------
+
     useEffect(()=>{
         //console.log('que tiene CONTADOR: ',totalVacantes);
     },[totalVacantes])
 
     useEffect(()=>{
         //Al cambiar pagina de Vacantes disponibles
-        getVacantesDisponiblesMov(idListVacMov,currentPageVac,inputSearchVac,filtroEspecialidadVac,orderBy,typeOrder)
+        getVacantesDisponiblesMov(idListVacMov,currentPageVac,inputSearchVac,filtroEspecialidadVac,orderBy,typeOrder,filtroRegionVac)
     },[currentPageVac])
 
     useEffect(()=>{
@@ -1066,11 +1219,9 @@ const InscriptosMov = ()=>{
     // },[inputSearchVac])
 
     useEffect(()=>{
-        //console.log('que especialidad de Vacante selecciono: ', filtroEspecialidadVac);
-        //filterEspecialidad(filtroEspecialidadVac);
-        //console.log('APLICO FILTRO LISTADO VACANTES')
-        getVacantesDisponiblesMov(idListVacMov,currentPageVac,inputSearchVac,filtroEspecialidadVac,orderBy,typeOrder)
-    },[filtroEspecialidadVac,inputSearchVac,orderBy,typeOrder])
+        //APLICO FILTROS EN VACANTES DISPONIBLES
+        getVacantesDisponiblesMov(idListVacMov,currentPageVac,inputSearchVac,filtroEspecialidadVac,orderBy,typeOrder,filtroRegionVac)
+    },[filtroEspecialidadVac,inputSearchVac,orderBy,typeOrder,filtroRegionVac])
 
 
     //Al setear en E.L los datos del inscripto seleccionado
@@ -1098,14 +1249,31 @@ const InscriptosMov = ()=>{
         const intervalId = setInterval(()=>{
             //console.log('ACTIVO INTERVALO')
             getInscriptosMov(idListadoInscriptosMov,currentPage,tipoInscripto,estadoInscripto,inputSearch,idListadoInscriptosMovCompara,filtroEspecialidadLuom);
+
+            //PARA CONTROLAR SI ESTA HABILITADO PARA ASIGNACION
+            console.log('que tiene id_titular: ', datosInscriptoSelect);
+            if(datosInscriptoSelect?.id_inscriptos_mov){
+                //console.log('verifico si esta habilitado para asignacion');
+                const idTitular = datosInscriptoSelect.id_inscriptos_mov;
+                habilitadoAsignacion(datosInscriptoSelect);
+            };
         }, 10000);
-        
+    
         return()=>clearInterval(intervalId);
 
-    },[isIntervalActive, nivelSG, formInscripto, tipoInscripto, estadoInscripto, inputSearch, currentPage,filtroEspecialidadLuom])
+    },[isIntervalActive, nivelSG, formInscripto, tipoInscripto, estadoInscripto, inputSearch, currentPage,filtroEspecialidadLuom, habilitaAsigna])
 
     useEffect(()=>{
-        //console.log('que tiene isIntervalActive: ', isIntervalActive);
+        //PARA CONTROLAR SI ESTA HABILITADO PARA ASIGNACION
+        //EL PROCESO CONTROLA SI EL ID_TITULAR ANTERIOR YA TUVO UNA ASIGNACION 
+        // O UN ESTADO DE INSCRIPTO (EN ESPERA, NO ASIGNADO, ASIGNADO)
+        //console.log('ingresa a useeffect de intervalo');
+        //const idTitular = datosInscriptoSelect.id_titular;
+        //if(habilitadoAsignacion(idTitular)){
+        //    console.log('ASIGNACION HABILITADA');
+        //}else{
+        //    console.log('ASIGNACION NO HABILITADA');
+       // }
     },[isIntervalActive])
 
     useEffect(()=>{
@@ -1153,6 +1321,30 @@ const InscriptosMov = ()=>{
         //?PROCESO SE EJECUTA EN CARGA INICIAL
         cargaInicialListados(configSG.nivel.id_nivel);
     },[]);
+
+    useEffect(()=>{ 
+        console.log('que tiene habilitaAsigna: ', habilitaAsigna);
+    },[habilitaAsigna]);
+
+    //------------FUNCIONES DE RENDERIZADO AGUPACION DOCENTES------------
+    // Paleta por grupo (fondo suave + color de borde)
+    const groupPalette = [
+        { bg: '',    border: 'border-sky-500' },
+        { bg: '',   border: 'border-lime-500' },
+        { bg: '',  border: 'border-amber-500' },
+        { bg: '', border: 'border-violet-500' },
+
+        //{ bg: 'bg-sky-50',    border: 'border-sky-400' },
+        //{ bg: 'bg-lime-50',   border: 'border-lime-400' },
+        //{ bg: 'bg-amber-50',  border: 'border-amber-400' },
+        //{ bg: 'bg-violet-50', border: 'border-violet-400' },
+    ];  
+
+    // Conteo total por legajo (saber si es duplicado)
+    const countByLegajo =
+    listadoInscriptosMov?.reduce((acc, r) => ((acc[r.legajo] = (acc[r.legajo] || 0) + 1), acc), {}) || {};
+    // Índice de grupo (solo avanza cuando empieza un NUEVO legajo duplicado)
+    let dupGroupIndex = -1;
 
     return(
         <div className=" notranslate h-full w-full">
@@ -1284,12 +1476,35 @@ const InscriptosMov = ()=>{
                             >Asignados</label>
                         </div>
 
-                        {/* Campo de Busqueda */}
+                        {/* Campo Ubicacion DNI */}
+                        {/**\
+                          <div className="w-[50%]  flex justify-end">
+                              <div className="border-[1px] border-zinc-400 w-[20vw] rounded flex flex-row items-center justify-between mr-2">
+                                  <input 
+                                      className="w-[15vw] focus:outline-none rounded desktop-xl:text-lg"
+                                      placeholder="Ubicar DNI"
+                                      type="text"
+                                      value={inputSearchDni}
+                                      onChange={handleSearchDni}
+                                  />
+                                  <div className="flex flex-row items-center">
+                                      {(inputSearchDni!='') &&
+                                          <FaTimes
+                                              className="text-slate-400 cursor-pointer text-lg"
+                                              //onClick={()=>handleCancelSearch()}
+                                          />
+                                      }
+                                  </div>
+                              </div>
+                          </div>
+                        */}
+
+                        {/* Campo Filtro de Busqueda */}
                         <div className="w-[50%]  flex justify-end">
                             <div className="border-[1px] border-zinc-400 w-[20vw] rounded flex flex-row items-center justify-between mr-2">
                                 <input 
                                     className="w-[15vw] focus:outline-none rounded desktop-xl:text-lg"
-                                    placeholder="Buscar..."
+                                    placeholder="Filtrar DNI/Nombre"
                                     type="text"
                                     value={inputSearch}
                                     onChange={handleInputSearchChange}
@@ -1319,7 +1534,7 @@ const InscriptosMov = ()=>{
                                     <th className="border-r-[1px] font-semibold text-purple-500 border-zinc-300">ID</th>
                                     {/* <th className="border-r-[1px] border-zinc-300">Ord.</th> */}
                                     <th className="border-r-[1px] border-zinc-300">Puntaje</th>
-                                    <th className="border-r-[1px] border-zinc-300">Apellido</th>
+                                    {/*<th className="border-r-[1px] border-zinc-300">Apellido</th>*/}
                                     <th className="border-r-[1px] border-zinc-300">Nombre</th>
                                     <th className="border-r-[1px] border-zinc-300">DNI</th>
                                     <th className="border-r-[1px] border-zinc-300">Legajo</th>
@@ -1327,7 +1542,8 @@ const InscriptosMov = ()=>{
                                     <th className="border-r-[1px] border-zinc-300">Cargo Actual</th>
                                     <th className="border-r-[1px] border-zinc-300">Turno</th>
                                     <th className="border-r-[1px] border-zinc-300">Cargo Solicitado</th>
-                                    <th className="border-r-[1px] border-zinc-300">Observacion</th>
+                                    <th className="border-r-[1px] border-zinc-300">Mov. Solicitado</th>
+                                    <th className="border-r-[1px] border-zinc-300">Est.Sol.</th>
                                     <th className="border-r-[1px] border-zinc-300">Estado</th>
                                     <th className="">Acciones</th>
                                 </tr>
@@ -1336,34 +1552,86 @@ const InscriptosMov = ()=>{
                                 {
                                     // filterListadoInscriptosMov?.map((inscripto, index)=>{
                                     listadoInscriptosMov?.map((inscripto, index)=>{
-                                        const colorFila = (inscripto.vacante_asignada || inscripto.legajoEnOtroNivel) ?`bg-red-200` :(((inscripto.id_inscriptos_mov % 2)===0) ?`bg-zinc-200` :``)
+                                        // Contar cuántas veces aparece el legajo en todo el listado
+                                        //const isDuplicado = listadoSG.filter(d => d.legajo === docente.legajo).length > 1;
+
+                                        const legajo = inscripto.legajo;
+                                        const count  = countByLegajo[legajo] || 0;
+                                        const isDup  = count > 1;
+
+                                        const prevLegajo = index > 0 ? listadoInscriptosMov[index - 1].legajo : null;
+                                        const nextLegajo = index < listadoInscriptosMov.length - 1 ? listadoInscriptosMov[index + 1].legajo : null;
+
+                                        const isStart = legajo !== prevLegajo;   // empieza grupo (sea single o duplicado)
+                                        const isEnd   = legajo !== nextLegajo;   // termina grupo
+
+                                        // Si empieza un grupo duplicado, avanzamos el índice de grupo
+                                        if (isDup && isStart) dupGroupIndex++;
+
+                                        // Tema visual por grupo (si no es duplicado, sin fondo ni bordes gruesos)
+                                        const theme = isDup ? groupPalette[dupGroupIndex % groupPalette.length] : null;
+
+                                        // Bordes gruesos para marcar el bloque
+                                        const topBorder    = isDup && isStart ? `border-t-4 ${theme.border}` : '';
+                                        const bottomBorder = isDup && isEnd   ? `border-b-[4px] ${theme.border}` : '';
+                                        // (opcional) línea izquierda para todo el bloque
+                                        const leftBorder   = isDup ? `border-l-4 ${theme.border}` : '';
+                                        const rightBorder   = isDup ? `border-r-4 ${theme.border}` : '';
+
+                                        // Base para cada celda de la fila
+                                        const cellBase = `border-[1px] border-zinc-400 h-[4vh] text-center`;
+                                        const cellGroup = isDup ? `${theme.bg} ${topBorder} ${bottomBorder} ${leftBorder} ${rightBorder}` : '';
+
+                                        const colorFila = (inscripto.vacante_asignada || inscripto.legajoEnOtroNivel) ?`bg-red-200` :(((inscripto.id_inscriptos_mov % 2)==0) ?`` :`bg-white`)
                                         return(
                                             <tr 
-                                                className={`text-lg desktop-xl:text-xl font-medium border-b-[1px] border-zinc-500 h-[5vh] desktop-xl:h-[5.5vh] hover:bg-orange-300 ${colorFila}`}
+                                                className={`${cellBase} ${cellGroup} text-lg desktop-xl:text-xl font-medium border-b-[1px] border-zinc-500 h-[5vh] desktop-xl:h-[5.5vh] hover:bg-orange-300 ${colorFila}`}
                                                 key={index}
                                             >
                                                 <td className="text-center text-sm font-light">{inscripto.id_inscriptos_mov}</td>
                                                 {/* <td className="text-center font-light">{inscripto.orden}</td> */}
                                                 <td className="text-center font-bold text-sky-800">{inscripto.total}</td>
-                                                <td className="pl-2">{inscripto.apellido}</td>
+                                                {/*<td className="pl-2">{inscripto.apellido}</td>*/}
                                                 <td className="pl-2">{inscripto.nombre}</td>
                                                 <td className="text-center px-2">{inscripto.dni}</td>
                                                 <td className="text-center">{inscripto.legajo}</td>
-                                                <td className="text-center">{inscripto.nro_escuela}</td>
+                                                <td className="text-center">{inscripto.nro_escuela}  {
+                                                (inscripto.obs_escuela!=null && inscripto.obs_escuela!='')
+                                                    ? inscripto.obs_escuela
+                                                    :``
+                                                }</td> 
                                                 <td className="text-center">{inscripto.cargo_actual}</td>
                                                 <td className="text-center">{inscripto.turno_actual}</td>
                                                 <td className="text-center">{inscripto.cargo_solicitado}</td>
                                                 <td className="text-sm text-center">{inscripto.observacion}</td>
                                                 <td 
                                                     className={`text-sm text-center
+                                                        ${(inscripto.estado_solicitud==1)
+                                                            ?`text-blue-500`
+                                                            :`text-red-500`
+                                                        }
+                                                        `}>
+                                                        {(inscripto.estado_solicitud==1)
+                                                                ?'HAB'
+                                                                :'RECH'
+                                                         }
+                                                        </td>
+                                                <td 
+                                                    className={`text-sm text-center
                                                             ${(inscripto.estado_inscripto=='Ausente')
                                                                 ?`text-red-500`
-                                                                :``
+                                                                : ''
                                                             }
                                                         `}
-                                                >{inscripto.estado_inscripto}</td>
+                                                >{(inscripto.estado_inscripto=='' || inscripto.estado_inscripto == null)
+                                                    ?<RiProgress6Line className="mr-2 blink  text-red-500 cursor-pointer" 
+                                                        title="Ausente"
+                                                        onClick={()=>submitGuardarEstadoInscriptoButton(inscripto)}
+                                                        />
+                                                    :inscripto.estado_inscripto
+                                                    }</td>
                                                 <td>
-                                                    <div className="flex flex-row items-center justify-center  ">
+                                                    <div className="flex flex-row items-center justify-start  ">
                                                         {(inscripto.vacante_asignada===null && inscripto.id_vacante_generada_cargo_actual!=null)
                                                             ?<FiAlertTriangle    
                                                                 className="mr-2 blink text-red-500"
@@ -1375,12 +1643,23 @@ const InscriptosMov = ()=>{
                                                             title="Ver Datos"
                                                             onClick={()=>submitVerDatosInscripto(inscripto)}
                                                         />
+                                                        {(inputSearch!='')&&
+                                                        
+                                                        <IoLocateSharp   
+                                                            className="hover:cursor-pointer hover:text-[#83F272] blink ml-2 text-emerald-600" 
+                                                            title="Ubicar DNI"
+                                                            onClick={()=>handleSearchDni(inscripto.dni)}
+                                                        />
+                                                        }
                                                         {
-                                                            ((inscripto.vacante_asignada===null || inscripto.vacante_asignada==='' ) && inscripto.legajoEnOtroNivel===null && (userSG.permiso!=3 && userSG.permiso!=4))
+                                                            ((inscripto.vacante_asignada===null || inscripto.vacante_asignada==='' ) && inscripto.legajoEnOtroNivel===null && (userSG.permiso!=3 && userSG.permiso!=4) && (inscripto.estado_solicitud==1))
                                                             ?<BiTransferAlt 
                                                                 className="text-2xl hover:cursor-pointer hover:text-[#83F272] ml-2"      
                                                                 title="Vacantes"
-                                                                onClick={()=>submitVerVacantes(inscripto)}
+                                                                onClick={()=>{
+                                                                    habilitadoAsignacion(inscripto);
+                                                                    submitVerVacantes(inscripto);
+                                                                }}
                                                             />
                                                             :``
                                                         }
@@ -1442,9 +1721,20 @@ const InscriptosMov = ()=>{
                         </div>
                     </div>
                 </div>
+                {/* AVISO: ALERTA DE ASIGNACION EN PROCESO*/}
+                {(habilitaAsigna===false)
+                    ?<div className="flex flex-row items-center">
+                        <FiAlertTriangle  className="mr-2 text-xl desktop-xl:text-3xl  text-red-500"/>
+                        <div className="border-[2px] border-red-500 flex flex-row justify-center rounded-md shadow font-semibold text-lg bg-yellow-200 mb-2 desktop-xl:text-xl animate-parpadeoborde">
+                            <label className="mx-2">Espere, ... docente con mayor puntaje en proceso de Asignacion </label>
+                        </div>
+                        {/* <FiAlertTriangle  className="ml-2 text-xl desktop-xl:text-3xl blink text-red-500"/> */}
+                    </div>
+                    :``
+                }
                 <div className="h-[60vh] w-full mt-2 ">
                     {/* PARTE SUPERIOR - FILTROS Y BUSQUEDA */}
-                    <div className="border-[1px] border-zinc-400 rounded-t-lg h-[9vh] flex flex-col bg-[#dde8b7]">
+                    <div className="border-[1px] border-zinc-400 rounded-t-lg h-[24mm] flex flex-col bg-[#dde8b7]">
                         {/* FILTROS */}
                         <div className="flex flex-row justify-between">
                             {/* FILTRO ESPECIALIDAD */}
@@ -1501,15 +1791,15 @@ const InscriptosMov = ()=>{
                                 </div>
                             </div>
                         </div>
-                        {/* ORDENAMIENTO POR CAMPOS SEGUN FILTRO BUSQUEDA */}
+                        {/* ORDENAMIENTO POR CAMPOS SEGUN FILTRO BUSQUEDA - ENCABEZADOS DE CAMPOS*/}
                         <div className="flex flex-row desktop-xl:text-lg">
-                            <div className="flex flex-row items-center justify-center w-[2vw] border-r-[1px] border-zinc-200 ">
+                            <div className="flex flex-col items-center justify-end w-[2vw] border-r-[1px] border-zinc-200 ">
                                 <label className="font-base text-sm">ID</label>
                             </div>
-                            <div className="flex flex-row items-center justify-center w-[4vw] border-r-[1px] border-zinc-200  ">
+                            <div className="flex flex-col items-center justify-end w-[4vw] border-r-[1px] border-zinc-200  ">
                                 <label className="font-base font-semibold">Orden</label>
                             </div>
-                            <div className="flex flex-row items-center justify-center w-[30vw] border-r-[1px] border-zinc-200  ">
+                            <div className="flex flex-col items-center justify-end w-[30vw] border-r-[1px] border-zinc-200  ">
                                 <label className="font-base font-semibold">Escuela</label>
                             </div>
                             {/* <div 
@@ -1538,28 +1828,54 @@ const InscriptosMov = ()=>{
                                 }
                                 
                             </div> */}
-                            <div className="flex flex-row items-center justify-center w-[10vw] border-r-[1px] border-zinc-200">
+                            <div className="flex flex-col items-center justify-end w-[10vw] border-r-[1px] border-zinc-200">
                                 <label className="font-semibold">Cargo</label>
                                 {/* <LuArrowUpDown className="ml-2"/> */}
                             </div>
-                            <div className="flex flex-row items-center justify-center w-[13vw] border-r-[1px] border-zinc-200">
+                            <div className="flex flex-col items-center justify-end w-[13vw] border-r-[1px] border-zinc-200">
                                 <label className="font-semibold">Modalidad</label>
                                 {/* <LuArrowUpDown className="ml-2"/> */}
                             </div>
-                            <div className="flex flex-row items-center justify-center w-[10vw] border-r-[1px] border-zinc-200">
+                            <div className="flex flex-col items-center justify-end w-[10vw] border-r-[1px] border-zinc-200">
                                 <label className="font-semibold">Turno</label>
                                 {/* <LuArrowUpDown className="ml-2"/> */}
                             </div>
-                            <div className="flex flex-row items-center justify-center w-[10vw] border-r-[1px] border-zinc-200">
+                            <div className="flex flex-col items-center justify-end w-[10vw] border-r-[1px] border-zinc-200">
                                 <label className="font-semibold">CUPOF</label>
                                 {/* <LuArrowUpDown className="ml-2"/> */}
                             </div>
-                            <div className="flex flex-row items-center justify-center w-[10vw] border-r-[1px] border-zinc-200">
+                            <div className="flex flex-col items-center justify-center w-[10vw] border-r-[1px] border-zinc-200">
+                                {/**Filtro de Region */}
+                                <div className="border-[1px]  h-[26px] rounded border-zinc-400 bg-neutral-50 desktop-xl:h-[30px] flex flex-row">
+                                    <select 
+                                        className="w-[5vw] h-[24px] border-[1px] rounded focus:outline-none focus:ring-0 focus:border-none desktop-xl:text-lg"
+                                        name="filtroRegion"
+                                        onChange={handleSelectFiltroRegion}
+                                        value={filtroRegionVac}
+                                    >
+                                        <option value='' selected disabled>...</option>
+                                        <option value='I'>I</option>
+                                        <option value='II'>II</option>
+                                        <option value='III'>III</option>
+                                        <option value='IV'>IV</option>
+                                        <option value='V'>V</option>
+                                        <option value='VI'>VI</option>
+                                        <option value='VII'>VII</option>
+                                    </select>
+                                    {(filtroRegionVac!="") &&
+                                            <label 
+                                                className="font-bold mx-2 cursor-pointer"
+                                                onClick={handleCancelFiltroRegionVac}
+                                            >X</label>
+                                        }
+                                </div>
                                 <label className="font-semibold">Region</label>
                                 {/* <LuArrowUpDown className="ml-2"/> */}
                             </div>
+                            {/*
+                            
                             <div 
-                                className={`flex flex-row items-center justify-center w-[15vw] border-r-    [1px] border-zinc-200 hover:text-sky-500 cursor-pointer
+                                className={`flex flex-col items-center justify-end w-[15vw] border-r-    [1px] border-zinc-200 hover:text-sky-500 cursor-pointer
                                     ${(campoOrderVac==='localidad')
                                         ?`text-sky-500`
                                         :``
@@ -1583,7 +1899,12 @@ const InscriptosMov = ()=>{
                                     />
                                 }
                             </div>
-                            <div className="flex flex-row items-center justify-center w-[8vw] ">
+                            */}
+                            <div className="flex flex-col items-center justify-end w-[10vw] border-r-[1px] border-zinc-200">
+                                <label className="font-semibold">Localidad</label>
+                                {/* <LuArrowUpDown className="ml-2"/> */}
+                            </div>
+                            <div className="flex flex-col items-center justify-end w-[8vw] ">
                                 <label className="font-semibold">Zona</label>
                             </div>
                             {/* <div 
@@ -1611,7 +1932,7 @@ const InscriptosMov = ()=>{
                                     />
                                 }
                             </div> */}
-                            <div className="flex flex-row items-center justify-center w-[8vw] ">
+                            <div className="flex flex-col items-center justify-end w-[8vw] ">
                                 <label className="font-semibold">Acciones</label>
                             </div>
                         </div>
@@ -1654,7 +1975,12 @@ const InscriptosMov = ()=>{
                                                             //onClick={()=>submitVerDatosInscripto(inscripto)}
                                                         /> */}
                                                         <BiTransferAlt 
-                                                            className="text-2xl hover:cursor-pointer hover:text-[#83F272]"      title="Asignacion"
+                                                            className={`text-2xl hover:cursor-pointer hover:text-[#83F272] 
+                                                                ${(habilitaAsigna===false) 
+                                                                    ?` hidden ` 
+                                                                    :` flex` }
+                                                                    `}
+                                                            title="Asignacion"
                                                             onClick={()=>submitAsignar(vacante)}
                                                         />
                                                     </div>
@@ -1722,30 +2048,46 @@ const InscriptosMov = ()=>{
                         <label className="mr-4 text-zinc-800">Puntaje: {datosInscriptoSelect.total}</label>
                     </div>
                 </div>
-                {/* AVISO ESPECIALIDAd DIFIERE DE LA SOLICITADA */}
+                {/* AVISO ESPECIALIDAD DIFIERE DE LA SOLICITADA */}
                 {/* PARA TRASLADO */}
                 {((datosInscriptoSelect.cargo_solicitado!=datosVacanteSelect.cargo) && (datosInscriptoSelect.id_tipo_inscripto===2))
                     ?<div className="flex flex-row items-center">
                         <FiAlertTriangle  className="mr-2 text-xl desktop-xl:text-3xl  text-red-500"/>
-                        <div className="border-[2px] border-red-500 flex flex-row justify-center rounded-md shadow font-semibold text-lg bg-red-100 mb-2 desktop-xl:text-xl animate-parpadeoborde">
-                            <label className="mx-2">El cargo solicitado: </label>
+                        <div className="border-[2px] border-red-500 flex flex-row justify-center rounded-md shadow font-semibold text-lg bg-yellow-200 mb-2 desktop-xl:text-xl animate-parpadeoborde">
+                            <label className="mx-2">TRASLADO: cargo solicitado: </label>
                             <label className="mr-2 font-bold">{datosInscriptoSelect.cargo_solicitado}</label>
-                            <label className="mr-2">, es distinto al cargo a tomar: </label>
+                            <label className="mr-2 text-blue-700 text-xl">, distinto a cargo a tomar: </label>
                             <label className="mr-2 font-bold">{datosVacanteSelect.cargo}</label>
                         </div>
                         {/* <FiAlertTriangle  className="ml-2 text-xl desktop-xl:text-3xl blink text-red-500"/> */}
                     </div>
                     :``
                 }
+                {/* AVISO ESCUELA ORIGEN IGUAL A DESTINO EN TRASLADO */}
+                {/* PARA TRASLADO */}
+                {((datosInscriptoSelect.nro_escuela==datosVacanteSelect.establecimiento) && (datosInscriptoSelect.id_tipo_inscripto===2))
+                    ?<div className="flex flex-row items-center">
+                        <FiAlertTriangle  className="mr-2 text-xl desktop-xl:text-3xl  text-red-500"/>
+                        <div className="border-[2px] border-red-500 flex flex-row justify-center rounded-md shadow font-semibold text-lg bg-yellow-200 mb-2 desktop-xl:text-xl animate-parpadeoborde">
+                            <label className="mx-2">TRASLADO: escuela origen: </label>
+                            <label className="mr-2 font-bold">{datosInscriptoSelect.nro_escuela}</label>
+                            <label className="mr-2 text-blue-700 text-xl">, no puede ser igual a la destino: </label>
+                            <label className="mr-2 font-bold">{datosVacanteSelect.establecimiento}</label>
+                        </div>
+                        {/* <FiAlertTriangle  className="ml-2 text-xl desktop-xl:text-3xl blink text-red-500"/> */}
+                    </div>
+                    :``
+                }
+
                 {/* PARA CAMBIO FUNCION */}
-                {/* {((datosInscriptoSelect.cargo_solicitado===datosVacanteSelect.cargo) && (datosInscriptoSelect.id_tipo_inscripto===3)) &&
+                 {((datosInscriptoSelect.cargo_solicitado!=datosVacanteSelect.cargo) && (datosInscriptoSelect.id_tipo_inscripto==3)) &&
                     <div className="border-[2px] border-red-500 flex flex-row justify-center rounded-md shadow font-semibold text-lg bg-red-100 mb-2 desktop-xl:text-xl blink">
-                    <label className="mx-2">El cargo solicitado: </label>
+                    <label className="mx-2">CF: cargo solicitado: </label>
                     <label className="mr-2 font-bold">{datosInscriptoSelect.cargo_solicitado}</label>
-                    <label className="mr-2">, es igual al cargo a tomar: </label>
+                    <label className="mr-2">, debe ser igual al cargo a tomar: </label>
                     <label className="mr-2 font-bold">{datosVacanteSelect.cargo}</label>
                 </div>
-                } */}
+                } 
                 {/* PARA TURNOS DIFERENTES */}
                 {((datosInscriptoSelect.turno_actual!=datosVacanteSelect.turno) && cantLegajoDni>1)
                     ?<div className="flex flex-row items-center ">
@@ -2283,7 +2625,17 @@ const InscriptosMov = ()=>{
             className="flex flex-col print:page-break-after"
             ref={componentRef}
         >
+            {/* PAGINA IMPRESION DESIGNACION DIRECTORES*/}
+            {/**
             <PaginaDesignacion
+                datosInscripto={datosInscriptoSelect}
+                datosVacante={datosVacanteSelect}
+                id_nivel={configSG?.nivel.id_nivel}
+            />
+             */}
+
+             {/* PAGINA IMPRESION DESIGNACION MOVIMIENTOS */}
+            <PaginaDesignacionMov
                 datosInscripto={datosInscriptoSelect}
                 datosVacante={datosVacanteSelect}
                 id_nivel={configSG?.nivel.id_nivel}
