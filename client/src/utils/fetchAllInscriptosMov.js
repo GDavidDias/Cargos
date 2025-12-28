@@ -3,12 +3,14 @@ import { URL } from '../../varGlobal';
 
 
 export const fetchAllInscriptosMov = async(id_listado,limit,page,idTipoInscripto,filtroAsignacion,valorBusqueda,idListadoCompara,especialidadLuom) => {
+    console.log('que ingresa por idTipoInscripto en fetchAllInscriptosMov: ', idTipoInscripto);
     let valoresInscripto;
     if(idTipoInscripto===1){
         valoresInscripto="1";
     }else{
-        valoresInscripto="2,3"
+        valoresInscripto="2,3,4"
     }
+
     const dataBody={
         "id_listado_inscriptos":id_listado,
         "limit":limit,
@@ -19,7 +21,7 @@ export const fetchAllInscriptosMov = async(id_listado,limit,page,idTipoInscripto
         "idListadoInscriptosCompara":idListadoCompara,
         "idEspecialidadLuom":especialidadLuom
     };
-    //console.log('que tiene datos que pasa a body en fetchAllInscriptosMov: ', dataBody);
+    console.log('que tiene datos que pasa a body en fetchAllInscriptosMov: ', dataBody);
 
     try{
         const {data} = await axios.post(`${URL}/api/inscriptosmov`,dataBody);

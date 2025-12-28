@@ -77,7 +77,7 @@ ALTER TABLE inscriptos_mov ADD estado_solicitud INT(2) DEFAULT NULL;
 ALTER TABLE vacantes_mov ADD orientacion VARCHAR(250) DEFAULT NULL;
 
 -->agrego campo obs_escuela en tabla inscriptos_mov
-ALTER TABLE obs_escuela ADD inscriptos_mov VARCHAR(250) DEFAULT NULL;
+ALTER TABLE inscriptos_mov ADD obs_escuela VARCHAR(250) DEFAULT NULL;
 
 MODULO TITULARIZACIONES
 -->agrego campo estado_inscripto en tabla inscriptos_tit
@@ -258,6 +258,7 @@ INSERT INTO nivel(id_nivel, descripcion) VALUES(2,'Primario');
 INSERT INTO tipo_inscripto(id_tipo_inscripto, descripcion) VALUES(1,'Disponible');
 INSERT INTO tipo_inscripto(id_tipo_inscripto, descripcion) VALUES(2,'Traslado');
 INSERT INTO tipo_inscripto(id_tipo_inscripto, descripcion) VALUES(3,'Cambio Funcion');
+INSERT INTO tipo_inscripto(id_tipo_inscripto, descripcion) VALUES(4,'MovDIR-VD');
 
 -------------------------
 ------ PARA INSERT estado_inscripto

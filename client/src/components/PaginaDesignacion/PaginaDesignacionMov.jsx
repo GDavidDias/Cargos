@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 const PaginaDesignacionMov = ({datosInscripto, datosVacante,id_nivel}) =>{
 console.log('que tiene id_nivel en PaginaDesignacion: ', id_nivel);
 console.log('que tiene datosInscripto en PaginaDesignacion: ', datosInscripto);
+console.log('que tiene datosVacante en PaginaDesignacion: ', datosVacante);
 
     const fechaActual = new Date();
     const dia = fechaActual.getDate();
@@ -28,6 +29,16 @@ console.log('que tiene datosInscripto en PaginaDesignacion: ', datosInscripto);
                 datamov='Traslado';
             }else if(tipoMovimiento===3){
                 datamov='Cambio de Funcion'
+            }else if(tipoMovimiento===4){
+                //?ADAPTADO PARA MOVIMIENTOS DIRECTIVOS
+                if(datosInscripto.cargo_actual==='DIRECTOR'){
+                    if(datosVacante.cargo==='VICEDIRECTOR') datamov='Traslado';
+                    if(datosVacante.cargo==='DIRECTOR') datamov='Traslado';
+                }
+                if(datosInscripto.cargo_actual==='VICEDIRECTOR'){
+                    if(datosVacante.cargo==='VICEDIRECTOR') datamov='Traslado';
+                    if(datosVacante.cargo==='DIRECTOR') datamov='Ascenso';
+                }
             }
         }
 

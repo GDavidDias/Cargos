@@ -41,12 +41,12 @@ const PaginaAsistencia = ({datosInscripto,id_nivel})=>{
                     <p className='border-b-[1px] border-black border-dotted w-[340px] text-center font-medium'>{datosInscripto.apellido}, {datosInscripto.nombre}</p>
                     <p className='ml-2 '>D.N.I. N°</p>
                     <p className='border-b-[1px] border-black border-dotted w-[100px] text-center font-medium'>{datosInscripto.dni}</p>
-                    <p className='ml-2 '>Asistió al </p>
-                    <p className='ml-2  italic'>"Movimiento de </p>
+                    <p className='ml-2 '>Asistió a la </p>
+                    <p className='ml-2  italic'>"Entrega</p>
                 </div>
                 <div className='flex flex-row mb-2'>
-                    <p className='ml-2  italic'> Traslado de Directores y Vicedirectores de 1ra y 2da Categoria", </p>
-                    <p className='ml-2  italic'>  en el dia de la fecha.</p>
+                    <p className='ml-2  italic'>de Cargos de Movimiento de Traslado, Cambio de Función y/o Disponibilidad",</p>
+                    <p className='ml-2  italic'>  el: {numeromes}.</p>
                     {/*<p className='border-b-[1px] border-black border-dotted w-[100px] text-center font-medium'></p>*/}
                 </div>
                 <div className='flex flex-row mb-4 justify-center'>

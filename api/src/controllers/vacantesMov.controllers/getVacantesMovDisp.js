@@ -15,7 +15,7 @@ module.exports = async(req,res)=>{
 
     const offset = (page-1)*limit;
 
-    let armaquery=`SELECT vm.id_vacante_mov, vm.id_listado_vac_mov, vm.orden, vm.establecimiento, vm.obs_establecimiento, vm.region, vm.departamento, vm.localidad, vm.cargo, vm.turno, vm.modalidad, vm.cupof, vm.id_especialidad, vm.datetime_creacion, vm.obs_desactiva, vm.zona, vm.resolucion, am2.datetime_asignacion , am2.id_estado_asignacion, vm.datetime_creacion
+    let armaquery=`SELECT vm.id_vacante_mov, vm.id_listado_vac_mov, vm.orden, vm.establecimiento, vm.obs_establecimiento, vm.region, vm.departamento, vm.localidad, vm.cargo, vm.turno, vm.modalidad, vm.cupof, vm.id_especialidad, vm.datetime_creacion, vm.obs_desactiva, vm.zona, vm.resolucion, am2.datetime_asignacion , am2.id_estado_asignacion
             FROM vacantes_mov AS vm
             LEFT JOIN (SELECT am.id_vacante_mov, am.datetime_asignacion , am.id_estado_asignacion FROM asignacion_mov AS am WHERE am.obs_desactiva IS NULL) AS am2 ON vm.id_vacante_mov = am2.id_vacante_mov
             WHERE am2.datetime_asignacion IS NULL 
@@ -40,10 +40,18 @@ module.exports = async(req,res)=>{
 
         }else{
             //SI NO ES UN  NUMERO, APLICO BUSQUEDAS EN OTROS CAMPOS
-            armaquery+=` AND (LOWER(vm.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%'  
-                            OR LOWER(vm.establecimiento) LIKE '${filtroBusqueda.toLowerCase()}%'
-                            
-            ) `
+            if(filtroBusqueda.toLowerCase()=='n'){
+                //SI EMPIEZA CON N, BUSCAR SOLO EN ESTABLECIMIENTO LAS NORMALES
+                armaquery+=` AND (LOWER(vm.establecimiento) LIKE '${filtroBusqueda.toLowerCase()}%'
+                                
+                ) `
+            }else{
+                //BUSCAR SOLO EN LOCALIDAD Y ESTABLECIMIENTO
+                armaquery+=` AND (LOWER(vm.localidad) LIKE '%${filtroBusqueda.toLowerCase()}%'  
+                                OR LOWER(vm.establecimiento) LIKE '${filtroBusqueda.toLowerCase()}%'
+                                
+                ) `
+            }
              /**
               * 
              OR LOWER(vm.obs_establecimiento) LIKE '%${filtroBusqueda.toLowerCase()}%' 

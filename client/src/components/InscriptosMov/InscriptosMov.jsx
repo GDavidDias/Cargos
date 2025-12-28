@@ -1121,7 +1121,7 @@ const InscriptosMov = ()=>{
         const datosBody={
             "id_listado": idListadoInscriptosMov,
             "idTitular": datosInscripto.id_inscriptos_mov,
-            "tipoInscripto": (datosInscripto.id_tipo_inscripto==1) ?'1' :'2,3',  // 1= activos, 2=disponibilidad
+            "tipoInscripto": (datosInscripto.id_tipo_inscripto==1) ?'1' :'2,3,4',  // 1= activos, 2=disponibilidad
         };
 
         console.log('que tiene datosBody: ', datosBody);
@@ -1163,7 +1163,7 @@ const InscriptosMov = ()=>{
         const datosBody={
             id_listado_inscriptos: idListadoInscriptosMov,
             limit: paginacion.limit,         // 10  
-            idTipoInscripto: (tipoInscripto==1) ?'1' :'2,3',  // 1= activos, 2=disponibilidad
+            idTipoInscripto: (tipoInscripto==1) ?'1' :'2,3,4',  // 1= activos, 2=disponibilidad
             filtroAsignacion: estadoInscripto,
             idListadoInscriptosCompara: idListadoInscriptosMovCompara,
             idEspecialidadLuom: filtroEspecialidadLuom,
